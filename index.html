@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASCENT — Hub</title>
+<meta name="theme-color" content="#0d0f14">
+<link rel="icon" href="assets/cumbre.ico">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;
+  --surface:rgba(255,255,255,.065);
+  --surface2:rgba(255,255,255,.095);
+  --line:rgba(255,255,255,.12);
+  --text:#f7f7f4;
+  --muted:rgba(247,247,244,.58);
+  --muted2:rgba(247,247,244,.38);
+  --cumbre:#e8703a;
+  --overview:#185fa5;
+  --task:#6c6ff5;
+  --r:30px;
+}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(232,112,58,.17), transparent 34%),
+    radial-gradient(circle at 78% 78%, rgba(24,95,165,.18), transparent 36%),
+    radial-gradient(circle at 52% 18%, rgba(108,111,245,.12), transparent 35%),
+    linear-gradient(135deg,#0b0c10 0%,#11141b 48%,#090a0d 100%);
+  color:var(--text);
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(circle at center, black 0%, transparent 75%);
+  pointer-events:none;
+}
+.shell{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  padding:34px clamp(26px,4vw,58px) 34px;
+  position:relative;
+  z-index:1;
+}
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:72px;
+}
+.brand-kicker{
+  font-size:11px;
+  letter-spacing:.36em;
+  text-transform:uppercase;
+  color:var(--muted2);
+  font-weight:700;
+  margin-bottom:8px;
+}
+.brand{
+  font-size:clamp(42px,6vw,78px);
+  line-height:.9;
+  letter-spacing:.16em;
+  font-weight:800;
+}
+.subtitle{
+  color:var(--muted);
+  margin-top:14px;
+  font-size:15px;
+}
+.status{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--muted2);
+  font-size:12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.045);
+  border-radius:999px;
+  padding:9px 14px;
+  backdrop-filter:blur(16px);
+}
+.status-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#21c55d;
+  box-shadow:0 0 18px rgba(33,197,93,.75);
+}
+.grid{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  align-items:stretch;
+  margin-top:34px;
+  min-height:0;
+}
+.card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.035));
+  text-decoration:none;
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:30px;
+  min-height:420px;
+  backdrop-filter:blur(24px);
+  box-shadow:0 30px 80px rgba(0,0,0,.22);
+  transition:transform .32s cubic-bezier(.2,.8,.2,1), border-color .32s, background .32s, flex .32s;
+}
+.card:hover{
+  transform:translateY(-8px) scale(1.012);
+  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055));
+}
+.card:before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  opacity:.35;
+  background:radial-gradient(circle at 50% 0%, var(--accent), transparent 42%);
+  transition:opacity .32s;
+  pointer-events:none;
+}
+.card:hover:before{opacity:.72}
+.card:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.18) 100%);
+  pointer-events:none;
+}
+.card > *{position:relative;z-index:1}
+.card-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+.symbol{
+  width:78px;height:78px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.22);
+  font-size:38px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.type{
+  font-size:11px;
+  letter-spacing:.18em;
+  color:var(--muted2);
+  text-transform:uppercase;
+  font-weight:700;
+  padding-top:8px;
+}
+.card-main h2{
+  font-size:clamp(30px,3vw,48px);
+  letter-spacing:.02em;
+  line-height:1;
+  margin-bottom:14px;
+}
+.card-main p{
+  font-size:18px;
+  color:rgba(255,255,255,.74);
+}
+.card-desc{
+  margin-top:26px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.55;
+  max-width:310px;
+}
+.open{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  color:rgba(255,255,255,.82);
+  margin-top:24px;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:var(--muted2);
+  font-size:12px;
+  padding-top:20px;
+}
+kbd{
+  font-family:inherit;
+  font-size:11px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  border-radius:7px;
+  padding:4px 7px;
+  color:rgba(255,255,255,.56);
+}
+@media(max-width:900px){
+  html,body{overflow:auto}
+  .shell{height:auto;min-height:100%}
+  .top{align-items:flex-start;gap:20px;flex-direction:column}
+  .grid{grid-template-columns:1fr;margin-top:28px}
+  .card{min-height:280px}
+}
+</style>
+</head>
+<body>
+<main class="shell">
+  <section class="top">
+    <div>
+      <div class="brand-kicker">Personal Operating System</div>
+      <h1 class="brand">ASCENT</h1>
+      <p class="subtitle">Tu ecosistema operativo. Tres espacios independientes, una sola entrada.</p>
+    </div>
+    <div class="status"><span class="status-dot"></span><span>Hub funcional</span></div>
+  </section>
+
+  <section class="grid" aria-label="Aplicaciones">
+    <a class="card" style="--accent:rgba(232,112,58,.95)" href="cumbre/">
+      <div class="card-top">
+        <div class="symbol">▲</div>
+        <div class="type">Trading OS</div>
+      </div>
+      <div class="card-main">
+        <h2>CUMBRE</h2>
+        <p>Nos vemos arriba</p>
+        <div class="card-desc">Trading, metas, journal, cuentas, análisis y rendimiento.</div>
+        <div class="open">Abrir CUMBRE <span>→</span></div>
+      </div>
+    </a>
+
+    <a class="card" style="--accent:rgba(24,95,165,.95)" href="overview/">
+      <div class="card-top">
+        <div class="symbol">◉</div>
+        <div class="type">Strategy OS</div>
+      </div>
+      <div class="card-main">
+        <h2>OVERVIEW</h2>
+        <p>Panorama General</p>
+        <div class="card-desc">Calendario, planificación, visión anual y control global.</div>
+        <div class="open">Abrir OVERVIEW <span>→</span></div>
+      </div>
+    </a>
+
+    <a class="card" style="--accent:rgba(108,111,245,.95)" href="taskflow/">
+      <div class="card-top">
+        <div class="symbol">⚡</div>
+        <div class="type">Execution OS</div>
+      </div>
+      <div class="card-main">
+        <h2>TaskFlow</h2>
+        <p>Organización diaria</p>
+        <div class="card-desc">Tareas, proyectos, hábitos, flujo diario y ejecución.</div>
+        <div class="open">Abrir TaskFlow <span>→</span></div>
+      </div>
+    </a>
+  </section>
+
+  <section class="footer">
+    <span>ASCENT HUB</span>
+    <span>Desde las apps: botón flotante o <kbd>Ctrl</kbd> + <kbd>K</kbd></span>
+  </section>
+</main>
+
+<script>
+document.addEventListener("keydown", function(e){
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    location.href = "./";
+  }
+});
+</script>
+</body>
+</html>
