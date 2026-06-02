@@ -1,39 +1,32 @@
-# ASCENT HUB — instalación en GitHub Pages
+# NEXO V2 completa
 
-## Qué incluye
+## Estructura
 
-- `/index.html` → ASCENT Hub, entrada principal.
-- `/cumbre/index.html` → app CUMBRE.
-- `/overview/index.html` → app OVERVIEW.
-- `/taskflow/index.html` → app TaskFlow.
-- `/assets/` → iconos de CUMBRE y OVERVIEW.
+- `index.html` → NEXO Hub.
+- `cumbre/index.html` → Cumbre.
+- `overview/index.html` → Overview.
+- `taskflow/index.html` → TaskFlow.
+- `assets/nexo.svg` → logo propio NEXO.
+- `assets/cumbre.ico` → icono Cumbre.
+- `assets/overview.png` → icono Overview.
 
-## Cómo usarlo
+## Cambios aplicados
 
-1. Descomprimí este ZIP.
-2. Subí TODO el contenido a un repositorio de GitHub.
-3. En GitHub:
-   - Settings
-   - Pages
-   - Deploy from branch
-   - Branch: `main`
-   - Folder: `/root`
-4. Entrás al link de GitHub Pages y abre ASCENT Hub.
+- ASCENT reemplazado por NEXO.
+- Logo NEXO propio, inspirado en nodos/conexión tipo USB sin copiar el símbolo USB.
+- Icono de Cumbre colocado en su card, menú, command palette y favicon.
+- Icono de Overview colocado en su card, menú, command palette y favicon.
+- Capitalización corregida: Cumbre / Overview / TaskFlow.
+- Textos en español:
+  - Cumbre: Objetivos, seguimiento y progreso.
+  - Overview: Panorama General.
+  - TaskFlow: Ejecución diaria.
+- Eliminados Trading OS / Strategy OS / Execution OS.
+- Cards con preview abstracta premium.
+- Menú flotante renombrado a NEXO.
+- Ctrl + K renombrado a NEXO.
 
-## Navegación
+## Uso GitHub Pages
 
-Desde cualquier app tenés:
-
-- Botón flotante `A` abajo a la derecha.
-- Atajo `Ctrl + K` para abrir el comando ASCENT.
-
-Desde ahí podés ir a:
-
-- Hub
-- CUMBRE
-- OVERVIEW
-- TaskFlow
-
-## Importante
-
-Las apps siguen siendo independientes. No se mezclaron datos ni estructuras internas.
+Subir todo el contenido de esta carpeta al repositorio.
+La raíz debe contener `index.html`, `cumbre/`, `overview/`, `taskflow/`, `assets/`.

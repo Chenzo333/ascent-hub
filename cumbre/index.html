@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CUMBRE — Nos vemos arriba</title>
+<title>Cumbre — Objetivos, seguimiento y progreso</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -2457,84 +2457,91 @@ window.handleCloseOpt=async(opt)=>{
 };
 </script>
 
-<!-- ASCENT NAVIGATION START -->
-<style id="ascent-nav-style">
-.ascent-fab,.ascent-panel,.ascent-k-overlay,.ascent-k-modal{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
-.ascent-fab{
+
+
+
+<!-- NEXO NAVIGATION START -->
+<style id="nexo-nav-style">
+.nexo-fab,.nexo-panel,.nexo-k-overlay,.nexo-k-modal{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
+.nexo-fab{
   position:fixed!important;right:18px!important;bottom:18px!important;z-index:2147483000!important;
   width:38px!important;height:38px!important;border-radius:14px!important;border:1px solid rgba(255,255,255,.18)!important;
-  background:rgba(10,12,16,.45)!important;color:rgba(255,255,255,.72)!important;
+  background:rgba(10,12,16,.45)!important;color:rgba(255,255,255,.74)!important;
   display:flex!important;align-items:center!important;justify-content:center!important;
-  font-weight:800!important;font-size:13px!important;letter-spacing:.08em!important;
   box-shadow:0 14px 40px rgba(0,0,0,.18)!important;backdrop-filter:blur(18px)!important;
-  cursor:pointer!important;opacity:.42!important;transition:opacity .18s,transform .18s,background .18s!important;
+  cursor:pointer!important;opacity:.42!important;transition:opacity .18s,transform .18s,background .18s!important;padding:0!important;
 }
-.ascent-fab:hover{opacity:1!important;transform:translateY(-2px)!important;background:rgba(10,12,16,.72)!important}
-.ascent-panel{
+.nexo-fab img{width:22px!important;height:22px!important;display:block!important}
+.nexo-fab:hover{opacity:1!important;transform:translateY(-2px)!important;background:rgba(10,12,16,.72)!important}
+.nexo-panel{
   position:fixed!important;right:18px!important;bottom:64px!important;z-index:2147483000!important;
-  width:218px!important;border-radius:18px!important;border:1px solid rgba(255,255,255,.16)!important;
-  background:rgba(12,14,19,.78)!important;color:white!important;box-shadow:0 24px 70px rgba(0,0,0,.32)!important;
+  width:232px!important;border-radius:18px!important;border:1px solid rgba(255,255,255,.16)!important;
+  background:rgba(12,14,19,.82)!important;color:white!important;box-shadow:0 24px 70px rgba(0,0,0,.32)!important;
   backdrop-filter:blur(22px)!important;padding:8px!important;display:none!important;
 }
-.ascent-panel.open{display:block!important}
-.ascent-panel-title{font-size:10px!important;letter-spacing:.26em!important;text-transform:uppercase!important;color:rgba(255,255,255,.42)!important;padding:9px 10px 7px!important;font-weight:800!important}
-.ascent-link{
+.nexo-panel.open{display:block!important}
+.nexo-panel-title{display:flex!important;align-items:center!important;gap:8px!important;font-size:10px!important;letter-spacing:.22em!important;text-transform:uppercase!important;color:rgba(255,255,255,.44)!important;padding:9px 10px 7px!important;font-weight:800!important}
+.nexo-panel-title img{width:16px!important;height:16px!important}
+.nexo-link{
   display:flex!important;align-items:center!important;gap:10px!important;width:100%!important;padding:10px!important;border-radius:12px!important;
-  color:rgba(255,255,255,.82)!important;text-decoration:none!important;font-size:13px!important;font-weight:650!important;border:0!important;background:transparent!important;
+  color:rgba(255,255,255,.84)!important;text-decoration:none!important;font-size:13px!important;font-weight:650!important;border:0!important;background:transparent!important;
 }
-.ascent-link:hover{background:rgba(255,255,255,.09)!important;color:#fff!important}
-.ascent-link span:first-child{width:22px!important;height:22px!important;border-radius:8px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:rgba(255,255,255,.08)!important}
-.ascent-k-overlay{
+.nexo-link:hover{background:rgba(255,255,255,.09)!important;color:#fff!important}
+.nexo-link span:first-child{width:24px!important;height:24px!important;border-radius:8px!important;display:flex!important;align-items:center!important;justify-content:center!important;background:rgba(255,255,255,.08)!important;overflow:hidden!important}
+.nexo-link img{width:19px!important;height:19px!important;object-fit:contain!important;display:block!important}
+.nexo-k-overlay{
   position:fixed!important;inset:0!important;z-index:2147482999!important;background:rgba(0,0,0,.38)!important;
   backdrop-filter:blur(8px)!important;display:none!important;align-items:flex-start!important;justify-content:center!important;padding-top:12vh!important;
 }
-.ascent-k-overlay.open{display:flex!important}
-.ascent-k-modal{
+.nexo-k-overlay.open{display:flex!important}
+.nexo-k-modal{
   width:min(460px,calc(100vw - 32px))!important;border-radius:22px!important;border:1px solid rgba(255,255,255,.16)!important;
   background:rgba(14,16,22,.92)!important;box-shadow:0 30px 100px rgba(0,0,0,.42)!important;color:white!important;overflow:hidden!important;
 }
-.ascent-k-head{padding:18px 18px 10px!important}
-.ascent-k-title{font-size:11px!important;letter-spacing:.28em!important;text-transform:uppercase!important;color:rgba(255,255,255,.42)!important;font-weight:800!important}
-.ascent-k-input{width:100%!important;margin-top:10px!important;background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:14px!important;padding:13px 14px!important;color:white!important;outline:none!important;font-size:15px!important}
-.ascent-k-list{padding:8px!important}
-.ascent-k-item{display:flex!important;align-items:center!important;gap:12px!important;padding:13px!important;border-radius:14px!important;color:rgba(255,255,255,.82)!important;text-decoration:none!important;font-size:14px!important;font-weight:650!important}
-.ascent-k-item:hover,.ascent-k-item.active{background:rgba(255,255,255,.1)!important;color:white!important}
-.ascent-k-item b{width:28px!important;height:28px!important;border-radius:10px!important;background:rgba(255,255,255,.08)!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.nexo-k-head{padding:18px 18px 10px!important}
+.nexo-k-title{display:flex!important;align-items:center!important;gap:9px!important;font-size:11px!important;letter-spacing:.22em!important;text-transform:uppercase!important;color:rgba(255,255,255,.44)!important;font-weight:800!important}
+.nexo-k-title img{width:18px!important;height:18px!important}
+.nexo-k-input{width:100%!important;margin-top:10px!important;background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:14px!important;padding:13px 14px!important;color:white!important;outline:none!important;font-size:15px!important}
+.nexo-k-list{padding:8px!important}
+.nexo-k-item{display:flex!important;align-items:center!important;gap:12px!important;padding:13px!important;border-radius:14px!important;color:rgba(255,255,255,.84)!important;text-decoration:none!important;font-size:14px!important;font-weight:650!important}
+.nexo-k-item:hover,.nexo-k-item.active{background:rgba(255,255,255,.1)!important;color:white!important}
+.nexo-k-item b{width:28px!important;height:28px!important;border-radius:10px!important;background:rgba(255,255,255,.08)!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}
+.nexo-k-item img{width:21px!important;height:21px!important;object-fit:contain!important;display:block!important}
 @media(max-width:720px){
-  .ascent-fab{right:12px!important;bottom:12px!important;width:34px!important;height:34px!important;border-radius:12px!important}
-  .ascent-panel{right:12px!important;bottom:54px!important}
+  .nexo-fab{right:12px!important;bottom:12px!important;width:34px!important;height:34px!important;border-radius:12px!important}
+  .nexo-panel{right:12px!important;bottom:54px!important}
 }
 </style>
-<button class="ascent-fab" id="ascentFab" title="ASCENT">A</button>
-<nav class="ascent-panel" id="ascentPanel" aria-label="ASCENT navigation">
-  <div class="ascent-panel-title">ASCENT</div>
-  <a class="ascent-link" href="../"><span>⌂</span><strong>Hub</strong></a>
-  <a class="ascent-link" href="../cumbre/"><span>▲</span><strong>CUMBRE</strong></a>
-  <a class="ascent-link" href="../overview/"><span>◉</span><strong>OVERVIEW</strong></a>
-  <a class="ascent-link" href="../taskflow/"><span>⚡</span><strong>TaskFlow</strong></a>
+<button class="nexo-fab" id="nexoFab" title="NEXO"><img src="../assets/nexo.svg" alt="NEXO"></button>
+<nav class="nexo-panel" id="nexoPanel" aria-label="NEXO navigation">
+  <div class="nexo-panel-title"><img src="../assets/nexo.svg" alt="">NEXO</div>
+  <a class="nexo-link" href="../"><span>⌂</span><strong>Hub</strong></a>
+  <a class="nexo-link" href="../cumbre/"><span><img src="../assets/cumbre.ico" alt=""></span><strong>Cumbre</strong></a>
+  <a class="nexo-link" href="../overview/"><span><img src="../assets/overview.png" alt=""></span><strong>Overview</strong></a>
+  <a class="nexo-link" href="../taskflow/"><span>⚡</span><strong>TaskFlow</strong></a>
 </nav>
-<div class="ascent-k-overlay" id="ascentKOverlay">
-  <div class="ascent-k-modal">
-    <div class="ascent-k-head">
-      <div class="ascent-k-title">ASCENT · Ir a</div>
-      <input class="ascent-k-input" id="ascentKInput" placeholder="Buscar app..." autocomplete="off">
+<div class="nexo-k-overlay" id="nexoKOverlay">
+  <div class="nexo-k-modal">
+    <div class="nexo-k-head">
+      <div class="nexo-k-title"><img src="../assets/nexo.svg" alt="">NEXO · Ir a</div>
+      <input class="nexo-k-input" id="nexoKInput" placeholder="Buscar app..." autocomplete="off">
     </div>
-    <div class="ascent-k-list" id="ascentKList">
-      <a class="ascent-k-item" data-name="hub ascent inicio" href="../"><b>⌂</b><span>Hub</span></a>
-      <a class="ascent-k-item" data-name="cumbre trading journal metas" href="../cumbre/"><b>▲</b><span>CUMBRE</span></a>
-      <a class="ascent-k-item" data-name="overview panorama general calendario planificacion" href="../overview/"><b>◉</b><span>OVERVIEW</span></a>
-      <a class="ascent-k-item" data-name="taskflow tareas proyectos habitos" href="../taskflow/"><b>⚡</b><span>TaskFlow</span></a>
+    <div class="nexo-k-list" id="nexoKList">
+      <a class="nexo-k-item" data-name="hub nexo inicio" href="../"><b>⌂</b><span>Hub</span></a>
+      <a class="nexo-k-item" data-name="cumbre objetivos seguimiento progreso metas" href="../cumbre/"><b><img src="../assets/cumbre.ico" alt=""></b><span>Cumbre</span></a>
+      <a class="nexo-k-item" data-name="overview panorama general calendario planificacion" href="../overview/"><b><img src="../assets/overview.png" alt=""></b><span>Overview</span></a>
+      <a class="nexo-k-item" data-name="taskflow ejecucion diaria tareas proyectos habitos" href="../taskflow/"><b>⚡</b><span>TaskFlow</span></a>
     </div>
   </div>
 </div>
-<script id="ascent-nav-script">
+<script id="nexo-nav-script">
 (function(){
-  var fab=document.getElementById("ascentFab");
-  var panel=document.getElementById("ascentPanel");
-  var overlay=document.getElementById("ascentKOverlay");
-  var input=document.getElementById("ascentKInput");
-  var list=document.getElementById("ascentKList");
-  var items=[].slice.call(list.querySelectorAll(".ascent-k-item"));
+  var fab=document.getElementById("nexoFab");
+  var panel=document.getElementById("nexoPanel");
+  var overlay=document.getElementById("nexoKOverlay");
+  var input=document.getElementById("nexoKInput");
+  var list=document.getElementById("nexoKList");
+  var items=[].slice.call(list.querySelectorAll(".nexo-k-item"));
   function closeAll(){panel.classList.remove("open");overlay.classList.remove("open");}
   fab.addEventListener("click",function(e){e.stopPropagation();panel.classList.toggle("open");});
   document.addEventListener("click",function(e){if(!panel.contains(e.target)&&e.target!==fab){panel.classList.remove("open");}});
@@ -2560,7 +2567,7 @@ window.handleCloseOpt=async(opt)=>{
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openPalette();}
     if(e.key==="Escape")closeAll();
     if(e.key==="Enter"&&overlay.classList.contains("open")){
-      var active=list.querySelector(".ascent-k-item.active");
+      var active=list.querySelector(".nexo-k-item.active");
       if(active){e.preventDefault();window.location.href=active.href;}
     }
   });
@@ -2568,7 +2575,7 @@ window.handleCloseOpt=async(opt)=>{
   overlay.addEventListener("click",function(e){if(e.target===overlay)closeAll();});
 })();
 </script>
-<!-- ASCENT NAVIGATION END -->
+<!-- NEXO NAVIGATION END -->
 
 </body>
 </html>
