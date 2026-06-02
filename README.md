@@ -9,3 +9,6 @@
   - TaskFlow: checklist.
 - Menú flotante y Ctrl+K corregidos.
 - Logo NEXO mantenido.
+
+
+- 'Hub' reemplazado por 'Nexo' en menú y Ctrl+K.
