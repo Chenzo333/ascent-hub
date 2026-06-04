@@ -298,9 +298,47 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .notas-search input:focus{border-color:var(--blue-border);box-shadow:0 0 0 3px var(--blue-soft);background:white}
 .notas-search input::placeholder{color:var(--t4)}
 .notas-search i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--t4);pointer-events:none}
-.notas-filters{padding:8px 14px;border-bottom:1px solid var(--border2);display:flex;gap:4px;flex-wrap:nowrap;flex-shrink:0;overflow-x:auto}
-.nota-filter-btn{padding:4px 9px;border-radius:20px;border:1px solid rgba(0,0,0,0.08);background:none;font-family:var(--font);font-size:10.5px;color:var(--t3);cursor:pointer;transition:all 0.12s;white-space:nowrap;flex-shrink:0}
-.nota-filter-btn.active{background:var(--t1);color:white;border-color:var(--t1)}
+.notas-tag-nav{flex:1;overflow-y:auto;padding:6px 8px}
+.notas-tag-group{margin-bottom:2px}
+.notas-tag-header{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background 0.12s;user-select:none}
+.notas-tag-header:hover{background:rgba(0,0,0,0.035)}
+.notas-tag-header.active{background:var(--accent-soft)}
+.notas-tag-header-left{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:500;color:var(--t1)}
+.notas-tag-header.active .notas-tag-header-left{color:var(--accent)}
+.notas-tag-chevron{font-size:12px;color:var(--t4);transition:transform 0.15s}
+.notas-tag-chevron.open{transform:rotate(90deg)}
+.notas-tag-count{font-size:10px;color:var(--t4);background:var(--bg2);padding:1px 6px;border-radius:10px}
+.notas-tag-header.active .notas-tag-count{background:var(--accent-soft);color:var(--accent)}
+.notas-tag-items{padding-left:8px;padding-bottom:4px}
+.nota-list-item-inner{display:flex;align-items:center;gap:6px}
+
+/* Board mode */
+.board-mode-wrap{flex:1;overflow-x:auto;overflow-y:hidden;display:flex;gap:14px;padding:20px 28px;align-items:flex-start}
+.board-col{background:var(--bg);border:1px solid var(--border);border-radius:14px;width:220px;min-width:220px;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.board-col-header{padding:12px 14px 10px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:8px}
+.board-col-title{flex:1;border:none;outline:none;font-family:var(--font);font-size:13px;font-weight:600;color:var(--t1);background:transparent;padding:0;min-width:0}
+.board-col-title::placeholder{color:var(--t4)}
+.board-col-delete{color:var(--t4);cursor:pointer;font-size:14px;border:none;background:none;padding:0;line-height:1;transition:color 0.1s;flex-shrink:0}
+.board-col-delete:hover{color:var(--red)}
+.board-col-items{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:5px;max-height:420px}
+.board-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:white;border:1px solid var(--border2);border-radius:9px;cursor:pointer;transition:all 0.12s;group:true}
+.board-item:hover{border-color:var(--border);box-shadow:var(--shadow-sm)}
+.board-item.done{opacity:0.55}
+.board-item-check{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin-top:1px}
+.board-item.done .board-item-check{background:var(--blue);border-color:var(--blue)}
+.board-item-text{flex:1;font-size:12.5px;color:var(--t1);line-height:1.45;outline:none;border:none;background:transparent;font-family:var(--font);padding:0;resize:none;cursor:text;min-height:18px}
+.board-item.done .board-item-text{text-decoration:line-through;color:var(--t3)}
+.board-item-del{color:var(--t4);cursor:pointer;font-size:12px;border:none;background:none;padding:0;opacity:0;transition:opacity 0.1s;flex-shrink:0;line-height:1}
+.board-item:hover .board-item-del{opacity:1}
+.board-item-del:hover{color:var(--red)}
+.board-col-add-item{padding:8px 10px;border-top:1px solid var(--border2);display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--t4);transition:color 0.1s;background:none;border-left:none;border-right:none;border-bottom:none;font-family:var(--font);width:100%}
+.board-col-add-item:hover{color:var(--blue)}
+.board-add-col{width:180px;min-width:180px;border:1.5px dashed var(--border);border-radius:14px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;color:var(--t4);cursor:pointer;padding:16px;transition:all 0.12s;background:none;font-family:var(--font);flex-shrink:0;align-self:flex-start}
+.board-add-col:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.view-toggle-wrap{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:3px}
+.view-toggle-btn{padding:4px 10px;border-radius:6px;border:none;background:none;font-family:var(--font);font-size:11.5px;color:var(--t3);cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:5px;font-weight:400}
+.view-toggle-btn.active{background:white;color:var(--t1);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+.view-toggle-btn i{font-size:13px}
 .notas-list-scroll{flex:1;overflow-y:auto;padding:8px}
 .nota-list-item{padding:12px;border-radius:10px;cursor:pointer;transition:all 0.12s;margin-bottom:3px;border:1px solid transparent}
 .nota-list-item:hover{background:var(--bg);border-color:var(--border2)}
@@ -324,7 +362,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .nota-editor-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--t4)}
 .nota-editor-empty i{font-size:40px}.nota-editor-empty p{font-size:13px}
 .nota-editor-header{padding:22px 28px 0;flex-shrink:0}
-.nota-editor-meta{display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.nota-editor-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;justify-content:space-between}
 .nota-type-selector{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
 .nota-type-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid rgba(0,0,0,0.08);background:none;font-family:var(--font);font-size:11px;color:var(--t3);cursor:pointer;transition:all 0.12s;font-weight:400;white-space:nowrap}
 .nota-type-btn.active-captura{background:#F5F5F5;color:var(--t2);border-color:rgba(0,0,0,0.12);font-weight:500}
@@ -630,13 +668,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
               <input type="text" id="notaSearchInput" placeholder="Buscar notas..." oninput="filterNotas()">
             </div>
           </div>
-          <div class="notas-filters">
-            <button class="nota-filter-btn active" data-filter="all" onclick="setNotaFilter('all',this)">Todas</button>
-            <button class="nota-filter-btn" data-filter="captura" onclick="setNotaFilter('captura',this)">Captura</button>
-            <button class="nota-filter-btn" data-filter="reflexion" onclick="setNotaFilter('reflexion',this)">Reflexión</button>
-            <button class="nota-filter-btn" data-filter="semilla" onclick="setNotaFilter('semilla',this)">Semilla</button>
-          </div>
-          <div class="notas-list-scroll" id="notasList"></div>
+          <div class="notas-tag-nav" id="notasTagNav"></div>
           <button class="notas-new-btn" onclick="createNota()">
             <i class="ti ti-plus"></i> Nueva nota
           </button>
@@ -1787,48 +1819,121 @@ function getFilteredNotas(){
   });
 }
 
-function renderNotasList(){
-  const list=document.getElementById('notasList');
-  if(!list)return;
-  const filtered=getFilteredNotas();
-  if(!filtered.length){
-    list.innerHTML=`<div class="notas-empty-list"><i class="ti ti-notebook"></i><p>${notaSearchQuery?'Sin resultados':'Aún no hay notas.<br>Creá tu primera idea.'}</p></div>`;
-    return;
-  }
-  // Update items in-place to avoid destroying focus/selection in the editor
-  const existingItems=[...list.querySelectorAll('.nota-list-item')];
-  if(existingItems.length===filtered.length){
-    filtered.forEach((n,i)=>{
-      const el=existingItems[i];if(!el)return;
-      const titleEl=el.querySelector('.nota-list-title');
-      const dateEl=el.querySelector('.nota-list-date');
-      if(titleEl)titleEl.textContent=n.title||'Sin título';
-      if(dateEl)dateEl.textContent=formatNotaDate(n.updatedAt||n.createdAt);
-      el.className=`nota-list-item ${n.id===currentNotaId?'active':''}`;
-      el.dataset.id=n.id;el.dataset.index=i;
+// activeTagFilter: null = Todas, string = specific tag
+let activeTagFilter=null;
+// groupCollapsed: track which tag groups are collapsed
+let _groupCollapsed={};
+
+function getAllTags(){
+  const tagMap={};
+  notas.forEach(n=>{
+    (n.tags||[]).forEach(t=>{
+      if(!tagMap[t])tagMap[t]={tag:t,notas:[],lastUpdated:null};
+      tagMap[t].notas.push(n);
+      const upd=n.updatedAt||n.createdAt;
+      if(!tagMap[t].lastUpdated||upd>tagMap[t].lastUpdated)tagMap[t].lastUpdated=upd;
     });
-  } else {
-    // Count changed (create/delete) — full re-render
-    list.innerHTML=filtered.map((n,i)=>{
-      const isActive=n.id===currentNotaId;
-      const dateStr=formatNotaDate(n.updatedAt||n.createdAt);
-      const convertedBadge=n.convertedToMeta?'<div class="nota-converted-badge"><i class="ti ti-target" style="font-size:9px"></i> Convertida en meta</div>':'';
-      return`<div class="nota-list-item ${isActive?'active':''}" draggable="true"
-        data-id="${n.id}" data-index="${i}"
-        onclick="selectNota('${n.id}')"
-        ondragstart="notaDragStart(event)"
-        ondragover="notaDragOver(event)"
-        ondrop="notaDrop(event)"
-        ondragend="notaDragEnd(event)">
-        <div style="display:flex;align-items:center;gap:6px;cursor:grab">
-          <i class="ti ti-grip-vertical" style="font-size:13px;color:var(--t4);flex-shrink:0"></i>
-          <div class="nota-list-title">${n.title||'Sin título'}</div>
-          <div class="nota-list-date">${dateStr}</div>
+  });
+  return Object.values(tagMap).sort((a,b)=>b.lastUpdated.localeCompare(a.lastUpdated));
+}
+
+function renderNotasTagNav(){
+  const nav=document.getElementById('notasTagNav');
+  if(!nav)return;
+  const tags=getAllTags();
+  const allNotas=notas.slice().sort((a,b)=>(b.updatedAt||b.createdAt).localeCompare(a.updatedAt||a.createdAt));
+  const q=notaSearchQuery.toLowerCase();
+
+  const isAll=activeTagFilter===null;
+
+  let html=`<div class="notas-tag-group">
+    <div class="notas-tag-header ${isAll?'active':''}" onclick="setTagFilter(null)">
+      <div class="notas-tag-header-left">
+        <i class="ti ti-notes" style="font-size:14px"></i> Todas
+      </div>
+      <span class="notas-tag-count">${allNotas.length}</span>
+    </div>`;
+
+  if(isAll){
+    // show grouped list
+    const tagged=new Set();
+    let groupsHtml='';
+    tags.forEach(g=>{
+      const gNotas=g.notas.slice().sort((a,b)=>(b.updatedAt||b.createdAt).localeCompare(a.updatedAt||a.createdAt))
+        .filter(n=>!q||(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q));
+      gNotas.forEach(n=>tagged.add(n.id));
+      const collapsed=!!_groupCollapsed[g.tag];
+      groupsHtml+=`<div class="notas-tag-group" style="margin-left:8px;margin-top:4px">
+        <div class="notas-tag-header" onclick="toggleGroupCollapse('${g.tag}')">
+          <div class="notas-tag-header-left" style="font-size:12px">
+            <i class="ti ti-chevron-right notas-tag-chevron ${collapsed?'':'open'}" style="font-size:11px"></i> ${g.tag}
+          </div>
+          <span class="notas-tag-count">${gNotas.length}</span>
         </div>
-        ${convertedBadge}
+        ${collapsed?'':gNotas.map((n,i)=>notaListItemHtml(n,i)).join('')}
       </div>`;
-    }).join('');
+    });
+    // untagged
+    const untagged=allNotas.filter(n=>!tagged.has(n.id)&&(!q||(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q)));
+    if(untagged.length){
+      groupsHtml+=`<div class="notas-tag-group" style="margin-left:8px;margin-top:4px">
+        <div class="notas-tag-header" onclick="toggleGroupCollapse('__none__')">
+          <div class="notas-tag-header-left" style="font-size:12px;color:var(--t3)">
+            <i class="ti ti-chevron-right notas-tag-chevron ${_groupCollapsed['__none__']?'':'open'}" style="font-size:11px"></i> Sin etiqueta
+          </div>
+          <span class="notas-tag-count">${untagged.length}</span>
+        </div>
+        ${_groupCollapsed['__none__']?'':untagged.map((n,i)=>notaListItemHtml(n,i)).join('')}
+      </div>`;
+    }
+    if(!tags.length&&!untagged.length){
+      groupsHtml=`<div class="notas-empty-list"><i class="ti ti-notebook"></i><p>${q?'Sin resultados':'Aún no hay notas.<br>Creá tu primera idea.'}</p></div>`;
+    }
+    html+=groupsHtml;
   }
+
+  html+='</div>';
+
+  // specific tag filter
+  tags.forEach(g=>{
+    const isActive=activeTagFilter===g.tag;
+    html+=`<div class="notas-tag-group">
+      <div class="notas-tag-header ${isActive?'active':''}" onclick="setTagFilter('${g.tag}')">
+        <div class="notas-tag-header-left"><i class="ti ti-tag" style="font-size:13px"></i> ${g.tag}</div>
+        <span class="notas-tag-count">${g.notas.length}</span>
+      </div>
+      ${isActive?g.notas.slice().sort((a,b)=>(b.updatedAt||b.createdAt).localeCompare(a.updatedAt||a.createdAt))
+        .filter(n=>!q||(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q))
+        .map((n,i)=>notaListItemHtml(n,i)).join(''):''}
+    </div>`;
+  });
+
+  nav.innerHTML=html;
+}
+
+function notaListItemHtml(n,i){
+  const isActive=n.id===currentNotaId;
+  const dateStr=formatNotaDate(n.updatedAt||n.createdAt);
+  return`<div class="nota-list-item ${isActive?'active':''}" data-id="${n.id}" data-index="${i}" onclick="selectNota('${n.id}')">
+    <div style="display:flex;align-items:center;gap:6px">
+      <div class="nota-list-title">${n.title||'Sin título'}</div>
+      <div class="nota-list-date" style="flex-shrink:0">${dateStr}</div>
+    </div>
+  </div>`;
+}
+
+window.setTagFilter=(tag)=>{
+  activeTagFilter=tag;
+  renderNotasTagNav();
+};
+
+window.toggleGroupCollapse=(key)=>{
+  _groupCollapsed[key]=!_groupCollapsed[key];
+  renderNotasTagNav();
+};
+
+function renderNotasList(){
+  renderNotasTagNav();
 }
 
 function formatNotaDate(iso){
@@ -1854,18 +1959,24 @@ window.selectNota=async(id)=>{
   renderNotaEditor(n);
 };
 
-function renderNotaEditor(n){
+// ── Board state ──
+let _currentView='text'; // 'text' | 'board'
+
+function renderNotaEditor(n, viewOverride){
   const area=document.getElementById('notaEditorArea');
+  const view=viewOverride||_currentView;
+  _currentView=view;
   const tags=(n.tags||[]).map((t,i)=>`<span class="nota-tag">#${t}<span class="nota-tag-x" onclick="removeNotaTag('${n.id}',${i})">×</span></span>`).join('');
-  const convertBtn=n.convertedToMeta
-    ?`<button class="nota-btn-convert converted"><i class="ti ti-check"></i> Ya es una meta</button>`
-    :`<button class="nota-btn-convert" onclick="convertNotaToMeta('${n.id}')"><i class="ti ti-target"></i> Convertir en meta</button>`;
   const wordCount=(n.content||'').replace(/<[^>]*>/g,'').split(/\s+/).filter(Boolean).length;
 
   area.innerHTML=`
     <div class="nota-editor-header">
       <div class="nota-editor-meta">
-        <div class="nota-date-display" style="margin-left:auto">${formatDate(n.updatedAt||n.createdAt)}</div>
+        <div class="view-toggle-wrap">
+          <button class="view-toggle-btn ${view==='text'?'active':''}" onclick="switchNotaView('text','${n.id}')"><i class="ti ti-align-left"></i> Texto</button>
+          <button class="view-toggle-btn ${view==='board'?'active':''}" onclick="switchNotaView('board','${n.id}')"><i class="ti ti-layout-columns"></i> Tablero</button>
+        </div>
+        <div class="nota-date-display">${formatDate(n.updatedAt||n.createdAt)}</div>
       </div>
       <textarea class="nota-title-input" id="notaTitleInput" placeholder="Título de la nota..." rows="1">${n.title||''}</textarea>
       <div class="nota-tags-row">
@@ -1873,6 +1984,7 @@ function renderNotaEditor(n){
         <button class="nota-add-tag" onclick="addNotaTag('${n.id}')">+ Etiqueta</button>
       </div>
     </div>
+    ${view==='text'?`
     <div class="nota-editor-toolbar">
       <button class="tb-btn" onclick="execCmd('bold')" title="Negrita"><b>B</b></button>
       <button class="tb-btn" onclick="execCmd('italic')" title="Cursiva"><i>I</i></button>
@@ -1889,12 +2001,11 @@ function renderNotaEditor(n){
     <div class="nota-editor-body">
       <div class="nota-content-editable" id="notaContentEditor" contenteditable="true"
         data-placeholder="Empezá a escribir tu idea...">${n.content||''}</div>
-    </div>
+    </div>`:`<div class="board-mode-wrap" id="boardModeWrap"></div>`}
     <div class="nota-editor-footer">
       <div class="nota-save-status" id="notaSaveStatus"><i class="ti ti-cloud-check"></i> Guardado</div>
-      <span class="nota-word-count" id="notaWordCount">${wordCount} palabras</span>
+      ${view==='text'?`<span class="nota-word-count" id="notaWordCount">${wordCount} palabras</span>`:''}
       <div class="nota-footer-actions">
-        ${convertBtn}
         <button class="nota-btn-delete" onclick="deleteNota('${n.id}')"><i class="ti ti-trash"></i> Eliminar</button>
       </div>
     </div>`;
@@ -1909,17 +2020,145 @@ function renderNotaEditor(n){
     });
   }
 
-  // Content editor — single handler, updates word count + triggers save
-  const editor=document.getElementById('notaContentEditor');
-  if(editor){
-    editor.addEventListener('input',()=>{
-      const wc=editor.innerText.split(/\s+/).filter(Boolean).length;
-      const wcEl=document.getElementById('notaWordCount');
-      if(wcEl)wcEl.textContent=`${wc} palabras`;
-      scheduleNotaSave(n.id);
-    });
+  if(view==='text'){
+    const editor=document.getElementById('notaContentEditor');
+    if(editor){
+      editor.addEventListener('input',()=>{
+        const wc=editor.innerText.split(/\s+/).filter(Boolean).length;
+        const wcEl=document.getElementById('notaWordCount');
+        if(wcEl)wcEl.textContent=`${wc} palabras`;
+        scheduleNotaSave(n.id);
+      });
+    }
+  } else {
+    renderBoard(n);
   }
 }
+
+window.switchNotaView=(view,id)=>{
+  _currentView=view;
+  const n=notas.find(x=>x.id===id);
+  if(n)renderNotaEditor(n,view);
+};
+
+// ── BOARD ──
+function renderBoard(n){
+  const wrap=document.getElementById('boardModeWrap');
+  if(!wrap)return;
+  const cols=(n.board||[]);
+  wrap.innerHTML=cols.map((col,ci)=>`
+    <div class="board-col" data-ci="${ci}">
+      <div class="board-col-header">
+        <input class="board-col-title" value="${escH(col.title||'')}" placeholder="Título..." oninput="updateBoardColTitle(${ci},this.value,'${n.id}')">
+        <button class="board-col-delete" onclick="deleteBoardCol(${ci},'${n.id}')" title="Eliminar columna"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="board-col-items" id="board-col-items-${ci}">
+        ${(col.items||[]).map((item,ii)=>`
+        <div class="board-item ${item.done?'done':''}" data-ii="${ii}">
+          <div class="board-item-check" onclick="toggleBoardItem(${ci},${ii},'${n.id}')">
+            ${item.done?'<i class="ti ti-check" style="font-size:10px;color:white"></i>':''}
+          </div>
+          <textarea class="board-item-text" rows="1" oninput="updateBoardItemText(${ci},${ii},this.value,'${n.id}');autoResizeTextarea(this)" onfocus="autoResizeTextarea(this)">${escH(item.text||'')}</textarea>
+          <button class="board-item-del" onclick="deleteBoardItem(${ci},${ii},'${n.id}')" title="Eliminar"><i class="ti ti-x"></i></button>
+        </div>`).join('')}
+      </div>
+      <button class="board-col-add-item" onclick="addBoardItem(${ci},'${n.id}')"><i class="ti ti-plus"></i> Agregar item</button>
+    </div>`).join('');
+  wrap.innerHTML+=`<button class="board-add-col" onclick="addBoardCol('${n.id}')"><i class="ti ti-plus"></i> Nueva columna</button>`;
+  // auto-resize all textareas in board
+  wrap.querySelectorAll('.board-item-text').forEach(t=>autoResizeTextarea(t));
+}
+
+function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function getBoardData(id){
+  const n=notas.find(x=>x.id===id);
+  return JSON.parse(JSON.stringify(n&&n.board?n.board:[]));
+}
+
+async function saveBoardData(id,board){
+  const n=notas.find(x=>x.id===id);
+  if(n){n.board=board;n.updatedAt=new Date().toISOString();}
+  const statusEl=document.getElementById('notaSaveStatus');
+  if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-upload"></i> Guardando...';
+  try{
+    await updateDoc(doc(db,'users',currentUser.uid,'notas',id),{board,updatedAt:new Date().toISOString()});
+    if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-check"></i> Guardado';
+  }catch(e){
+    if(statusEl)statusEl.innerHTML='<i class="ti ti-alert-triangle"></i> Error';
+  }
+}
+
+window.addBoardCol=async(id)=>{
+  const board=getBoardData(id);
+  board.push({title:'',items:[]});
+  await saveBoardData(id,board);
+  const n=notas.find(x=>x.id===id);
+  if(n)renderBoard(n);
+};
+
+window.deleteBoardCol=async(ci,id)=>{
+  const board=getBoardData(id);
+  board.splice(ci,1);
+  await saveBoardData(id,board);
+  const n=notas.find(x=>x.id===id);
+  if(n)renderBoard(n);
+};
+
+let _boardSaveTimeout=null;
+function scheduleBoardSave(id,board){
+  const n=notas.find(x=>x.id===id);
+  if(n)n.board=JSON.parse(JSON.stringify(board));
+  const statusEl=document.getElementById('notaSaveStatus');
+  if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-upload"></i> Guardando...';
+  clearTimeout(_boardSaveTimeout);
+  _boardSaveTimeout=setTimeout(()=>saveBoardData(id,board),2000);
+}
+
+window.updateBoardColTitle=(ci,val,id)=>{
+  const board=getBoardData(id);
+  if(!board[ci])return;
+  board[ci].title=val;
+  scheduleBoardSave(id,board);
+};
+
+window.addBoardItem=async(ci,id)=>{
+  const board=getBoardData(id);
+  if(!board[ci])return;
+  board[ci].items.push({text:'',done:false});
+  await saveBoardData(id,board);
+  const n=notas.find(x=>x.id===id);
+  if(n){renderBoard(n);
+    // focus last item in that col
+    const inputs=document.querySelectorAll(`#board-col-items-${ci} .board-item-text`);
+    if(inputs.length)inputs[inputs.length-1].focus();
+  }
+};
+
+window.deleteBoardItem=async(ci,ii,id)=>{
+  const board=getBoardData(id);
+  if(!board[ci])return;
+  board[ci].items.splice(ii,1);
+  await saveBoardData(id,board);
+  const n=notas.find(x=>x.id===id);
+  if(n)renderBoard(n);
+};
+
+window.toggleBoardItem=async(ci,ii,id)=>{
+  const board=getBoardData(id);
+  if(!board[ci]||!board[ci].items[ii])return;
+  board[ci].items[ii].done=!board[ci].items[ii].done;
+  await saveBoardData(id,board);
+  const n=notas.find(x=>x.id===id);
+  if(n)renderBoard(n);
+};
+
+window.updateBoardItemText=(ci,ii,val,id)=>{
+  const board=getBoardData(id);
+  if(!board[ci]||!board[ci].items[ii])return;
+  board[ci].items[ii].text=val;
+  scheduleBoardSave(id,board);
+};
 
 window.autoResizeTextarea=(el)=>{
   el.style.height='auto';el.style.height=el.scrollHeight+'px';
@@ -1949,7 +2188,7 @@ function scheduleNotaSave(id){
   const statusEl=document.getElementById('notaSaveStatus');
   if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-upload"></i> Guardando...';
   clearTimeout(notaSaveTimeout);
-  notaSaveTimeout=setTimeout(()=>saveNota(id),600);
+  notaSaveTimeout=setTimeout(()=>saveNota(id),2000);
 }
 
 async function saveNotaImmediate(id){
@@ -2006,10 +2245,12 @@ window.changeNotaCat=async(id,category)=>{
 };
 
 window.addNotaTag=async(id)=>{
-  const tag=prompt('Nombre de la etiqueta:');
+  const tag=prompt('Nueva etiqueta:');
   if(!tag||!tag.trim())return;
+  const clean=tag.trim().toLowerCase().replace(/\s+/g,'-');
   const n=notas.find(x=>x.id===id);
-  const tags=[...(n.tags||[]),tag.trim().toLowerCase()];
+  if((n.tags||[]).includes(clean)){showToast('Esa etiqueta ya existe','⚠️');return;}
+  const tags=[...(n.tags||[]),clean];
   await updateDoc(doc(db,'users',currentUser.uid,'notas',id),{tags,updatedAt:new Date().toISOString()});
 };
 
@@ -2049,15 +2290,12 @@ function closeAllModals(){
 }
 
 window.setNotaFilter=(filter,el)=>{
-  notaFilter=filter;
-  document.querySelectorAll('.nota-filter-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderNotasList();
+  // legacy — no-op, replaced by tag nav
 };
 
 window.filterNotas=()=>{
   notaSearchQuery=document.getElementById('notaSearchInput')?.value||'';
-  renderNotasList();
+  renderNotasTagNav();
 };
 
 // Notas drag & drop
