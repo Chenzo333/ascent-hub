@@ -298,67 +298,75 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .notas-search input:focus{border-color:var(--blue-border);box-shadow:0 0 0 3px var(--blue-soft);background:white}
 .notas-search input::placeholder{color:var(--t4)}
 .notas-search i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--t4);pointer-events:none}
-/* ── Sidebar carpetas ── */
-.notas-folder-nav{flex:1;overflow-y:auto;padding:6px 8px}
-.notas-folder-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;cursor:pointer;transition:all 0.12s;margin-bottom:1px;border:1px solid transparent}
-.notas-folder-item:hover{background:var(--bg2)}
-.notas-folder-item.active{background:var(--accent-soft);border-color:var(--accent-border)}
-.notas-folder-item i{font-size:14px;color:var(--t4);flex-shrink:0}
-.notas-folder-item.active i{color:var(--accent)}
-.notas-folder-name{font-size:12.5px;font-weight:500;color:var(--t2);flex:1}
-.notas-folder-item.active .notas-folder-name{color:var(--accent)}
-.notas-folder-count{font-size:10px;color:var(--t4);background:var(--bg2);padding:1px 7px;border-radius:10px;flex-shrink:0}
-.notas-folder-item.active .notas-folder-count{background:rgba(232,112,58,0.14);color:var(--accent)}
-.notas-folder-sep{height:1px;background:var(--border2);margin:6px 8px}
-/* ── Lista notas ── */
-.notas-list-scroll{flex:1;overflow-y:auto;padding:8px}
-.nota-list-item{padding:10px 12px;border-radius:9px;cursor:pointer;transition:all 0.12s;margin-bottom:2px;border:1px solid transparent}
-.nota-list-item:hover{background:var(--bg);border-color:var(--border2)}
-.nota-list-item.active{background:var(--bg2);border-color:var(--border)}
-.nota-list-row{display:flex;align-items:center;gap:6px}
-.nota-list-title{font-size:12.5px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;letter-spacing:-0.1px}
-.nota-list-date{font-size:10px;color:var(--t4);white-space:nowrap;flex-shrink:0}
-.notas-new-btn{margin:8px;border:1.5px dashed var(--border);border-radius:10px;padding:11px;text-align:center;cursor:pointer;font-size:12px;color:var(--t3);transition:all 0.12s;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;background:none;font-family:var(--font)}
+
+/* ── Tree nav ── */
+.notas-tree{flex:1;overflow-y:auto;padding:6px 8px;display:flex;flex-direction:column;gap:1px}
+/* "Todas" row */
+.tree-todas{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:9px;cursor:pointer;transition:background 0.12s;user-select:none;margin-bottom:2px}
+.tree-todas:hover{background:rgba(0,0,0,0.03)}
+.tree-todas-chevron{font-size:11px;color:var(--t4);transition:transform 0.18s;width:14px;flex-shrink:0}
+.tree-todas-chevron.open{transform:rotate(90deg)}
+.tree-todas-label{font-size:12.5px;font-weight:600;color:var(--t2);flex:1}
+.tree-todas-count{font-size:10px;color:var(--t4);background:var(--bg2);padding:1px 7px;border-radius:10px}
+/* folder row */
+.tree-folder{display:flex;align-items:center;gap:7px;padding:7px 10px 7px 18px;border-radius:9px;cursor:pointer;transition:background 0.12s;user-select:none}
+.tree-folder:hover{background:rgba(0,0,0,0.03)}
+.tree-folder-chevron{font-size:10px;color:var(--t4);transition:transform 0.18s;width:12px;flex-shrink:0}
+.tree-folder-chevron.open{transform:rotate(90deg)}
+.tree-folder i.ti-folder{font-size:13px;color:var(--t4);flex-shrink:0}
+.tree-folder-name{font-size:12.5px;color:var(--t2);flex:1;font-weight:500}
+.tree-folder-count{font-size:10px;color:var(--t4);background:var(--bg2);padding:1px 6px;border-radius:10px;flex-shrink:0}
+/* note row inside folder */
+.tree-nota{display:flex;align-items:center;gap:0;padding:6px 10px 6px 38px;border-radius:8px;cursor:pointer;transition:all 0.12s;margin:1px 0}
+.tree-nota:hover{background:var(--bg2)}
+.tree-nota.active{background:var(--accent-soft);border:1px solid var(--accent-border)}
+.tree-nota-title{font-size:12px;color:var(--t1);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+.tree-nota.active .tree-nota-title{color:var(--accent);font-weight:500}
+.tree-nota-date{font-size:10px;color:var(--t4);flex-shrink:0;margin-left:6px}
+/* sin carpeta section */
+.tree-uncategorized{padding:4px 10px 4px 18px;font-size:10.5px;color:var(--t4);letter-spacing:0.04em;margin-top:4px}
+
+.notas-new-btn{margin:8px;border:1.5px dashed var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--t3);transition:all 0.12s;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;background:none;font-family:var(--font)}
 .notas-new-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .notas-empty-list{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:8px;color:var(--t4);text-align:center}
 .notas-empty-list i{font-size:32px}.notas-empty-list p{font-size:12px;line-height:1.5}
-/* ── Editor ── */
+
+/* Editor */
 .nota-editor-area{display:flex;flex-direction:column;overflow:hidden;background:white;border:1px solid var(--border);border-radius:var(--rlg);margin-left:12px;min-height:0}
 .nota-editor-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--t4)}
 .nota-editor-empty i{font-size:40px}.nota-editor-empty p{font-size:13px}
 .nota-editor-header{padding:22px 28px 0;flex-shrink:0}
-.nota-editor-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.nota-editor-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 .nota-date-display{font-size:10.5px;color:var(--t4)}
-/* Carpeta badge en editor */
+.nota-title-input{width:100%;border:none;outline:none;font-family:var(--font);font-size:24px;font-weight:600;color:var(--t1);letter-spacing:-0.5px;background:transparent;padding:0;line-height:1.3;resize:none;overflow:hidden}
+.nota-title-input::placeholder{color:var(--t4)}
+/* Folder badge row */
 .nota-folder-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-bottom:14px;border-bottom:1px solid var(--border2);position:relative}
-.nota-folder-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--t2);cursor:pointer;transition:all 0.12s;font-family:var(--font);font-weight:500}
-.nota-folder-badge:hover{border-color:var(--accent-border);background:var(--accent-soft);color:var(--accent)}
+.nota-folder-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--t2);cursor:pointer;transition:all 0.12s;font-family:var(--font);font-weight:500;user-select:none}
+.nota-folder-badge:hover,.nota-folder-badge.has-folder{background:var(--accent-soft);border-color:var(--accent-border);color:var(--accent)}
 .nota-folder-badge i{font-size:12px}
-.nota-folder-badge.has-folder{background:var(--accent-soft);border-color:var(--accent-border);color:var(--accent)}
-/* Dropdown carpeta */
-.nota-folder-dropdown{position:absolute;top:calc(100% + 4px);left:0;z-index:50;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-float);min-width:200px;overflow:hidden;display:none}
+/* Folder dropdown */
+.nota-folder-dropdown{position:absolute;top:calc(100% + 6px);left:0;z-index:50;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-float);min-width:210px;overflow:hidden;display:none}
 .nota-folder-dropdown.open{display:block}
 .nota-folder-dd-search{padding:10px 12px 8px;border-bottom:1px solid var(--border2)}
-.nota-folder-dd-search input{width:100%;border:1px solid rgba(0,0,0,0.08);border-radius:7px;padding:7px 10px;font-family:var(--font);font-size:12px;color:var(--t1);outline:none;background:var(--bg)}
+.nota-folder-dd-search input{width:100%;border:1px solid rgba(0,0,0,0.08);border-radius:7px;padding:7px 10px;font-family:var(--font);font-size:12px;color:var(--t1);outline:none;background:var(--bg);transition:all 0.15s}
 .nota-folder-dd-search input:focus{border-color:var(--blue-border);background:white}
-.nota-folder-dd-list{max-height:180px;overflow-y:auto;padding:6px}
+.nota-folder-dd-list{padding:6px;max-height:200px;overflow-y:auto}
 .nota-folder-dd-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12.5px;color:var(--t2);transition:background 0.1s}
 .nota-folder-dd-item:hover{background:var(--bg2)}
-.nota-folder-dd-item.current{color:var(--accent);font-weight:500}
-.nota-folder-dd-item i{font-size:13px;color:var(--t4)}
-.nota-folder-dd-item.current i{color:var(--accent)}
-.nota-folder-dd-create{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--blue);transition:background 0.1s;border-top:1px solid var(--border2);margin-top:4px}
-.nota-folder-dd-create:hover{background:var(--blue-soft)}
-.nota-folder-dd-empty{padding:12px 10px;font-size:12px;color:var(--t4);text-align:center}
-.nota-folder-dd-none{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--t3);transition:background 0.1s}
+.nota-folder-dd-item.selected{color:var(--accent);font-weight:500}
+.nota-folder-dd-item i{font-size:13px;color:var(--t4);flex-shrink:0}
+.nota-folder-dd-item.selected i{color:var(--accent)}
+.nota-folder-dd-none{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--t3);transition:background 0.1s;border-top:1px solid var(--border2);margin-top:4px}
 .nota-folder-dd-none:hover{background:var(--bg2)}
+.nota-folder-dd-create{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--blue);font-weight:500;transition:background 0.1s;border-top:1px solid var(--border2);margin-top:4px}
+.nota-folder-dd-create:hover{background:var(--blue-soft)}
+.nota-folder-dd-empty{padding:14px 10px;font-size:12px;color:var(--t4);text-align:center}
 /* View toggle */
 .view-toggle-wrap{display:flex;align-items:center;gap:3px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:3px}
 .view-toggle-btn{padding:4px 10px;border-radius:6px;border:none;background:none;font-family:var(--font);font-size:11.5px;color:var(--t3);cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:5px;font-weight:400}
 .view-toggle-btn.active{background:white;color:var(--t1);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
 .view-toggle-btn i{font-size:13px}
-.nota-title-input{width:100%;border:none;outline:none;font-family:var(--font);font-size:24px;font-weight:600;color:var(--t1);letter-spacing:-0.5px;background:transparent;padding:0;line-height:1.3;resize:none;overflow:hidden}
-.nota-title-input::placeholder{color:var(--t4)}
 .nota-editor-toolbar{padding:10px 28px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:3px;flex-shrink:0;background:white}
 .tb-btn{width:28px;height:28px;border-radius:6px;border:none;background:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:700;color:var(--t2);display:flex;align-items:center;justify-content:center;transition:background 0.1s;flex-shrink:0}
 .tb-btn:hover{background:var(--bg2)}.tb-btn i{font-size:15px;font-weight:400}
@@ -387,7 +395,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .board-col-delete{color:var(--t4);cursor:pointer;font-size:14px;border:none;background:none;padding:0;line-height:1;transition:color 0.1s;flex-shrink:0}
 .board-col-delete:hover{color:var(--red)}
 .board-col-items{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:5px;max-height:420px}
-.board-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:white;border:1px solid var(--border2);border-radius:9px;cursor:default;transition:all 0.12s}
+.board-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:white;border:1px solid var(--border2);border-radius:9px;transition:all 0.12s}
 .board-item:hover{border-color:var(--border);box-shadow:var(--shadow-sm)}
 .board-item.done{opacity:0.55}
 .board-item-check{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin-top:2px;cursor:pointer}
@@ -669,10 +677,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
               <input type="text" id="notaSearchInput" placeholder="Buscar notas..." oninput="filterNotas()">
             </div>
           </div>
-          <!-- Carpetas nav -->
-          <div class="notas-folder-nav" id="notasFolderNav"></div>
-          <!-- Lista notas filtradas -->
-          <div class="notas-list-scroll" id="notasList" style="display:none"></div>
+          <div class="notas-tree" id="notasTree"></div>
           <button class="notas-new-btn" onclick="createNota()">
             <i class="ti ti-plus"></i> Nueva nota
           </button>
@@ -1786,12 +1791,14 @@ window.cancelAddNote=()=>{
 // ══════════════════════════════════
 let notas=[];
 let currentNotaId=null;
-let notaFolderFilter=null; // null = Todas, string = carpeta
 let notaSearchQuery='';
 let notaSaveTimeout=null;
-let unsubNotas=null;
-let _currentView='text'; // 'text' | 'board'
 let _boardSaveTimeout=null;
+let unsubNotas=null;
+let _currentView='text';
+// Tree state: which folders are expanded
+// null key = "Todas" toggle (expands/collapses all)
+let _treeExpanded={__todas__:false}; // false = all collapsed by default
 
 function loadNotas(){
   if(!currentUser)return;
@@ -1799,14 +1806,8 @@ function loadNotas(){
   unsubNotas=onSnapshot(collection(db,'users',currentUser.uid,'notas'),snap=>{
     notas=[];
     snap.forEach(d=>notas.push({id:d.id,...d.data()}));
-    // Sort by order field (drag & drop), fallback to createdAt
-    notas.sort((a,b)=>{
-      if(a.order!=null&&b.order!=null)return a.order-b.order;
-      if(a.order!=null)return-1;
-      if(b.order!=null)return 1;
-      return new Date(a.createdAt)-new Date(b.createdAt);
-    });
-    renderNotasList();
+    notas.sort((a,b)=>(b.updatedAt||b.createdAt||'').localeCompare(a.updatedAt||a.createdAt||''));
+    renderNotasTree();
     if(currentNotaId){
       const n=notas.find(x=>x.id===currentNotaId);
       const editorFocused=document.activeElement&&
@@ -1816,111 +1817,129 @@ function loadNotas(){
   });
 }
 
-function getFilteredNotas(){
-  const q=notaSearchQuery.toLowerCase();
-  return notas.filter(n=>{
-    const folder=(n.folder||'').trim();
-    const matchFolder=notaFolderFilter===null||(notaFolderFilter==='__none__'?!folder:folder===notaFolderFilter);
-    const matchSearch=!q||(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q);
-    return matchFolder&&matchSearch;
-  }).sort((a,b)=>(b.updatedAt||b.createdAt).localeCompare(a.updatedAt||a.createdAt));
-}
-
-function getAllFolders(){
-  // Returns [{name, count, lastUpdated}] sorted by lastUpdated desc
+// ── Tree helpers ──
+function getFolderGroups(){
+  // Returns [{name, notas:[]}] sorted by most-recently-updated note
   const map={};
   notas.forEach(n=>{
     const f=(n.folder||'').trim();
-    if(!f)return;
-    if(!map[f])map[f]={name:f,count:0,lastUpdated:''};
-    map[f].count++;
-    const upd=n.updatedAt||n.createdAt||'';
-    if(upd>map[f].lastUpdated)map[f].lastUpdated=upd;
+    if(!map[f])map[f]={name:f,notas:[]};
+    map[f].notas.push(n);
   });
-  return Object.values(map).sort((a,b)=>b.lastUpdated.localeCompare(a.lastUpdated));
+  // sort notas inside each group by updatedAt desc
+  Object.values(map).forEach(g=>g.notas.sort((a,b)=>(b.updatedAt||b.createdAt||'').localeCompare(a.updatedAt||a.createdAt||'')));
+  // sort groups: named folders by most-recent note first, unnamed last
+  const named=Object.values(map).filter(g=>g.name).sort((a,b)=>{
+    const la=a.notas[0]&&(a.notas[0].updatedAt||a.notas[0].createdAt)||'';
+    const lb=b.notas[0]&&(b.notas[0].updatedAt||b.notas[0].createdAt)||'';
+    return lb.localeCompare(la);
+  });
+  const unnamed=map['']||null;
+  return{named, unnamed};
 }
 
-function renderNotasList(){
-  renderFolderNav();
-  // also refresh list panel if visible
-  const listEl=document.getElementById('notasList');
-  if(!listEl||listEl.style.display==='none')return;
-  const items=getFilteredNotas();
-  if(!items.length){
-    listEl.innerHTML=`<div class="notas-empty-list"><i class="ti ti-notebook"></i><p>${notaSearchQuery?'Sin resultados':'No hay notas aquí.'}</p></div>`;
-    return;
-  }
-  listEl.innerHTML=items.map((n,i)=>`
-    <div class="nota-list-item ${n.id===currentNotaId?'active':''}" data-id="${n.id}" onclick="selectNota('${n.id}')">
-      <div class="nota-list-row">
-        <div class="nota-list-title">${n.title||'Sin título'}</div>
-        <div class="nota-list-date">${formatNotaDate(n.updatedAt||n.createdAt)}</div>
-      </div>
-    </div>`).join('');
+function getAllFolderNames(){
+  const s=new Set();
+  notas.forEach(n=>{const f=(n.folder||'').trim();if(f)s.add(f);});
+  return [...s];
 }
 
-function renderFolderNav(){
-  const nav=document.getElementById('notasFolderNav');
-  if(!nav)return;
-  const folders=getAllFolders();
-  const totalCount=notas.filter(n=>!notaSearchQuery||(n.title||'').toLowerCase().includes(notaSearchQuery.toLowerCase())).length;
-  const untaggedCount=notas.filter(n=>!(n.folder||'').trim()).length;
-  const isAll=notaFolderFilter===null;
+// ── Render tree ──
+function renderNotasList(){ renderNotasTree(); }
 
-  let html=`<div class="notas-folder-item ${isAll?'active':''}" onclick="setFolderFilter(null)">
-    <i class="ti ti-notes"></i>
-    <span class="notas-folder-name">Todas</span>
-    <span class="notas-folder-count">${notas.length}</span>
+function renderNotasTree(){
+  const tree=document.getElementById('notasTree');
+  if(!tree)return;
+  const q=notaSearchQuery.toLowerCase();
+  const {named, unnamed}=getFolderGroups();
+  const allExpanded=_treeExpanded.__todas__;
+  const totalCount=notas.length;
+
+  let html='';
+
+  // ── "Todas" header row ──
+  html+=`<div class="tree-todas" onclick="toggleTodas()">
+    <i class="ti ti-chevron-right tree-todas-chevron ${allExpanded?'open':''}"></i>
+    <span class="tree-todas-label">Todas</span>
+    <span class="tree-todas-count">${totalCount}</span>
   </div>`;
 
-  if(folders.length){
-    html+=`<div class="notas-folder-sep"></div>`;
-    folders.forEach(f=>{
-      const isActive=notaFolderFilter===f.name;
-      html+=`<div class="notas-folder-item ${isActive?'active':''}" onclick="setFolderFilter('${f.name}')">
-        <i class="ti ti-folder"></i>
-        <span class="notas-folder-name">${f.name}</span>
-        <span class="notas-folder-count">${f.count}</span>
-      </div>`;
+  if(allExpanded){
+    // show all folders expanded
+    named.forEach(g=>{
+      const filteredNotas=g.notas.filter(n=>!q||(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q));
+      if(!filteredNotas.length&&q)return;
+      html+=renderFolderRow(g.name, filteredNotas, true);
     });
-  }
-
-  if(untaggedCount>0&&folders.length){
-    html+=`<div class="notas-folder-item ${notaFolderFilter==='__none__'?'active':''}" onclick="setFolderFilter('__none__')">
-      <i class="ti ti-file" style="opacity:0.5"></i>
-      <span class="notas-folder-name" style="color:var(--t3)">Sin carpeta</span>
-      <span class="notas-folder-count">${untaggedCount}</span>
-    </div>`;
-  }
-
-  nav.innerHTML=html;
-
-  // show/hide lista
-  const listEl=document.getElementById('notasList');
-  if(listEl){
-    // always show the list panel below (sidebar is folder nav + list)
-    listEl.style.display='block';
-    const items=getFilteredNotas();
-    if(!items.length){
-      listEl.innerHTML=`<div class="notas-empty-list"><i class="ti ti-notebook"></i><p>${notaSearchQuery?'Sin resultados':'No hay notas aquí.'}</p></div>`;
-    } else {
-      listEl.innerHTML=items.map(n=>`
-        <div class="nota-list-item ${n.id===currentNotaId?'active':''}" data-id="${n.id}" onclick="selectNota('${n.id}')">
-          <div class="nota-list-row">
-            <div class="nota-list-title">${n.title||'Sin título'}</div>
-            <div class="nota-list-date">${formatNotaDate(n.updatedAt||n.createdAt)}</div>
-          </div>
-        </div>`).join('');
+    if(unnamed&&unnamed.notas.length){
+      const filteredNotas=unnamed.notas.filter(n=>!q||(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q));
+      if(filteredNotas.length||!q){
+        html+=`<div class="tree-uncategorized">Sin carpeta</div>`;
+        filteredNotas.forEach(n=>{ html+=renderNotaRow(n); });
+      }
+    }
+  } else {
+    // individual folder expand/collapse
+    named.forEach(g=>{
+      const expanded=!!_treeExpanded[g.name];
+      const filteredNotas=g.notas.filter(n=>!q||(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q));
+      if(!filteredNotas.length&&q)return;
+      html+=renderFolderRow(g.name, filteredNotas, expanded);
+    });
+    if(unnamed&&unnamed.notas.length){
+      const expanded=!!_treeExpanded['__none__'];
+      const filteredNotas=unnamed.notas.filter(n=>!q||(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q));
+      if(filteredNotas.length||!q){
+        html+=`<div class="tree-folder" onclick="toggleFolder('__none__')">
+          <i class="ti ti-chevron-right tree-folder-chevron ${expanded?'open':''}"></i>
+          <i class="ti ti-file" style="font-size:13px;color:var(--t4);opacity:0.6"></i>
+          <span class="tree-folder-name" style="color:var(--t3)">Sin carpeta</span>
+          <span class="tree-folder-count">${filteredNotas.length}</span>
+        </div>`;
+        if(expanded) filteredNotas.forEach(n=>{ html+=renderNotaRow(n); });
+      }
     }
   }
+
+  if(!notas.length){
+    html+=`<div class="notas-empty-list"><i class="ti ti-notebook"></i><p>Aún no hay notas.<br>Creá tu primera idea.</p></div>`;
+  }
+
+  tree.innerHTML=html;
 }
 
-window.setFolderFilter=(folder)=>{
-  if(folder==='__none__') notaFolderFilter='__none__';
-  else notaFolderFilter=folder;
-  renderNotasList();
+function renderFolderRow(name, filteredNotas, expanded){
+  let html=`<div class="tree-folder" onclick="toggleFolder('${name}')">
+    <i class="ti ti-chevron-right tree-folder-chevron ${expanded?'open':''}"></i>
+    <i class="ti ti-folder" style="font-size:13px;color:var(--t4)"></i>
+    <span class="tree-folder-name">${name}</span>
+    <span class="tree-folder-count">${filteredNotas.length}</span>
+  </div>`;
+  if(expanded) filteredNotas.forEach(n=>{ html+=renderNotaRow(n); });
+  return html;
+}
+
+function renderNotaRow(n){
+  const isActive=n.id===currentNotaId;
+  const dateStr=formatNotaDate(n.updatedAt||n.createdAt);
+  return`<div class="tree-nota ${isActive?'active':''}" onclick="selectNota('${n.id}')">
+    <span class="tree-nota-title">${n.title||'Sin título'}</span>
+    <span class="tree-nota-date">${dateStr}</span>
+  </div>`;
+}
+
+window.toggleTodas=()=>{
+  const wasOpen=_treeExpanded.__todas__;
+  _treeExpanded.__todas__=!wasOpen;
+  // if closing, also close all individual folders
+  if(wasOpen) Object.keys(_treeExpanded).forEach(k=>{ _treeExpanded[k]=false; });
+  renderNotasTree();
 };
 
+window.toggleFolder=(name)=>{
+  _treeExpanded[name]=!_treeExpanded[name];
+  renderNotasTree();
+};
 
 function formatNotaDate(iso){
   if(!iso)return'';
@@ -1934,17 +1953,15 @@ function formatNotaDate(iso){
 }
 
 window.selectNota=async(id)=>{
-  // Save current note before switching
-  if(currentNotaId && currentNotaId !== id){
-    await saveNotaImmediate(currentNotaId);
-  }
+  if(currentNotaId&&currentNotaId!==id) await saveNotaImmediate(currentNotaId);
   currentNotaId=id;
   const n=notas.find(x=>x.id===id);
   if(!n)return;
-  renderNotasList();
+  renderNotasTree();
   renderNotaEditor(n);
 };
 
+// ── Editor ──
 function renderNotaEditor(n, viewOverride){
   const area=document.getElementById('notaEditorArea');
   const view=viewOverride||_currentView;
@@ -1964,8 +1981,7 @@ function renderNotaEditor(n, viewOverride){
       <textarea class="nota-title-input" id="notaTitleInput" placeholder="Título de la nota..." rows="1">${n.title||''}</textarea>
       <div class="nota-folder-row">
         <div class="nota-folder-badge ${folderName?'has-folder':''}" id="notaFolderBadge" onclick="toggleFolderDropdown('${n.id}')">
-          <i class="ti ti-folder${folderName?'':'-off'}"></i>
-          ${folderName||'Sin carpeta'}
+          <i class="ti ti-${folderName?'folder':'folder-off'}"></i> ${folderName||'Sin carpeta'}
         </div>
         <div class="nota-folder-dropdown" id="notaFolderDropdown">
           <div class="nota-folder-dd-search">
@@ -2001,13 +2017,11 @@ function renderNotaEditor(n, viewOverride){
       </div>
     </div>`;
 
-  // auto-resize title
   const titleEl=document.getElementById('notaTitleInput');
   if(titleEl){
     autoResizeTextarea(titleEl);
     titleEl.addEventListener('input',()=>{autoResizeTextarea(titleEl);scheduleNotaSave(n.id);});
   }
-
   if(view==='text'){
     const editor=document.getElementById('notaContentEditor');
     if(editor){
@@ -2018,16 +2032,14 @@ function renderNotaEditor(n, viewOverride){
         scheduleNotaSave(n.id);
       });
     }
-  } else {
-    renderBoard(n);
-  }
+  } else { renderBoard(n); }
 
-  // close folder dropdown on outside click
+  // close dropdown on outside click
   setTimeout(()=>{
-    document.addEventListener('click', function closeFD(e){
+    document.addEventListener('click',function closeFD(e){
       const dd=document.getElementById('notaFolderDropdown');
       const badge=document.getElementById('notaFolderBadge');
-      if(dd&&!dd.contains(e.target)&&e.target!==badge&&!badge?.contains(e.target)){
+      if(dd&&!dd.contains(e.target)&&!badge?.contains(e.target)){
         dd.classList.remove('open');
         document.removeEventListener('click',closeFD);
       }
@@ -2045,8 +2057,7 @@ window.switchNotaView=(view,id)=>{
 window.toggleFolderDropdown=(id)=>{
   const dd=document.getElementById('notaFolderDropdown');
   if(!dd)return;
-  const isOpen=dd.classList.contains('open');
-  if(isOpen){dd.classList.remove('open');return;}
+  if(dd.classList.contains('open')){dd.classList.remove('open');return;}
   dd.classList.add('open');
   const inp=document.getElementById('folderDdSearch');
   if(inp){inp.value='';inp.focus();}
@@ -2057,27 +2068,27 @@ window.renderFolderDropdown=(id,query)=>{
   const listEl=document.getElementById('folderDdList');
   if(!listEl)return;
   const n=notas.find(x=>x.id===id);
-  const currentFolder=(n&&n.folder)||'';
-  const q=(query||'').trim().toLowerCase();
-  const folders=getAllFolders();
-  const filtered=q?folders.filter(f=>f.name.toLowerCase().includes(q)):folders;
+  const currentFolder=(n&&n.folder||'').trim();
+  const q=(query||'').trim();
+  const folders=getAllFolderNames();
+  const filtered=q?folders.filter(f=>f.toLowerCase().includes(q.toLowerCase())):folders;
 
   let html='';
-  // "Sin carpeta" option to remove folder
   if(currentFolder){
-    html+=`<div class="nota-folder-dd-none" onclick="setNotaFolder('${id}','')"><i class="ti ti-x"></i> Sin carpeta</div>`;
+    html+=`<div class="nota-folder-dd-none" onclick="setNotaFolder('${id}','')"><i class="ti ti-folder-off"></i> Sin carpeta</div>`;
   }
   if(!filtered.length&&!q){
-    html+=`<div class="nota-folder-dd-empty">Todavía no hay carpetas.<br>Escribí para crear una.</div>`;
+    html+=`<div class="nota-folder-dd-empty">Escribí para crear tu primera carpeta</div>`;
   }
   filtered.forEach(f=>{
-    const isCurrent=f.name===currentFolder;
-    html+=`<div class="nota-folder-dd-item ${isCurrent?'current':''}" onclick="setNotaFolder('${id}','${f.name}')">
-      <i class="ti ti-folder"></i> ${f.name} ${isCurrent?'<i class="ti ti-check" style="margin-left:auto;font-size:11px"></i>':''}
+    const isSel=f===currentFolder;
+    html+=`<div class="nota-folder-dd-item ${isSel?'selected':''}" onclick="setNotaFolder('${id}','${f}')">
+      <i class="ti ti-folder"></i> ${f}
+      ${isSel?'<i class="ti ti-check" style="margin-left:auto;font-size:11px;color:var(--accent)"></i>':''}
     </div>`;
   });
-  if(q&&!folders.find(f=>f.name.toLowerCase()===q)){
-    html+=`<div class="nota-folder-dd-create" onclick="setNotaFolder('${id}','${query.trim()}')"><i class="ti ti-plus"></i> Crear carpeta "${query.trim()}"</div>`;
+  if(q&&!folders.find(f=>f.toLowerCase()===q.toLowerCase())){
+    html+=`<div class="nota-folder-dd-create" onclick="setNotaFolder('${id}','${q}')"><i class="ti ti-plus"></i> Crear carpeta "${q}"</div>`;
   }
   listEl.innerHTML=html;
 };
@@ -2087,133 +2098,25 @@ window.setNotaFolder=async(id,folder)=>{
   if(dd)dd.classList.remove('open');
   const clean=folder.trim();
   await updateDoc(doc(db,'users',currentUser.uid,'notas',id),{folder:clean,updatedAt:new Date().toISOString()});
-  // update local
   const n=notas.find(x=>x.id===id);
   if(n){n.folder=clean;n.updatedAt=new Date().toISOString();}
-  // re-render badge
+  // update badge inline
   const badge=document.getElementById('notaFolderBadge');
   if(badge){
-    badge.className=`nota-folder-badge ${clean?'has-folder':''}`;
-    badge.innerHTML=`<i class="ti ti-folder${clean?'':'-off'}"></i> ${clean||'Sin carpeta'}`;
+    badge.className=`nota-folder-badge${clean?' has-folder':''}`;
+    badge.innerHTML=`<i class="ti ti-${clean?'folder':'folder-off'}"></i> ${clean||'Sin carpeta'}`;
   }
-  renderNotasList();
-  showToast(clean?`Carpeta: ${clean} 📁`:'Carpeta removida');
+  renderNotasTree();
+  showToast(clean?`📁 Carpeta: ${clean}`:'Carpeta removida');
 };
 
-// ── Board ──
-function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+// ── Save ──
+window.autoResizeTextarea=(el)=>{el.style.height='auto';el.style.height=el.scrollHeight+'px';};
 
-function renderBoard(n){
-  const wrap=document.getElementById('boardModeWrap');
-  if(!wrap)return;
-  const cols=(n.board||[]);
-  wrap.innerHTML=cols.map((col,ci)=>`
-    <div class="board-col" data-ci="${ci}">
-      <div class="board-col-header">
-        <input class="board-col-title" value="${escH(col.title||'')}" placeholder="Título..." oninput="updateBoardColTitle(${ci},this.value,'${n.id}')">
-        <button class="board-col-delete" onclick="deleteBoardCol(${ci},'${n.id}')" title="Eliminar columna"><i class="ti ti-x"></i></button>
-      </div>
-      <div class="board-col-items" id="board-col-items-${ci}">
-        ${(col.items||[]).map((item,ii)=>`
-        <div class="board-item ${item.done?'done':''}" data-ii="${ii}">
-          <div class="board-item-check" onclick="toggleBoardItem(${ci},${ii},'${n.id}')">
-            ${item.done?'<i class="ti ti-check" style="font-size:10px;color:white"></i>':''}
-          </div>
-          <textarea class="board-item-text" rows="1" oninput="updateBoardItemText(${ci},${ii},this.value,'${n.id}');autoResizeTextarea(this)" onfocus="autoResizeTextarea(this)">${escH(item.text||'')}</textarea>
-          <button class="board-item-del" onclick="deleteBoardItem(${ci},${ii},'${n.id}')" title="Eliminar"><i class="ti ti-x"></i></button>
-        </div>`).join('')}
-      </div>
-      <button class="board-col-add-item" onclick="addBoardItem(${ci},'${n.id}')"><i class="ti ti-plus"></i> Agregar item</button>
-    </div>`).join('');
-  wrap.innerHTML+=`<button class="board-add-col" onclick="addBoardCol('${n.id}')"><i class="ti ti-plus"></i> Nueva columna</button>`;
-  wrap.querySelectorAll('.board-item-text').forEach(t=>autoResizeTextarea(t));
-}
-
-function getBoardData(id){
-  const n=notas.find(x=>x.id===id);
-  return JSON.parse(JSON.stringify(n&&n.board?n.board:[]));
-}
-
-async function saveBoardData(id,board){
-  const n=notas.find(x=>x.id===id);
-  if(n){n.board=board;n.updatedAt=new Date().toISOString();}
-  const statusEl=document.getElementById('notaSaveStatus');
-  if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-upload"></i> Guardando...';
-  try{
-    await updateDoc(doc(db,'users',currentUser.uid,'notas',id),{board,updatedAt:new Date().toISOString()});
-    if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-check"></i> Guardado';
-  }catch(e){
-    if(statusEl)statusEl.innerHTML='<i class="ti ti-alert-triangle"></i> Error';
-  }
-}
-
-function scheduleBoardSave(id,board){
-  const n=notas.find(x=>x.id===id);
-  if(n)n.board=JSON.parse(JSON.stringify(board));
-  const statusEl=document.getElementById('notaSaveStatus');
-  if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-upload"></i> Guardando...';
-  clearTimeout(_boardSaveTimeout);
-  _boardSaveTimeout=setTimeout(()=>saveBoardData(id,board),2000);
-}
-
-window.addBoardCol=async(id)=>{
-  const board=getBoardData(id);board.push({title:'',items:[]});
-  await saveBoardData(id,board);
-  const n=notas.find(x=>x.id===id);if(n)renderBoard(n);
-};
-window.deleteBoardCol=async(ci,id)=>{
-  const board=getBoardData(id);board.splice(ci,1);
-  await saveBoardData(id,board);
-  const n=notas.find(x=>x.id===id);if(n)renderBoard(n);
-};
-window.addBoardItem=async(ci,id)=>{
-  const board=getBoardData(id);if(!board[ci])return;
-  board[ci].items.push({text:'',done:false});
-  await saveBoardData(id,board);
-  const n=notas.find(x=>x.id===id);
-  if(n){renderBoard(n);
-    const inputs=document.querySelectorAll(`#board-col-items-${ci} .board-item-text`);
-    if(inputs.length)inputs[inputs.length-1].focus();
-  }
-};
-window.deleteBoardItem=async(ci,ii,id)=>{
-  const board=getBoardData(id);if(!board[ci])return;
-  board[ci].items.splice(ii,1);
-  await saveBoardData(id,board);
-  const n=notas.find(x=>x.id===id);if(n)renderBoard(n);
-};
-window.toggleBoardItem=async(ci,ii,id)=>{
-  const board=getBoardData(id);if(!board[ci]||!board[ci].items[ii])return;
-  board[ci].items[ii].done=!board[ci].items[ii].done;
-  await saveBoardData(id,board);
-  const n=notas.find(x=>x.id===id);if(n)renderBoard(n);
-};
-window.updateBoardColTitle=(ci,val,id)=>{
-  const board=getBoardData(id);if(!board[ci])return;
-  board[ci].title=val;scheduleBoardSave(id,board);
-};
-window.updateBoardItemText=(ci,ii,val,id)=>{
-  const board=getBoardData(id);if(!board[ci]||!board[ci].items[ii])return;
-  board[ci].items[ii].text=val;scheduleBoardSave(id,board);
-};
-
-
-window.autoResizeTextarea=(el)=>{
-  el.style.height='auto';el.style.height=el.scrollHeight+'px';
-};
-
-window.execCmd=(cmd,val=null)=>{
-  document.getElementById('notaContentEditor')?.focus();
-  document.execCommand(cmd,false,val);
-};
-
-window.insertHeading=()=>{
-  document.getElementById('notaContentEditor')?.focus();
-  document.execCommand('formatBlock',false,'h2');
-};
+window.execCmd=(cmd,val=null)=>{document.getElementById('notaContentEditor')?.focus();document.execCommand(cmd,false,val);};
+window.insertHeading=()=>{document.getElementById('notaContentEditor')?.focus();document.execCommand('formatBlock',false,'h2');};
 
 function scheduleNotaSave(id){
-  // Update local array immediately so the list sidebar reflects changes in real-time
   const titleEl=document.getElementById('notaTitleInput');
   const contentEl=document.getElementById('notaContentEditor');
   const n=notas.find(x=>x.id===id);
@@ -2221,7 +2124,7 @@ function scheduleNotaSave(id){
     if(titleEl)n.title=titleEl.value;
     if(contentEl)n.content=contentEl.innerHTML;
     n.updatedAt=new Date().toISOString();
-    renderNotasList(); // instant UI update — no waiting for Firestore
+    renderNotasTree();
   }
   const statusEl=document.getElementById('notaSaveStatus');
   if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-upload"></i> Guardando...';
@@ -2229,21 +2132,18 @@ function scheduleNotaSave(id){
   notaSaveTimeout=setTimeout(()=>saveNota(id),2000);
 }
 
-async function saveNotaImmediate(id){
-  clearTimeout(notaSaveTimeout);
-  await saveNota(id);
-}
+async function saveNotaImmediate(id){clearTimeout(notaSaveTimeout);await saveNota(id);}
 
 async function saveNota(id){
   const titleEl=document.getElementById('notaTitleInput');
   const contentEl=document.getElementById('notaContentEditor');
   if(!titleEl&&!contentEl)return;
   const title=titleEl?titleEl.value:'';
-  const content=contentEl?contentEl.innerHTML:'';
+  const textContent=contentEl?contentEl.innerHTML:'';
   const m=notas.find(x=>x.id===id);
-  if(m){m.title=title;m.content=content;m.updatedAt=new Date().toISOString();}
+  if(m){m.title=title;m.content=textContent;m.updatedAt=new Date().toISOString();}
   try{
-    await updateDoc(doc(db,'users',currentUser.uid,'notas',id),{title,content,updatedAt:new Date().toISOString()});
+    await updateDoc(doc(db,'users',currentUser.uid,'notas',id),{title,content:textContent,updatedAt:new Date().toISOString()});
     const statusEl=document.getElementById('notaSaveStatus');
     if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-check"></i> Guardado';
   }catch(e){
@@ -2270,49 +2170,78 @@ window.deleteNota=async(id)=>{
   showToast('Nota eliminada');
 };
 
-// legacy removed: changeNotaType, changeNotaCat, addNotaTag, removeNotaTag, convertNotaToMeta
-
-function closeAllModals(){
-  ['createModal','detailModal','closeMetaModal','noventaModal'].forEach(id=>document.getElementById(id)?.classList.remove('open'));
-}
-
-window.setNotaFilter=(filter,el)=>{}; // legacy no-op
-
 window.filterNotas=()=>{
   notaSearchQuery=document.getElementById('notaSearchInput')?.value||'';
-  renderNotasList();
+  renderNotasTree();
 };
 
-// Notas drag & drop
-let _dragFromIdx=null;
-window.notaDragStart=(e)=>{
-  _dragFromIdx=parseInt(e.currentTarget.dataset.index);
-  e.currentTarget.style.opacity='0.4';
-  e.dataTransfer.effectAllowed='move';
+// ── Board ──
+function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function renderBoard(n){
+  const wrap=document.getElementById('boardModeWrap');
+  if(!wrap)return;
+  const cols=(n.board||[]);
+  wrap.innerHTML=cols.map((col,ci)=>`
+    <div class="board-col" data-ci="${ci}">
+      <div class="board-col-header">
+        <input class="board-col-title" value="${escH(col.title||'')}" placeholder="Título..." oninput="updateBoardColTitle(${ci},this.value,'${n.id}')">
+        <button class="board-col-delete" onclick="deleteBoardCol(${ci},'${n.id}')"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="board-col-items" id="bci-${ci}">
+        ${(col.items||[]).map((item,ii)=>`
+        <div class="board-item ${item.done?'done':''}">
+          <div class="board-item-check" onclick="toggleBoardItem(${ci},${ii},'${n.id}')">
+            ${item.done?'<i class="ti ti-check" style="font-size:10px;color:white"></i>':''}
+          </div>
+          <textarea class="board-item-text" rows="1" oninput="updateBoardItemText(${ci},${ii},this.value,'${n.id}');autoResizeTextarea(this)" onfocus="autoResizeTextarea(this)">${escH(item.text||'')}</textarea>
+          <button class="board-item-del" onclick="deleteBoardItem(${ci},${ii},'${n.id}')"><i class="ti ti-x"></i></button>
+        </div>`).join('')}
+      </div>
+      <button class="board-col-add-item" onclick="addBoardItem(${ci},'${n.id}')"><i class="ti ti-plus"></i> Agregar item</button>
+    </div>`).join('');
+  wrap.innerHTML+=`<button class="board-add-col" onclick="addBoardCol('${n.id}')"><i class="ti ti-plus"></i> Nueva columna</button>`;
+  wrap.querySelectorAll('.board-item-text').forEach(t=>autoResizeTextarea(t));
+}
+
+function getBoardData(id){const n=notas.find(x=>x.id===id);return JSON.parse(JSON.stringify(n&&n.board?n.board:[]));}
+
+async function saveBoardData(id,board){
+  const n=notas.find(x=>x.id===id);
+  if(n){n.board=board;n.updatedAt=new Date().toISOString();}
+  const statusEl=document.getElementById('notaSaveStatus');
+  if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-upload"></i> Guardando...';
+  try{
+    await updateDoc(doc(db,'users',currentUser.uid,'notas',id),{board,updatedAt:new Date().toISOString()});
+    if(statusEl)statusEl.innerHTML='<i class="ti ti-cloud-check"></i> Guardado';
+  }catch(e){if(statusEl)statusEl.innerHTML='<i class="ti ti-alert-triangle"></i> Error';}
+}
+
+function scheduleBoardSave(id,board){
+  const n=notas.find(x=>x.id===id);
+  if(n)n.board=JSON.parse(JSON.stringify(board));
+  clearTimeout(_boardSaveTimeout);
+  _boardSaveTimeout=setTimeout(()=>saveBoardData(id,board),2000);
+}
+
+window.addBoardCol=async(id)=>{const board=getBoardData(id);board.push({title:'',items:[]});await saveBoardData(id,board);const n=notas.find(x=>x.id===id);if(n)renderBoard(n);};
+window.deleteBoardCol=async(ci,id)=>{const board=getBoardData(id);board.splice(ci,1);await saveBoardData(id,board);const n=notas.find(x=>x.id===id);if(n)renderBoard(n);};
+window.addBoardItem=async(ci,id)=>{
+  const board=getBoardData(id);if(!board[ci])return;
+  board[ci].items.push({text:'',done:false});
+  await saveBoardData(id,board);
+  const n=notas.find(x=>x.id===id);
+  if(n){renderBoard(n);const inputs=document.querySelectorAll(`#bci-${ci} .board-item-text`);if(inputs.length)inputs[inputs.length-1].focus();}
 };
-window.notaDragOver=(e)=>{
-  e.preventDefault();e.dataTransfer.dropEffect='move';
-  e.currentTarget.style.background='var(--blue-soft)';
-};
-window.notaDrop=async(e)=>{
-  e.preventDefault();
-  const toIdx=parseInt(e.currentTarget.dataset.index);
-  e.currentTarget.style.background='';
-  if(_dragFromIdx===null||_dragFromIdx===toIdx)return;
-  // Reorder local array
-  const filtered=getFilteredNotas();
-  const moved=filtered.splice(_dragFromIdx,1)[0];
-  filtered.splice(toIdx,0,moved);
-  // Assign new order values and save to Firestore
-  const batch=filtered.map((n,i)=>updateDoc(doc(db,'users',currentUser.uid,'notas',n.id),{order:i}));
-  await Promise.all(batch);
-  _dragFromIdx=null;
-};
-window.notaDragEnd=(e)=>{
-  e.currentTarget.style.opacity='1';
-  e.currentTarget.style.background='';
-  _dragFromIdx=null;
-};
+window.deleteBoardItem=async(ci,ii,id)=>{const board=getBoardData(id);if(!board[ci])return;board[ci].items.splice(ii,1);await saveBoardData(id,board);const n=notas.find(x=>x.id===id);if(n)renderBoard(n);};
+window.toggleBoardItem=async(ci,ii,id)=>{const board=getBoardData(id);if(!board[ci]||!board[ci].items[ii])return;board[ci].items[ii].done=!board[ci].items[ii].done;await saveBoardData(id,board);const n=notas.find(x=>x.id===id);if(n)renderBoard(n);};
+window.updateBoardColTitle=(ci,val,id)=>{const board=getBoardData(id);if(!board[ci])return;board[ci].title=val;scheduleBoardSave(id,board);};
+window.updateBoardItemText=(ci,ii,val,id)=>{const board=getBoardData(id);if(!board[ci]||!board[ci].items[ii])return;board[ci].items[ii].text=val;scheduleBoardSave(id,board);};
+
+// legacy stubs
+window.setNotaFilter=()=>{};
+window.addNote=async()=>{};
+
 const _origShowPage=window.showPage;
 window.showPage=(page,el)=>{
   if(currentNotaId && page !== 'notas') saveNotaImmediate(currentNotaId);
