@@ -20,7 +20,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);display:flex;f
 header{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:60px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;gap:16px}
 .logo{font-size:19px;font-weight:500;letter-spacing:-.5px;user-select:none}
 .logo b{color:#185FA5;font-weight:600}
-.nav{display:flex;align-items:center;gap:6px}
+.nav{display:flex;align-items:center;gap:6px}.month-nav{display:flex;align-items:center;gap:6px}
 .month-lbl{font-size:14px;font-weight:500;min-width:180px;text-align:center;letter-spacing:-.2px}
 .ico-btn{width:28px;height:28px;border:1px solid var(--border-md);border-radius:6px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:14px;transition:background .1s}
 .ico-btn:hover{background:var(--bg);color:var(--t1)}
@@ -189,7 +189,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:0 2
   header{position:sticky;top:0;z-index:120;height:auto;padding:8px 12px 6px;display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,.96);backdrop-filter:blur(16px)}
   .logo{min-width:0;display:flex;align-items:center}.logo img{height:26px!important;max-width:120px;object-fit:contain;object-position:left center}
   .hdr-r{display:flex;align-items:center;justify-content:flex-end;width:100%;gap:0}.zoom-bar{display:flex;gap:2px}.z-btn{padding:5px 8px;font-size:11px}.hdr-sep{display:none}
-  .nav{display:grid;grid-template-columns:auto 32px 1fr 32px auto;align-items:center;gap:6px;width:100%}.month-lbl{font-size:15px;font-weight:600;text-align:center;min-width:0}.ico-btn{width:32px;height:32px;border-radius:8px;background:#fff}
+  .nav{display:grid;grid-template-columns:max-content 1fr max-content;align-items:center;gap:8px;width:100%}.month-nav{justify-self:center;display:flex;align-items:center;gap:8px}.month-lbl{font-size:15px;font-weight:600;text-align:center;min-width:108px}.ico-btn{width:32px;height:32px;border-radius:8px;background:#fff}
   .areas-btn,.login-btn{height:30px;border-radius:8px;background:#fff;font-size:11px;padding:0 10px;flex-shrink:0}
   .avatar-wrap{flex-shrink:0}.avatar-btn{width:28px;height:28px}.avatar-dropdown{position:fixed;right:12px;top:80px}.login-btn.hide,.avatar-wrap.hide{display:none!important}
   .mobile-area-strip{display:none!important}
@@ -207,7 +207,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:0 2
   header{position:sticky;top:0;z-index:120;padding:6px 12px 5px!important;gap:4px!important}
   .logo{justify-content:center;width:100%}.logo img{height:24px!important;max-width:122px!important}
   .hdr-r{justify-content:center!important}.zoom-bar{max-width:330px;width:100%;justify-content:center}.z-btn{padding:5px 11px!important;font-size:11px!important}
-  .nav{grid-template-columns:auto 34px 1fr 34px auto!important;gap:7px!important}.month-lbl{font-size:15px!important}.ico-btn{width:34px!important;height:34px!important}
+  .nav{grid-template-columns:max-content 1fr max-content!important;gap:8px!important}.month-nav{justify-self:center!important;gap:8px!important}.month-lbl{font-size:15px!important;min-width:110px!important}.ico-btn{width:34px!important;height:34px!important}
   .areas-btn,.login-btn{height:32px!important;font-size:11px!important;padding:0 10px!important}.avatar-btn{width:30px!important;height:30px!important}
   .cal-wrap{padding:8px 7px 18px!important;min-height:calc(100dvh - 142px)!important;gap:4px!important;overflow:visible!important}
   .day-hdrs,.cal-grid{gap:3px!important}.day-hdr{font-size:9.5px!important;padding:2px 0 3px!important;letter-spacing:.06em!important}
@@ -241,9 +241,11 @@ header{display:flex;align-items:center;justify-content:space-between;padding:0 2
   </div>
   <div class="nav">
     <button class="areas-btn" id="areasBtn">Áreas</button>
-    <button class="ico-btn" id="prevBtn">&#8249;</button>
-    <div class="month-lbl" id="monthLbl"></div>
-    <button class="ico-btn" id="nextBtn">&#8250;</button>
+    <div class="month-nav">
+      <button class="ico-btn" id="prevBtn">&#8249;</button>
+      <div class="month-lbl" id="monthLbl"></div>
+      <button class="ico-btn" id="nextBtn">&#8250;</button>
+    </div>
     <!-- Sin sesión -->
     <button id="loginBtn" class="login-btn">
       <svg width="14" height="14" viewBox="0 0 48 48"><path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 29.9 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
@@ -1055,28 +1057,34 @@ function paintBands(days, ymdIdx, grid, rows, winS, winE){
   const gRect=grid.getBoundingClientRect();
   const wRect=wrap.getBoundingClientRect();
   const mobile=isMobileCalendar();
-  // En móvil: usar offsetLeft/offsetTop para posición relativa al wrapper (no al viewport)
-  // Esto hace que las bandas no se desplacen al scrollear la página.
-  let ox, oy;
-  if(mobile){
-    ox = grid.offsetLeft - wrap.offsetLeft;
-    oy = grid.offsetTop - wrap.offsetTop;
-  } else {
-    ox = gRect.left - wRect.left;
-    oy = gRect.top - wRect.top;
-  }
-
-  // En móvil: si el grid no tiene dimensiones reales, salir.
-  if(mobile && (gRect.width < 10 || gRect.height < 10)) return;
-
-  // En móvil usamos offsetLeft/offsetTop para calcular posición relativa al wrapper,
-  // independiente del scroll. Esto evita el desplazamiento de bandas al scrollear.
-  // Reemplazamos ox/oy calculados con getBoundingClientRect por offset-based.
   const cols=7, gap=mobile?4:5;
   const cellW=(gRect.width-(cols-1)*gap)/cols;
   const cellH=(gRect.height-(rows-1)*gap)/rows;
   const wsY=ymd(winS), weY=ymd(winE);
   const BAND_H=mobile?10:20, BAND_TOP=mobile?28:22, SLOT_H=mobile?12:22;
+
+  if(mobile && (gRect.width < 10 || gRect.height < 10)) return;
+
+  // En móvil, la posición vertical no se calcula con grid.height/rows.
+  // Se toma de la celda real para evitar que las barras caigan una semana arriba.
+  const cells=[...grid.querySelectorAll('.day')];
+  function segmentMetrics(row,colS,colE){
+    if(mobile){
+      const a=cells[row*cols+colS];
+      const b=cells[row*cols+colE];
+      if(a && b){
+        const ar=a.getBoundingClientRect();
+        const br=b.getBoundingClientRect();
+        return {x:ar.left-wRect.left, y:ar.top-wRect.top, w:br.right-ar.left};
+      }
+    }
+    const ox=gRect.left-wRect.left, oy=gRect.top-wRect.top;
+    return {
+      x:ox+colS*(cellW+gap),
+      y:oy+row*(cellH+gap),
+      w:(colE-colS+1)*cellW+(colE-colS)*gap
+    };
+  }
 
   // slot grid compartido para TODOS los elementos
   const slotGrid={};
@@ -1199,8 +1207,10 @@ function paintBands(days, ymdIdx, grid, rows, winS, winE){
 
       segments.forEach(({row,colS,colE,w},si)=>{
         const isFirst=(row===rowS), isLast=(row===rowE);
-        const x=ox+colS*(cellW+gap);
-        const y=oy+row*(cellH+gap)+BAND_TOP+slot*SLOT_H;
+        const m=segmentMetrics(row,colS,colE);
+        const x=m.x;
+        const y=m.y+BAND_TOP+slot*SLOT_H;
+        w=m.w;
         const isCenterSeg=(si===widestIdx);
         let lbl=null;
         if(isCenterSeg){
@@ -1212,9 +1222,10 @@ function paintBands(days, ymdIdx, grid, rows, winS, winE){
     } else {
       const row=Math.floor(idxS/cols);
       const colS=idxS%cols;
-      const x=ox+colS*(cellW+gap);
-      const y=oy+row*(cellH+gap)+BAND_TOP+slot*SLOT_H;
-      const w=cellW;
+      const m=segmentMetrics(row,colS,colS);
+      const x=m.x;
+      const y=m.y+BAND_TOP+slot*SLOT_H;
+      const w=m.w;
       let label=mobile ? (el.short||el.name||'').replace(/\s+con\s+.*/i,'').replace(/academia/i,'acad.').slice(0,14) : el.name;
       const hs=el.hourS||el.timeS;
       const he=el.hourE||el.timeE;
