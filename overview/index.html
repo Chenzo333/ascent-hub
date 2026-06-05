@@ -417,65 +417,113 @@ const DEFAULT_AREAS = [
 ];
 let AREAS = JSON.parse(localStorage.getItem('ov_areas') || 'null') || DEFAULT_AREAS;
 let hiddenAreas = new Set(JSON.parse(localStorage.getItem('ov_hidden_areas') || '[]'));
-if (hiddenAreas.size >= DEFAULT_AREAS.length) { hiddenAreas.clear(); localStorage.removeItem('ov_hidden_areas'); }
 function saveHiddenAreas(){ localStorage.setItem('ov_hidden_areas', JSON.stringify([...hiddenAreas])); }
 // saveAreas definida más abajo junto con loadFromFirestore (con sync a Firestore)
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
 let data = {elements:[], nid:1};
 let db = null, auth = null, currentUser = null;
-let unsubscribeOverview = null;
-let applyingRemote = false;
-let syncingNow = false;
+let overviewUnsub = null;
+let activeCloudRef = null;
+let cloudReady = false;
+let pendingCloudSave = false;
+let lastCloudError = null;
 
 function getLocalData(){
   try{
     const s=localStorage.getItem('ov3');
-    if(!s) return {elements:[], nid:1};
+    if(!s) return null;
     const p=JSON.parse(s);
-    return {elements:Array.isArray(p.elements)?p.elements:[], nid:p.nid||1};
-  }catch(e){
-    return {elements:[], nid:1};
+    if(!p || !Array.isArray(p.elements)) return null;
+    return {elements:p.elements||[], nid:p.nid||1};
+  }catch(e){ return null; }
+}
+function setLocalData(next){
+  localStorage.setItem('ov3', JSON.stringify({elements:next.elements||[], nid:next.nid||1}));
+}
+function cleanForFirestore(value){
+  if(Array.isArray(value)) return value.map(cleanForFirestore).filter(v=>v!==undefined);
+  if(value && typeof value==='object'){
+    const out={};
+    Object.keys(value).forEach(k=>{
+      const v=cleanForFirestore(value[k]);
+      if(v!==undefined) out[k]=v;
+    });
+    return out;
+  }
+  if(value===undefined || typeof value==='function') return undefined;
+  return value;
+}
+function normalizeData(input){
+  const raw = input && Array.isArray(input.elements) ? input.elements : [];
+  const elements = raw.map(cleanForFirestore).filter(el=>el && el.id!=null && el.name && el.type);
+  const maxId = elements.reduce((m,el)=>Math.max(m, Number(el.id)||0), 0);
+  const nid = Math.max(Number(input?.nid)||1, maxId+1);
+  return {elements, nid};
+}
+function cloudPayload(){
+  return cleanForFirestore({ elements:data.elements, nid:data.nid, areas:AREAS, updatedAt:Date.now() });
+}
+function cloudCandidates(uid){
+  return [
+    db.doc(`users/${uid}/overview/data`),
+    db.doc(`overview/${uid}`),
+    db.doc(`overviewData/${uid}`),
+    db.doc(`users/${uid}`)
+  ];
+}
+function extractDataFromDoc(doc){
+  if(!doc || !doc.exists) return null;
+  const d=doc.data() || {};
+  if(Array.isArray(d.elements)) return {data:normalizeData(d), areas:Array.isArray(d.areas)?d.areas:null};
+  if(d.overview && Array.isArray(d.overview.elements)) return {data:normalizeData(d.overview), areas:Array.isArray(d.overview.areas)?d.overview.areas:null};
+  return null;
+}
+async function writeToRef(ref){
+  const payload = cloudPayload();
+  // users/{uid} puede necesitar guardar dentro de overview para no pisar otros campos.
+  if(ref.path.split('/').length===2 && ref.path.startsWith('users/')){
+    await ref.set({ overview: payload }, { merge:true });
+  } else {
+    await ref.set(payload, { merge:true });
   }
 }
-function setLocalData(d){
-  localStorage.setItem('ov3', JSON.stringify({elements:d.elements||[], nid:d.nid||1}));
-}
-function normalizeElementForCompare(el){
-  const copy={...el};
-  delete copy.id;
-  return JSON.stringify(copy, Object.keys(copy).sort());
-}
-function mergeOverviewData(remote, local){
-  const merged=[];
-  const byId=new Map();
-  const sigs=new Set();
-  let maxId=0;
-  function addElement(src){
-    if(!src || typeof src!=='object') return;
-    const el={...src};
-    const sig=normalizeElementForCompare(el);
-    if(sigs.has(sig)) return;
-    let id=Number(el.id);
-    if(!Number.isFinite(id) || id<=0 || byId.has(id)){
-      id=maxId+1;
-      el.id=id;
+async function chooseReadableCloudRef(){
+  const refs=cloudCandidates(currentUser.uid);
+  let firstReadable=null;
+  let firstExisting=null;
+  for(const ref of refs){
+    try{
+      const snap=await ref.get();
+      if(!firstReadable) firstReadable=ref;
+      const ex=extractDataFromDoc(snap);
+      if(ex){ firstExisting={ref, snap, extracted:ex}; break; }
+    }catch(e){
+      console.warn('Overview cloud read failed:', ref.path, e.code || e.message || e);
     }
-    maxId=Math.max(maxId,id);
-    byId.set(id,el);
-    sigs.add(sig);
-    merged.push(el);
   }
-  (remote?.elements||[]).forEach(addElement);
-  (local?.elements||[]).forEach(addElement);
-  const nid=Math.max(remote?.nid||1, local?.nid||1, maxId+1);
-  return {elements:merged, nid};
+  return firstExisting || (firstReadable ? {ref:firstReadable, snap:null, extracted:null} : null);
 }
-function overviewDoc(){
-  return db && currentUser ? db.doc(`users/${currentUser.uid}/overview/data`) : null;
-}
-function showSyncWarning(msg){
-  console.warn(msg);
+async function chooseWritableCloudRef(){
+  const refs = activeCloudRef ? [activeCloudRef, ...cloudCandidates(currentUser.uid).filter(r=>r.path!==activeCloudRef.path)] : cloudCandidates(currentUser.uid);
+  let lastErr=null;
+  for(const ref of refs){
+    try{
+      await writeToRef(ref);
+      activeCloudRef = ref;
+      cloudReady = true;
+      pendingCloudSave = false;
+      lastCloudError = null;
+      return ref;
+    }catch(e){
+      lastErr=e;
+      console.warn('Overview cloud write failed:', ref.path, e.code || e.message || e);
+    }
+  }
+  cloudReady = false;
+  pendingCloudSave = true;
+  lastCloudError = lastErr;
+  throw lastErr || new Error('No cloud ref writable');
 }
 
 async function initFirebase() {
@@ -494,20 +542,19 @@ async function initFirebase() {
     });
   }
   db   = firebase.firestore();
-  try { db.settings({ ignoreUndefinedProperties: true }); } catch(e) {}
+  try{ db.settings({ ignoreUndefinedProperties:true }); }catch(e){}
   auth = firebase.auth();
 
-  try{ await auth.getRedirectResult(); }catch(e){ console.warn('Google redirect login error:', e); }
-
-  // escuchar cambios de sesión
   auth.onAuthStateChanged(user => {
+    if(overviewUnsub){ overviewUnsub(); overviewUnsub=null; }
+    activeCloudRef = null;
+    cloudReady = false;
     currentUser = user;
     updateUserUI(user);
-    if (unsubscribeOverview) { unsubscribeOverview(); unsubscribeOverview = null; }
-    if (user) {
-      loadFromFirestore();
-    } else {
-      data = getLocalData();
+    if (user) loadFromFirestore();
+    else {
+      const local = getLocalData();
+      data = local || {elements:[], nid:1};
       render();
     }
   });
@@ -527,7 +574,7 @@ function updateUserUI(user) {
     userPhoto.src = user.photoURL || '';
     userName.textContent = user.displayName || user.email;
     userEmail.textContent = user.email || '';
-    addBtn.style.display = 'none'; // click en celda abre modal
+    addBtn.style.display = 'none';
   } else {
     loginBtn.classList.remove('hide');
     avatarWrap.classList.add('hide');
@@ -537,14 +584,8 @@ function updateUserUI(user) {
 
 document.getElementById('loginBtn').addEventListener('click', async () => {
   const provider = new firebase.auth.GoogleAuthProvider();
-  try {
-    await auth.signInWithPopup(provider);
-  } catch(e) {
-    console.warn('Popup login failed, using redirect:', e);
-    try { await auth.signInWithRedirect(provider); } catch(e2) { console.error(e2); }
-  }
+  try { await auth.signInWithPopup(provider); } catch(e) { console.error(e); }
 });
-// logout desde el dropdown del avatar
 document.getElementById('logoutItem').addEventListener('click', async () => {
   document.getElementById('avatarDropdown').classList.remove('open');
   await auth.signOut();
@@ -562,76 +603,76 @@ function loadScript(src) {
 
 async function loadFromFirestore() {
   if (!currentUser || !db) return;
-  const ref = overviewDoc();
-  const local = getLocalData();
   try {
-    const snap = await ref.get();
-    const remote = snap.exists ? (snap.data() || {}) : {elements:[], nid:1};
-    const merged = mergeOverviewData(remote, local);
-    data = merged;
+    const found = await chooseReadableCloudRef();
+    const local = getLocalData();
 
-    if (remote.areas && Array.isArray(remote.areas) && remote.areas.length > 0) {
-      AREAS = remote.areas;
-      localStorage.setItem('ov_areas', JSON.stringify(AREAS));
+    if(found && found.extracted){
+      activeCloudRef = found.ref;
+      data = found.extracted.data;
+      if(found.extracted.areas && found.extracted.areas.length){
+        AREAS = found.extracted.areas;
+        localStorage.setItem('ov_areas', JSON.stringify(AREAS));
+      }
+      setLocalData(data);
+      cloudReady = true;
+    } else {
+      // Primera vez: si este dispositivo tiene datos locales, migrarlos a la nube.
+      data = normalizeData(local || {elements:[], nid:1});
+      setLocalData(data);
+      if(found) activeCloudRef = found.ref;
+      await chooseWritableCloudRef();
     }
 
-    setLocalData(data);
-    const remoteCount = Array.isArray(remote.elements) ? remote.elements.length : 0;
-    const localCount = Array.isArray(local.elements) ? local.elements.length : 0;
-    if (!snap.exists || localCount > remoteCount || merged.elements.length !== remoteCount) {
-      await ref.set(cloudPayload(), { merge:true });
+    render();
+
+    if(activeCloudRef){
+      overviewUnsub = activeCloudRef.onSnapshot(doc => {
+        const ex = extractDataFromDoc(doc);
+        if(!ex) return;
+        data = ex.data;
+        if(ex.areas && ex.areas.length){
+          AREAS = ex.areas;
+          localStorage.setItem('ov_areas', JSON.stringify(AREAS));
+          rebuildLegend();
+        }
+        setLocalData(data);
+        render();
+      }, e => {
+        cloudReady = false;
+        pendingCloudSave = true;
+        lastCloudError = e;
+        console.warn('Overview cloud realtime failed:', e.code || e.message || e);
+      });
     }
   } catch(e) {
-    showSyncWarning('Firestore load error: ' + (e?.message || e));
-    data = local;
-  }
-  render();
-
-  unsubscribeOverview = ref.onSnapshot(snap => {
-    if (!snap.exists || syncingNow) return;
-    const d = snap.data() || {};
-    applyingRemote = true;
-    data.elements = Array.isArray(d.elements) ? d.elements : [];
-    data.nid = d.nid || 1;
-    if (d.areas && Array.isArray(d.areas) && d.areas.length > 0) {
-      AREAS = d.areas;
-      localStorage.setItem('ov_areas', JSON.stringify(AREAS));
-      rebuildLegend();
-      buildAreaOpts();
-    }
-    setLocalData(data);
+    console.warn('Overview cloud load/write error:', e.code || e.message || e);
+    lastCloudError = e;
+    pendingCloudSave = true;
+    const local = getLocalData();
+    data = local || {elements:[], nid:1};
     render();
-    applyingRemote = false;
-  }, e => showSyncWarning('Firestore realtime error: ' + (e?.message || e)));
+  }
 }
 
 async function save() {
+  data = normalizeData(data);
   setLocalData(data);
-  if (!currentUser || !db) {
-    showSyncWarning('No hay usuario conectado: guardado solo en este dispositivo.');
-    return false;
-  }
-  if (applyingRemote) return true;
-  syncingNow = true;
-  try {
-    await overviewDoc().set(cloudPayload(), { merge:true });
-    return true;
-  } catch(e) {
-    showSyncWarning('Firestore save error: ' + (e?.message || e));
-    alert('No se pudo sincronizar con Google. Error real: ' + (e?.code || '') + ' ' + (e?.message || e));
-    return false;
-  } finally {
-    syncingNow = false;
+  if (currentUser && db) {
+    try {
+      await chooseWritableCloudRef();
+    } catch(e) {
+      const msg = e?.code || e?.message || String(e);
+      console.warn('Overview cloud save failed:', msg);
+      alert('No se pudo sincronizar con la nube. Error real: '+msg+'\n\nEl cambio quedó solo en este dispositivo.');
+    }
   }
 }
 
 function saveAreas(){
   localStorage.setItem('ov_areas', JSON.stringify(AREAS));
   if(currentUser && db){
-    syncingNow = true;
-    overviewDoc().set(cloudPayload(), { merge:true })
-      .catch(e=>showSyncWarning('Firestore areas save error: ' + (e?.message || e)))
-      .finally(()=>{ syncingNow = false; });
+    save();
   }
 }
 
@@ -897,11 +938,10 @@ function render(){
     cell.appendChild(dn);
 
     const ci=document.createElement('div');ci.className='cell-items';cell.appendChild(ci);
-    // Fallback móvil: además de las bandas absolutas, pinta los eventos dentro
-    // de la celda para que nunca queden invisibles en pantallas chicas.
+    // Fallback móvil: si las bandas absolutas no entran/son tapadas, los mismos datos
+    // también quedan visibles dentro de la celda. Desktop no usa este fallback.
     addMobileCellEvents(dy, ci);
     cell.dataset.ymd=dy;
-    addMobileCellEvents(dy, ci);
 
     cell.addEventListener('mousedown',e=>{
       if(e.button!==0)return;
@@ -1321,7 +1361,7 @@ document.getElementById('mSave').addEventListener('click',()=>{
 
   if(mEditId) data.elements=data.elements.map(e=>e.id===mEditId?el:e);
   else data.elements.push(el);
-  save(); closeModal();
+  save().then(()=>render()); closeModal();
 });
 
 /* ═══════════════════════════════════════════════
@@ -1546,8 +1586,9 @@ function rebuildLegend(){
   });
 }
 
-// Render inmediato con localStorage — Firebase actualiza después si hay sesión
-try{const s=localStorage.getItem('ov3');if(s){const p=JSON.parse(s);data=p;}}catch(e){}
+// Render inmediato local solo como vista provisoria. Si hay login, Firestore se vuelve fuente única.
+const bootLocal = getLocalData();
+if(bootLocal) data = bootLocal;
 render();
 
 // Scroll rueda — avanza por mes en modo mes, por semana en otros modos
