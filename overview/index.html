@@ -417,74 +417,77 @@ const DEFAULT_AREAS = [
 ];
 let AREAS = JSON.parse(localStorage.getItem('ov_areas') || 'null') || DEFAULT_AREAS;
 let hiddenAreas = new Set(JSON.parse(localStorage.getItem('ov_hidden_areas') || '[]'));
+if (hiddenAreas.size >= DEFAULT_AREAS.length) { hiddenAreas.clear(); localStorage.removeItem('ov_hidden_areas'); }
 function saveHiddenAreas(){ localStorage.setItem('ov_hidden_areas', JSON.stringify([...hiddenAreas])); }
 // saveAreas definida más abajo junto con loadFromFirestore (con sync a Firestore)
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
 let data = {elements:[], nid:1};
 let db = null, auth = null, currentUser = null;
-let overviewUnsub = null;
-let activeCloudRef = null;
-let cloudReady = false;
-let pendingCloudSave = false;
-let lastCloudError = null;
+let unsubscribeOverview = null;
+let applyingRemote = false;
+let syncingNow = false;
 
 function getLocalData(){
   try{
     const s=localStorage.getItem('ov3');
-    if(!s) return null;
+    if(!s) return {elements:[], nid:1};
     const p=JSON.parse(s);
-    if(!p || !Array.isArray(p.elements)) return null;
-    return {elements:p.elements||[], nid:p.nid||1};
-  }catch(e){ return null; }
-}
-function setLocalData(next){
-  localStorage.setItem('ov3', JSON.stringify({elements:next.elements||[], nid:next.nid||1}));
-}
-function cleanForFirestore(value){
-  if(Array.isArray(value)) return value.map(cleanForFirestore).filter(v=>v!==undefined);
-  if(value && typeof value==='object'){
-    const out={};
-    Object.keys(value).forEach(k=>{
-      const v=cleanForFirestore(value[k]);
-      if(v!==undefined) out[k]=v;
-    });
-    return out;
+    return {elements:Array.isArray(p.elements)?p.elements:[], nid:p.nid||1};
+  }catch(e){
+    return {elements:[], nid:1};
   }
-  if(value===undefined || typeof value==='function') return undefined;
-  return value;
 }
-function normalizeData(input){
-  const raw = input && Array.isArray(input.elements) ? input.elements : [];
-  const elements = raw.map(cleanForFirestore).filter(el=>el && el.id!=null && el.name && el.type);
-  const maxId = elements.reduce((m,el)=>Math.max(m, Number(el.id)||0), 0);
-  const nid = Math.max(Number(input?.nid)||1, maxId+1);
-  return {elements, nid};
+function setLocalData(d){
+  localStorage.setItem('ov3', JSON.stringify({elements:d.elements||[], nid:d.nid||1}));
 }
-// ── RUTA CANONICA UNICA ──────────────────────────────────────────────────────
-// Todos los dispositivos leen y escriben SIEMPRE en users/{uid}/overview/data.
-// Esto garantiza sincronizacion real entre PC y movil.
-function canonicalRef(uid){
-  return db.doc('users/' + uid + '/overview/data');
+function normalizeElementForCompare(el){
+  const copy={...el};
+  delete copy.id;
+  return JSON.stringify(copy, Object.keys(copy).sort());
 }
+function mergeOverviewData(remote, local){
+  const merged=[];
+  const byId=new Map();
+  const sigs=new Set();
+  let maxId=0;
+  function addElement(src){
+    if(!src || typeof src!=='object') return;
+    const el={...src};
+    const sig=normalizeElementForCompare(el);
+    if(sigs.has(sig)) return;
+    let id=Number(el.id);
+    if(!Number.isFinite(id) || id<=0 || byId.has(id)){
+      id=maxId+1;
+      el.id=id;
+    }
+    maxId=Math.max(maxId,id);
+    byId.set(id,el);
+    sigs.add(sig);
+    merged.push(el);
+  }
+  (remote?.elements||[]).forEach(addElement);
+  (local?.elements||[]).forEach(addElement);
+  const nid=Math.max(remote?.nid||1, local?.nid||1, maxId+1);
+  return {elements:merged, nid};
+}
+function overviewDoc(){
+  // Misma estructura de ruta que TaskFlow: users/{uid}/data/{doc}.
+  // La ruta anterior users/{uid}/overview/data podía quedar fuera de las reglas de Firestore
+  // y provocar que cada dispositivo guardara solo en localStorage.
+  return db && currentUser ? db.doc(`users/${currentUser.uid}/data/overview`) : null;
+}
+
 function cloudPayload(){
-  return cleanForFirestore({ elements:data.elements, nid:data.nid, areas:AREAS, updatedAt:Date.now() });
+  return {
+    elements: Array.isArray(data.elements) ? data.elements : [],
+    nid: data.nid || 1,
+    areas: Array.isArray(AREAS) ? AREAS : DEFAULT_AREAS,
+    updatedAt: firebase && firebase.firestore && firebase.firestore.FieldValue ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
+  };
 }
-function extractDataFromDoc(doc){
-  if(!doc || !doc.exists) return null;
-  const d=doc.data() || {};
-  if(Array.isArray(d.elements)) return {data:normalizeData(d), areas:Array.isArray(d.areas)?d.areas:null};
-  if(d.overview && Array.isArray(d.overview.elements)) return {data:normalizeData(d.overview), areas:Array.isArray(d.overview.areas)?d.overview.areas:null};
-  return null;
-}
-async function writeCloud(){
-  const ref = canonicalRef(currentUser.uid);
-  const payload = cloudPayload();
-  await ref.set(payload, { merge:true });
-  activeCloudRef = ref;
-  cloudReady = true;
-  pendingCloudSave = false;
-  lastCloudError = null;
+function showSyncWarning(msg){
+  console.warn(msg);
 }
 
 async function initFirebase() {
@@ -503,19 +506,20 @@ async function initFirebase() {
     });
   }
   db   = firebase.firestore();
-  try{ db.settings({ ignoreUndefinedProperties:true }); }catch(e){}
+  try { db.settings({ ignoreUndefinedProperties: true }); } catch(e) {}
   auth = firebase.auth();
 
+  try{ await auth.getRedirectResult(); }catch(e){ console.warn('Google redirect login error:', e); }
+
+  // escuchar cambios de sesión
   auth.onAuthStateChanged(user => {
-    if(overviewUnsub){ overviewUnsub(); overviewUnsub=null; }
-    activeCloudRef = null;
-    cloudReady = false;
     currentUser = user;
     updateUserUI(user);
-    if (user) loadFromFirestore();
-    else {
-      const local = getLocalData();
-      data = local || {elements:[], nid:1};
+    if (unsubscribeOverview) { unsubscribeOverview(); unsubscribeOverview = null; }
+    if (user) {
+      loadFromFirestore();
+    } else {
+      data = getLocalData();
       render();
     }
   });
@@ -535,7 +539,7 @@ function updateUserUI(user) {
     userPhoto.src = user.photoURL || '';
     userName.textContent = user.displayName || user.email;
     userEmail.textContent = user.email || '';
-    addBtn.style.display = 'none';
+    addBtn.style.display = 'none'; // click en celda abre modal
   } else {
     loginBtn.classList.remove('hide');
     avatarWrap.classList.add('hide');
@@ -545,8 +549,14 @@ function updateUserUI(user) {
 
 document.getElementById('loginBtn').addEventListener('click', async () => {
   const provider = new firebase.auth.GoogleAuthProvider();
-  try { await auth.signInWithPopup(provider); } catch(e) { console.error(e); }
+  try {
+    await auth.signInWithPopup(provider);
+  } catch(e) {
+    console.warn('Popup login failed, using redirect:', e);
+    try { await auth.signInWithRedirect(provider); } catch(e2) { console.error(e2); }
+  }
 });
+// logout desde el dropdown del avatar
 document.getElementById('logoutItem').addEventListener('click', async () => {
   document.getElementById('avatarDropdown').classList.remove('open');
   await auth.signOut();
@@ -562,112 +572,78 @@ function loadScript(src) {
   });
 }
 
-// Busca datos en rutas legacy y los devuelve si existen
-async function findLegacyData(uid){
-  const legacyPaths = [
-    db.doc('overview/' + uid),
-    db.doc('overviewData/' + uid),
-    db.doc('users/' + uid)
-  ];
-  for(const r of legacyPaths){
-    try{
-      const s = await r.get();
-      const ex = extractDataFromDoc(s);
-      if(ex) return ex;
-    }catch(e){ /* sin permisos o no existe */ }
-  }
-  return null;
-}
-
 async function loadFromFirestore() {
   if (!currentUser || !db) return;
-  const ref = canonicalRef(currentUser.uid);
-  activeCloudRef = ref;
+  const ref = overviewDoc();
+  const local = getLocalData();
   try {
     const snap = await ref.get();
-    const extracted = extractDataFromDoc(snap);
+    const remote = snap.exists ? (snap.data() || {}) : {elements:[], nid:1};
+    const merged = mergeOverviewData(remote, local);
+    data = merged;
 
-    if(extracted){
-      // Hay datos en la ruta canónica: usarlos (fuente de verdad)
-      data = extracted.data;
-      if(extracted.areas && extracted.areas.length){
-        AREAS = extracted.areas;
-        localStorage.setItem('ov_areas', JSON.stringify(AREAS));
-      }
-      setLocalData(data);
-      cloudReady = true;
-    } else {
-      // Doc canónico vacío: buscar en rutas legacy (datos de versión anterior)
-      const legacy = await findLegacyData(currentUser.uid);
-      const local = getLocalData();
-      // Preferir legacy > local. Si legacy tiene más elementos, gana.
-      let source = null;
-      if(legacy && local){
-        source = legacy.data.elements.length >= local.elements.length ? legacy.data : local;
-        if(legacy.areas && legacy.areas.length) AREAS = legacy.areas;
-      } else if(legacy){
-        source = legacy.data;
-        if(legacy.areas && legacy.areas.length) AREAS = legacy.areas;
-      } else {
-        source = local || {elements:[], nid:1};
-      }
-      data = normalizeData(source);
-      setLocalData(data);
+    if (remote.areas && Array.isArray(remote.areas) && remote.areas.length > 0) {
+      AREAS = remote.areas;
       localStorage.setItem('ov_areas', JSON.stringify(AREAS));
-      // Migrar a la ruta canónica para que todos los dispositivos la encuentren
-      await writeCloud();
-      console.log('Overview: migrated data to canonical path', ref.path);
     }
 
-    render();
-
-    // Escuchar cambios en tiempo real desde cualquier dispositivo
-    overviewUnsub = ref.onSnapshot(doc => {
-      const ex = extractDataFromDoc(doc);
-      if(!ex) return;
-      data = ex.data;
-      if(ex.areas && ex.areas.length){
-        AREAS = ex.areas;
-        localStorage.setItem('ov_areas', JSON.stringify(AREAS));
-        rebuildLegend();
-      }
-      setLocalData(data);
-      render();
-    }, e => {
-      cloudReady = false;
-      pendingCloudSave = true;
-      lastCloudError = e;
-      console.warn('Overview realtime sync error:', e.code || e.message || e);
-    });
-
+    setLocalData(data);
+    const remoteCount = Array.isArray(remote.elements) ? remote.elements.length : 0;
+    const localCount = Array.isArray(local.elements) ? local.elements.length : 0;
+    if (!snap.exists || localCount > remoteCount || merged.elements.length !== remoteCount) {
+      await ref.set(cloudPayload(), { merge:true });
+    }
   } catch(e) {
-    console.warn('Overview cloud load error:', e.code || e.message || e);
-    lastCloudError = e;
-    pendingCloudSave = true;
-    const local = getLocalData();
-    data = local || {elements:[], nid:1};
-    render();
+    showSyncWarning('Firestore load error: ' + (e?.message || e));
+    data = local;
   }
+  render();
+
+  unsubscribeOverview = ref.onSnapshot(snap => {
+    if (!snap.exists || syncingNow) return;
+    const d = snap.data() || {};
+    applyingRemote = true;
+    data.elements = Array.isArray(d.elements) ? d.elements : [];
+    data.nid = d.nid || 1;
+    if (d.areas && Array.isArray(d.areas) && d.areas.length > 0) {
+      AREAS = d.areas;
+      localStorage.setItem('ov_areas', JSON.stringify(AREAS));
+      rebuildLegend();
+      buildAreaOpts();
+    }
+    setLocalData(data);
+    render();
+    applyingRemote = false;
+  }, e => showSyncWarning('Firestore realtime error: ' + (e?.message || e)));
 }
 
 async function save() {
-  data = normalizeData(data);
   setLocalData(data);
-  if (currentUser && db) {
-    try {
-      await writeCloud();
-    } catch(e) {
-      const msg = e?.code || e?.message || String(e);
-      console.warn('Overview cloud save failed:', msg);
-      alert('No se pudo sincronizar con Google.\nError: ' + msg);
-    }
+  if (!currentUser || !db) {
+    showSyncWarning('No hay usuario conectado: guardado solo en este dispositivo.');
+    return false;
+  }
+  if (applyingRemote) return true;
+  syncingNow = true;
+  try {
+    await overviewDoc().set(cloudPayload(), { merge:true });
+    return true;
+  } catch(e) {
+    showSyncWarning('Firestore save error: ' + (e?.message || e));
+    alert('No se pudo sincronizar con Google. Error real: ' + (e?.code || '') + ' ' + (e?.message || e));
+    return false;
+  } finally {
+    syncingNow = false;
   }
 }
 
 function saveAreas(){
   localStorage.setItem('ov_areas', JSON.stringify(AREAS));
   if(currentUser && db){
-    save();
+    syncingNow = true;
+    overviewDoc().set(cloudPayload(), { merge:true })
+      .catch(e=>showSyncWarning('Firestore areas save error: ' + (e?.message || e)))
+      .finally(()=>{ syncingNow = false; });
   }
 }
 
@@ -933,10 +909,11 @@ function render(){
     cell.appendChild(dn);
 
     const ci=document.createElement('div');ci.className='cell-items';cell.appendChild(ci);
-    // Fallback móvil: si las bandas absolutas no entran/son tapadas, los mismos datos
-    // también quedan visibles dentro de la celda. Desktop no usa este fallback.
+    // Fallback móvil: además de las bandas absolutas, pinta los eventos dentro
+    // de la celda para que nunca queden invisibles en pantallas chicas.
     addMobileCellEvents(dy, ci);
     cell.dataset.ymd=dy;
+    addMobileCellEvents(dy, ci);
 
     cell.addEventListener('mousedown',e=>{
       if(e.button!==0)return;
@@ -971,28 +948,7 @@ function render(){
   // pero ymdIdx solo incluye días activos, así que las bandas no se pintan en out-month
   const winS=days.find(d=>!d._outMonth)||days[0];
   const winE=[...days].reverse().find(d=>!d._outMonth)||days[days.length-1];
-
-  // En móvil el layout es height:auto — el grid puede no tener altura real en el primer rAF.
-  // Usamos un helper que reintenta hasta que getBoundingClientRect() tenga dimensiones válidas.
-  schedulePaintBands(days, ymdIdx, grid, rows, winS, winE);
-}
-
-function schedulePaintBands(days, ymdIdx, grid, rows, winS, winE){
-  let attempts=0;
-  function tryPaint(){
-    const r=grid.getBoundingClientRect();
-    // Si el grid ya tiene ancho y alto reales, pintamos. Si no, reintentamos hasta 12 veces.
-    if(r.width>10 && r.height>10){
-      paintBands(days, ymdIdx, grid, rows, winS, winE);
-    } else if(attempts<12){
-      attempts++;
-      setTimeout(tryPaint, attempts<=4 ? 30 : 80);
-    } else {
-      // Último intento de emergencia
-      paintBands(days, ymdIdx, grid, rows, winS, winE);
-    }
-  }
-  requestAnimationFrame(tryPaint);
+  requestAnimationFrame(()=>paintBands(days, ymdIdx, grid, rows, winS, winE));
 }
 
 /* ═══════════════════════════════════════════════
@@ -1006,17 +962,6 @@ function paintBands(days, ymdIdx, grid, rows, winS, winE){
   const wRect=wrap.getBoundingClientRect();
   const ox=gRect.left-wRect.left, oy=gRect.top-wRect.top;
   const mobile=isMobileCalendar();
-
-  // En móvil: si el grid no tiene dimensiones reales, salir.
-  // El fallback addMobileCellEvents ya pintó los datos dentro de cada celda.
-  if(mobile && (gRect.width < 10 || gRect.height < 10)) return;
-
-  // En móvil con scroll, las coordenadas absolutas de getBoundingClientRect cambian
-  // según la posición de scroll, lo que desplaza las bandas. El fallback inline
-  // (addMobileCellEvents) ya pintó todos los eventos correctamente dentro de cada celda.
-  // Saltamos el pintado absoluto en móvil para evitar duplicados y desplazamientos.
-  if(mobile) return;
-
   const cols=7, gap=mobile?4:5;
   const cellW=(gRect.width-(cols-1)*gap)/cols;
   const cellH=(gRect.height-(rows-1)*gap)/rows;
@@ -1388,7 +1333,7 @@ document.getElementById('mSave').addEventListener('click',()=>{
 
   if(mEditId) data.elements=data.elements.map(e=>e.id===mEditId?el:e);
   else data.elements.push(el);
-  save().then(()=>render()); closeModal();
+  save(); closeModal();
 });
 
 /* ═══════════════════════════════════════════════
@@ -1613,9 +1558,8 @@ function rebuildLegend(){
   });
 }
 
-// Render inmediato local solo como vista provisoria. Si hay login, Firestore se vuelve fuente única.
-const bootLocal = getLocalData();
-if(bootLocal) data = bootLocal;
+// Render inmediato con localStorage — Firebase actualiza después si hay sesión
+try{const s=localStorage.getItem('ov3');if(s){const p=JSON.parse(s);data=p;}}catch(e){}
 render();
 
 // Scroll rueda — avanza por mes en modo mes, por semana en otros modos
