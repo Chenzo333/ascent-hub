@@ -748,6 +748,19 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 }
 </style>
 
+
+<style id="cumbre-vision-v1-style">
+:root{--vision:#7C3AED;--vision2:#A855F7;--vision-soft:rgba(124,58,237,.09);--vision-border:rgba(124,58,237,.18)}
+.vision-page{gap:18px!important}
+.vision-hero{background:linear-gradient(135deg,rgba(124,58,237,.10),rgba(255,255,255,.96) 55%,rgba(232,112,58,.06));border:1px solid var(--border);border-radius:24px;padding:24px 26px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow-md);overflow:hidden;position:relative}.vision-hero::after{content:'';position:absolute;right:-80px;top:-80px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.16),transparent 70%)}.vision-kicker{display:flex;align-items:center;gap:9px;color:var(--vision);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.vision-title{font-size:28px;font-weight:750;letter-spacing:-1px;margin-top:8px;color:var(--t1)}.vision-sub{font-size:13px;color:var(--t3);margin-top:4px;max-width:560px}.vision-morning-btn{border:1px solid var(--vision-border);background:var(--vision);color:white;border-radius:14px;padding:12px 18px;font-family:var(--font);font-size:13px;font-weight:650;display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:0 10px 24px rgba(124,58,237,.18);position:relative;z-index:1}.vision-morning-btn:hover{filter:brightness(.98);transform:translateY(-1px)}
+.vision-grid{display:grid;grid-template-columns:300px 1fr;gap:16px}.vision-card{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:var(--shadow-sm)}.vision-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}.vision-card-title{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:750;color:var(--t1);letter-spacing:-.2px}.vision-card-title i{color:var(--vision);font-size:18px}.vision-mini{font-size:11px;color:var(--t3);margin-top:2px}.vision-edit{border:0;background:transparent;color:var(--vision);font-size:11px;font-weight:650;cursor:pointer}.identity-list{display:flex;flex-direction:column;gap:13px;margin-top:6px}.identity-item{display:flex;gap:10px;font-size:13px;color:var(--t1);line-height:1.45}.identity-dot{width:7px;height:7px;border-radius:50%;background:var(--vision);margin-top:7px;box-shadow:0 0 0 4px var(--vision-soft);flex:0 0 auto}
+.vision-goals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.vg-card{border:1px solid var(--border);border-radius:16px;padding:15px;background:white;min-height:202px}.vg-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.vg-name{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;display:flex;align-items:center;gap:7px}.vg-status{display:inline-flex;margin-top:9px;border-radius:999px;padding:4px 9px;font-size:10.5px;font-weight:650}.vg-status.green{background:var(--green-soft);color:var(--green)}.vg-status.blue{background:var(--blue-soft);color:var(--blue)}.vg-status.purple{background:var(--vision-soft);color:var(--vision)}.vg-status.orange{background:var(--accent-soft);color:var(--accent)}.vg-list{display:flex;flex-direction:column;gap:9px;margin-top:16px}.vg-list div{display:flex;gap:7px;font-size:11.5px;color:var(--t2);line-height:1.35}.vg-list i{font-size:13px;margin-top:1px;color:currentColor;flex:0 0 auto}.c-trading{color:#22C55E}.c-academia{color:#2563EB}.c-musica{color:#7C3AED}.c-personal{color:#EA580C}
+.vision-future-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.vf-card{min-height:230px;border-radius:18px;overflow:hidden;position:relative;padding:18px;color:white;display:flex;flex-direction:column;justify-content:flex-end;box-shadow:var(--shadow-md);background-size:cover;background-position:center}.vf-card::before{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.86),rgba(0,0,0,.38),rgba(0,0,0,.10))}.vf-card>*{position:relative}.vf-title{font-size:20px;font-weight:850;letter-spacing:-.6px;text-transform:uppercase}.vf-lines{font-size:12px;line-height:1.65;margin-top:10px;color:rgba(255,255,255,.9)}.vf-trading{background-image:linear-gradient(135deg,#101827,#0f172a)}.vf-academia{background-image:linear-gradient(135deg,#1f2937,#111827)}.vf-musica{background-image:linear-gradient(135deg,#221a35,#0b0b12)}.vf-personal{background-image:linear-gradient(135deg,#2b2118,#101114)}
+.affirm-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.affirm-card{background:linear-gradient(135deg,var(--vision-soft),rgba(255,255,255,.95));border:1px solid var(--vision-border);border-radius:14px;padding:18px 14px;min-height:92px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;font-weight:650;line-height:1.4;color:var(--t1);position:relative}.affirm-card::before{content:'“';position:absolute;left:12px;top:6px;color:rgba(124,58,237,.28);font-size:26px;font-weight:800}
+.morning-overlay{position:fixed;inset:0;z-index:2147483100;background:radial-gradient(circle at 50% 0%,rgba(124,58,237,.38),transparent 45%),linear-gradient(180deg,#17142d,#050712 72%);color:white;display:none;align-items:center;justify-content:center;padding:24px}.morning-overlay.open{display:flex}.morning-shell{width:min(520px,100%);min-height:min(760px,calc(100dvh - 48px));display:flex;flex-direction:column;justify-content:space-between}.morning-screen{display:none;animation:fadeUp .25s ease both}.morning-screen.active{display:block}.morning-close{align-self:flex-start;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.72);border-radius:999px;padding:8px 12px;font-family:var(--font);cursor:pointer}.morning-center{text-align:center;padding-top:12vh}.morning-sun{width:70px;height:70px;border-radius:50%;margin:0 auto 26px;background:linear-gradient(135deg,#FDBA74,#FDE68A);display:flex;align-items:center;justify-content:center;color:#5B21B6;font-size:36px;box-shadow:0 0 70px rgba(251,191,36,.28)}.morning-title{font-size:38px;font-weight:850;line-height:1.05;letter-spacing:-1px}.morning-sub{font-size:16px;line-height:1.55;color:rgba(255,255,255,.78);margin:28px auto 0;max-width:350px}.morning-panel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);border-radius:22px;padding:22px;margin-bottom:14px;backdrop-filter:blur(16px)}.morning-panel h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;color:white;display:flex;align-items:center;gap:8px}.morning-panel ul{padding-left:18px;color:rgba(255,255,255,.88);line-height:1.9;font-size:14px}.morning-priorities{display:flex;flex-direction:column;gap:12px}.morning-priority{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:650}.morning-num{width:30px;height:30px;border-radius:50%;background:var(--vision);display:flex;align-items:center;justify-content:center}.morning-quote{text-align:center;font-size:20px;line-height:1.45;font-weight:650;color:rgba(255,255,255,.92);padding:12px}.morning-actions{display:flex;flex-direction:column;gap:12px}.morning-next{width:100%;border:0;background:var(--vision);color:white;border-radius:16px;padding:15px 18px;font-family:var(--font);font-size:14px;font-weight:750;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}.morning-dots{display:flex;justify-content:center;gap:8px;margin-top:4px}.morning-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22)}.morning-dots span.on{background:white}
+@media(max-width:767px){#page-vision.page.active{padding:12px 14px 88px!important;overflow-y:auto!important;gap:12px!important}.vision-hero{padding:18px;border-radius:20px;align-items:flex-start;flex-direction:column;gap:14px}.vision-title{font-size:24px}.vision-sub{font-size:12px}.vision-morning-btn{width:100%;justify-content:center}.vision-grid{display:flex;flex-direction:column;gap:12px}.vision-card{padding:16px;border-radius:18px}.vision-goals{display:flex;flex-direction:column;gap:12px}.vg-card{min-height:0}.vision-future-grid{display:flex;flex-direction:column;gap:12px}.vf-card{min-height:190px}.affirm-grid{display:flex;flex-direction:column;gap:10px}.affirm-card{min-height:72px}.morning-overlay{padding:16px}.morning-shell{min-height:calc(100dvh - 32px)}.morning-title{font-size:34px}.morning-center{padding-top:9vh}.morning-panel{padding:18px;border-radius:18px}.sidebar-nav .nav-item{padding-top:10px!important;padding-bottom:10px!important}}
+</style>
+
 </head>
 <body>
 
@@ -800,6 +813,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="nav-item" onclick="showPage('noventa',this)"><i class="ti ti-layout-columns"></i> 90's</div>
       <div class="nav-item" onclick="showPage('metas',this)"><i class="ti ti-target"></i> Mis metas</div>
       <div class="nav-item" onclick="showPage('notas',this)"><i class="ti ti-notebook"></i> Notas</div>
+      <div class="nav-item" onclick="showPage('vision',this)"><i class="ti ti-eye"></i> Visión</div>
       <div class="nav-item" onclick="showPage('stats',this)"><i class="ti ti-chart-bar"></i> Estadísticas</div>
       <div class="nav-item" onclick="showPage('logros',this)"><i class="ti ti-trophy"></i> Logros</div>
       <div class="nav-item" onclick="showPage('ajustes',this)"><i class="ti ti-settings"></i> Ajustes</div>
@@ -952,6 +966,76 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
             <p>Seleccioná una nota o creá una nueva</p>
           </div>
         </div>
+      </div>
+    </div>
+
+
+    <!-- VISION V1 -->
+    <div id="page-vision" class="page vision-page">
+      <div class="vision-hero">
+        <div>
+          <div class="vision-kicker"><i class="ti ti-eye"></i> Visión</div>
+          <div class="vision-title">Identidad, objetivos y afirmaciones</div>
+          <div class="vision-sub">Un panel para leer a la mañana, recordar quién sos y orientar el día hacia tus metas importantes.</div>
+        </div>
+        <button class="vision-morning-btn" onclick="openMorningMode()"><i class="ti ti-sun"></i> Modo Mañana</button>
+      </div>
+
+      <div class="vision-grid">
+        <div class="vision-card">
+          <div class="vision-card-head">
+            <div><div class="vision-card-title"><i class="ti ti-user-circle"></i> Identidad</div><div class="vision-mini">Quién soy. No negocio estas cosas.</div></div>
+            <button class="vision-edit" onclick="showToast('Edición de Visión: próxima versión')">Editar</button>
+          </div>
+          <div class="identity-list">
+            <div class="identity-item"><span class="identity-dot"></span><span>Ejecuto aunque no tenga ganas.</span></div>
+            <div class="identity-item"><span class="identity-dot"></span><span>Elijo progreso sobre comodidad.</span></div>
+            <div class="identity-item"><span class="identity-dot"></span><span>Termino lo que empiezo.</span></div>
+            <div class="identity-item"><span class="identity-dot"></span><span>No necesito motivación para actuar.</span></div>
+            <div class="identity-item"><span class="identity-dot"></span><span>Respeto mi proceso.</span></div>
+          </div>
+        </div>
+        <div class="vision-card">
+          <div class="vision-card-head">
+            <div><div class="vision-card-title"><i class="ti ti-target-arrow"></i> Objetivos inevitables 2026</div><div class="vision-mini">Lo que voy a construir este año.</div></div>
+            <button class="vision-edit" onclick="showToast('Edición de Visión: próxima versión')">Editar</button>
+          </div>
+          <div class="vision-goals">
+            <div class="vg-card"><div class="vg-top"><div class="vg-name c-trading"><i class="ti ti-trending-up"></i> Trading</div><i class="ti ti-chevron-right"></i></div><span class="vg-status green">En construcción</span><div class="vg-list"><div><i class="ti ti-circle-check"></i>Fondear cuenta principal.</div><div><i class="ti ti-circle-check"></i>Mantener consistencia.</div><div><i class="ti ti-circle-check"></i>Realizar retiros mensuales.</div><div><i class="ti ti-circle-check"></i>Operar como profesional.</div></div></div>
+            <div class="vg-card"><div class="vg-top"><div class="vg-name c-academia"><i class="ti ti-school"></i> Academia LUZ</div><i class="ti ti-chevron-right"></i></div><span class="vg-status blue">En marcha</span><div class="vg-list"><div><i class="ti ti-circle-check"></i>Completar ocupación.</div><div><i class="ti ti-circle-check"></i>Profesionalizar procesos.</div><div><i class="ti ti-circle-check"></i>Consolidar equipo docente.</div><div><i class="ti ti-circle-check"></i>Construir el mejor año lectivo.</div></div></div>
+            <div class="vg-card"><div class="vg-top"><div class="vg-name c-musica"><i class="ti ti-music"></i> Música</div><i class="ti ti-chevron-right"></i></div><span class="vg-status purple">Despertando</span><div class="vg-list"><div><i class="ti ti-circle-check"></i>Ordenar catálogo.</div><div><i class="ti ti-circle-check"></i>Finalizar canciones.</div><div><i class="ti ti-circle-check"></i>Lanzar primer EP.</div><div><i class="ti ti-circle-check"></i>Construir identidad artística.</div></div></div>
+            <div class="vg-card"><div class="vg-top"><div class="vg-name c-personal"><i class="ti ti-leaf"></i> Personal</div><i class="ti ti-chevron-right"></i></div><span class="vg-status orange">Activo</span><div class="vg-list"><div><i class="ti ti-circle-check"></i>Entrenar regularmente.</div><div><i class="ti ti-circle-check"></i>Leer todos los meses.</div><div><i class="ti ti-circle-check"></i>Mantener hábitos.</div><div><i class="ti ti-circle-check"></i>Construir salud a largo plazo.</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-card-head"><div><div class="vision-card-title"><i class="ti ti-eye"></i> Visión de futuro</div><div class="vision-mini">Así veo mi vida cuando todo esto se haya hecho realidad.</div></div><button class="vision-edit" onclick="showToast('Edición de Visión: próxima versión')">Editar</button></div>
+        <div class="vision-future-grid">
+          <div class="vf-card vf-trading"><div class="vf-title">Trading</div><div class="vf-lines">• No veo una cuenta fondeada.<br>• Veo retiros constantes.<br>• Veo tranquilidad.<br>• Veo decisiones profesionales.</div></div>
+          <div class="vf-card vf-academia"><div class="vf-title">Academia</div><div class="vf-lines">• No veo cursos.<br>• Veo una empresa funcionando sola.<br>• Veo alumnas felices.<br>• Veo crecimiento sostenido.</div></div>
+          <div class="vf-card vf-musica"><div class="vf-title">Música</div><div class="vf-lines">• No veo canciones guardadas.<br>• Veo temas publicados.<br>• Veo una obra terminada.<br>• Veo mi arte llegando a otros.</div></div>
+          <div class="vf-card vf-personal"><div class="vf-title">Personal</div><div class="vf-lines">• No veo objetivos.<br>• Veo una vida ordenada.<br>• Veo disciplina.<br>• Veo coherencia.</div></div>
+        </div>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-card-head"><div><div class="vision-card-title"><i class="ti ti-heart"></i> Afirmaciones</div><div class="vision-mini">Verdades que elijo recordar cada día.</div></div><button class="vision-edit" onclick="showToast('Edición de Visión: próxima versión')">Editar</button></div>
+        <div class="affirm-grid">
+          <div class="affirm-card">Soy una persona que ejecuta.</div><div class="affirm-card">El progreso llega por acumulación.</div><div class="affirm-card">Mi trabajo tiene valor.</div><div class="affirm-card">Mi disciplina vale más que mi motivación.</div><div class="affirm-card">Hoy solo necesito cumplir el proceso.</div><div class="affirm-card">Las pequeñas acciones construyen grandes resultados.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="morning-overlay" id="morningOverlay">
+      <div class="morning-shell">
+        <button class="morning-close" onclick="closeMorningMode()"><i class="ti ti-x"></i> Salir</button>
+        <div>
+          <section class="morning-screen active" data-morning="0"><div class="morning-center"><div class="morning-sun"><i class="ti ti-sun"></i></div><div class="morning-title">Buen día,<br>Merlin</div><div class="morning-sub">Este es tu momento. Enfocate en lo que realmente importa.</div></div></section>
+          <section class="morning-screen" data-morning="1"><div class="morning-panel"><h3><i class="ti ti-user-circle"></i> Identidad</h3><ul><li>Soy una persona que ejecuta.</li><li>Termino lo que empiezo.</li><li>Respeto mi proceso.</li></ul></div><div class="morning-panel"><h3><i class="ti ti-eye"></i> Visión 2026</h3><ul><li>Academia consolidada.</li><li>Trading profesional.</li><li>Música publicada.</li><li>Vida ordenada.</li></ul></div><div class="morning-panel"><h3><i class="ti ti-sparkles"></i> Recordatorio</h3><ul><li>La paciencia también es acción.</li></ul></div></section>
+          <section class="morning-screen" data-morning="2"><div class="morning-panel"><h3><i class="ti ti-calendar"></i> Hoy</h3><div class="morning-sub" style="margin:0;max-width:none">No necesito resolver todo.<br>Solo necesito ganar el día.</div></div><div class="morning-panel"><h3>Mis 3 prioridades</h3><div class="morning-priorities"><div class="morning-priority"><span class="morning-num">1</span>Trading</div><div class="morning-priority"><span class="morning-num">2</span>Academia</div><div class="morning-priority"><span class="morning-num">3</span>Música</div></div></div><div class="morning-panel"><div class="morning-quote">Cada pequeña acción me acerca a la vida que quiero vivir.</div></div></section>
+        </div>
+        <div class="morning-actions"><button class="morning-next" id="morningNextBtn" onclick="nextMorningSlide()">Siguiente <i class="ti ti-arrow-right"></i></button><div class="morning-dots" id="morningDots"><span class="on"></span><span></span><span></span></div></div>
       </div>
     </div>
 
@@ -1572,9 +1656,9 @@ function renderMetaRow(m,view){
     else if(risk)checkHtml=`<div class="check-c warn" onclick="toggleToday('${m.id}',event)"><i class="ti ti-alert-triangle"></i></div>`;
     else checkHtml=`<div class="check-c" onclick="toggleToday('${m.id}',event)"></div>`;
   }else{
-    if(isDone)checkHtml='<div class="check-c done"><i class="ti ti-check"></i></div>';
-    else if(risk)checkHtml='<div class="check-c warn"><i class="ti ti-alert-triangle"></i></div>';
-    else checkHtml='<div class="check-c"></div>';
+    if(isDone)checkHtml=`<div class="check-c done" onclick="toggleMetaCheck('${m.id}',event)"><i class="ti ti-check"></i></div>`;
+    else if(risk)checkHtml=`<div class="check-c warn" onclick="toggleMetaCheck('${m.id}',event)"><i class="ti ti-alert-triangle"></i></div>`;
+    else checkHtml=`<div class="check-c" onclick="toggleMetaCheck('${m.id}',event)"></div>`;
   }
   const prgLabel=m.type==='consistencia'
     ?(m.freqType==='mensual'?`${prog.current} de ${prog.total} este mes · ${prog.totalDone||0} total`:`${prog.current} de ${prog.total} días`)
@@ -1705,6 +1789,41 @@ window.toggleToday=async(id,e)=>{
   const newDays=days.includes(t)?days.filter(d=>d!==t):[...days,t];
   if(!days.includes(t))showToast('¡Marcado como cumplido! 💪');
   await updateDoc(doc(db,'users',currentUser.uid,'metas',id),{completedDays:newDays});
+};
+
+window.toggleMetaCheck=async(id,e)=>{
+  if(e)e.stopPropagation();
+  const m=metas.find(x=>x.id===id);
+  if(!m)return;
+
+  // Consistencia: marca/desmarca el día actual.
+  if(m.type==='consistencia'){
+    return toggleToday(id,e||{stopPropagation(){}});
+  }
+
+  // Hito: el círculo grande completa o reinicia todos los sub-pasos.
+  if(m.type==='hito'){
+    const subs=[...(m.subtasks||[])];
+    if(!subs.length){
+      showToast('Este hito no tiene sub-pasos para marcar');
+      return;
+    }
+    const alreadyDone=subs.every(s=>s.done);
+    const updated=subs.map(s=>({...s,done:!alreadyDone,doneDate:!alreadyDone?today():null}));
+    await updateDoc(doc(db,'users',currentUser.uid,'metas',id),{subtasks:updated});
+    showToast(alreadyDone?'Hito desmarcado':'Hito completado');
+    return;
+  }
+
+  // Resultado: como el progreso usa el último registro, marcar completa agrega el valor objetivo; desmarcar agrega 0.
+  if(m.type==='resultado'){
+    const prog=getProgress(m);
+    const alreadyDone=prog.pct>=100;
+    const records=[...(m.records||[])];
+    records.push({date:today(),value:alreadyDone?0:(m.target||1)});
+    await updateDoc(doc(db,'users',currentUser.uid,'metas',id),{records});
+    showToast(alreadyDone?'Resultado desmarcado':'Resultado completado');
+  }
 };
 
 window.openCreateModal=()=>{
@@ -2885,6 +3004,39 @@ window.handleCloseOpt=async(opt)=>{
 
 
 
+
+
+
+<script id="cumbre-vision-v1-script">
+(function(){
+  var morningIndex=0;
+  function paintMorning(){
+    document.querySelectorAll('.morning-screen').forEach(function(s,i){s.classList.toggle('active',i===morningIndex)});
+    document.querySelectorAll('#morningDots span').forEach(function(d,i){d.classList.toggle('on',i===morningIndex)});
+    var b=document.getElementById('morningNextBtn');
+    if(b)b.innerHTML=morningIndex>=2?'Comenzar el día <i class="ti ti-sun"></i>':'Siguiente <i class="ti ti-arrow-right"></i>';
+  }
+  window.openMorningMode=function(){morningIndex=0;var o=document.getElementById('morningOverlay');if(o)o.classList.add('open');paintMorning();};
+  window.closeMorningMode=function(){var o=document.getElementById('morningOverlay');if(o)o.classList.remove('open');};
+  window.nextMorningSlide=function(){if(morningIndex>=2){closeMorningMode();return;}morningIndex++;paintMorning();};
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMorningMode();});
+  var old=window.showPage;
+  if(typeof old==='function'){
+    window.showPage=function(page,el){
+      var r=old.apply(this,arguments);
+      if(page==='vision'){
+        var t=document.getElementById('topbarTitle'),s=document.getElementById('topbarSub'),btn=document.querySelector('.topbar-right .btn-primary');
+        if(t)t.textContent='Visión'; if(s)s.textContent='Identidad, objetivos y afirmaciones diarias';
+        if(btn){btn.style.display='';btn.innerHTML='<i class="ti ti-sun"></i> Modo Mañana';btn.onclick=function(){openMorningMode();};}
+      }else{
+        var btn2=document.querySelector('.topbar-right .btn-primary');
+        if(btn2 && page!=='noventa'){btn2.innerHTML='<i class="ti ti-plus"></i> Nueva meta';btn2.onclick=function(){openCreateModal();};}
+      }
+      return r;
+    };
+  }
+})();
+</script>
 
 
 <script id="cumbre-mobile-polish-script">
