@@ -55,7 +55,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .bnav-item.active{color:var(--accent)}
 .bnav-label{font-size:10px;font-weight:600;letter-spacing:.2px}
 .bnav-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--accent);color:#fff;font-size:9px;font-weight:700;border-radius:99px;padding:1px 5px;min-width:16px;text-align:center}
-@media(max-width:767px){.bottom-nav{overflow:visible}.bnav-item{min-width:0}.bnav-label{font-size:9px;letter-spacing:-.1px}.bnav-item svg{width:20px;height:20px}.main{padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 28px)}}
+@media(max-width:767px){.bottom-nav{overflow:visible}.bnav-item{min-width:0}.bnav-label{font-size:8.5px;letter-spacing:-.25px;max-width:54px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bnav-item svg{width:19px;height:19px}.main{padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 28px)}}
 
 /* ── VIEWS ── */
 .view{display:none;animation:fadeIn .18s ease}
@@ -213,6 +213,12 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .tc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:4px}
 .tc-title-row{display:flex;align-items:flex-start;gap:7px;flex:1;min-width:0}
 .prio-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.prio-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.35px;text-transform:uppercase;border:1px solid transparent;line-height:1.2;white-space:nowrap}
+.prio-badge.alta{color:var(--c-over);background:var(--c-over-dim);border-color:#f0524f40}
+.prio-badge.media{color:var(--c-mid);background:var(--c-mid-dim);border-color:#f5a62340}
+.prio-badge.baja{color:var(--text2);background:var(--bg4);border-color:var(--border2)}
+.task-card.prio-alta{box-shadow:inset 4px 0 0 var(--c-over)}
+.task-card.prio-media{box-shadow:inset 4px 0 0 var(--c-mid)}
 .tc-title{font-size:14px;font-weight:500;line-height:1.4;word-break:break-word}
 .tc-actions{display:flex;align-items:center;gap:2px;flex-shrink:0}
 .tc-desc{font-size:11.5px;color:var(--text3);margin:5px 0 4px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;font-weight:400}
@@ -521,11 +527,11 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
 .pdia-rm-btn:hover{color:var(--c-over);}
 .pdia-drag-handle{color:var(--text3);cursor:grab;flex-shrink:0;}
 .pdia-note-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-bottom:8px;cursor:grab;}
-.pdia-note-input{flex:1;border:none;background:none;color:var(--text);font-size:13px;outline:none;font-family:inherit;}
+.pdia-note-input{flex:1;border:none;background:none;color:var(--text);font-size:13px;outline:none;font-family:inherit;-webkit-user-select:text;user-select:text;touch-action:manipulation;}
 .pdia-note-input::placeholder{color:var(--text3);}
 .pdia-empty{text-align:center;color:var(--text3);font-size:13px;padding:12px 0;}
 /* Selector modal */
-.pdia-sel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
+.pdia-sel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2147482500;display:flex;align-items:flex-end;justify-content:center;}
 .pdia-sel-sheet{background:var(--bg2);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:500px;max-height:70vh;overflow-y:auto;}
 .pdia-sel-title{font-size:16px;font-weight:700;margin-bottom:14px;}
 .pdia-sel-item{padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px;transition:background .12s;}
@@ -724,13 +730,17 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
       <span class="bnav-label">Hoy</span>
       <span class="bnav-badge" id="today-badge" style="display:none">0</span>
     </button>
+    <button class="bnav-item" data-view="plansdia" onclick="setView('plansdia')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span class="bnav-label">Plan</span>
+    </button>
     <button class="bnav-item" data-view="semana" onclick="setView('semana')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span class="bnav-label">Semana</span>
     </button>
-    <button class="bnav-item" data-view="plansdia" onclick="setView('plansdia')">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <span class="bnav-label">Plan</span>
+    <button class="bnav-item" data-view="panorama" onclick="setView('panorama')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="bnav-label">Panorama</span>
     </button>
     <button class="bnav-item" data-view="projects" onclick="setView('projects')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -741,10 +751,6 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
       <span class="bnav-label">Importantes</span>
     </button>
 
-    <button class="bnav-item bnav-overview" onclick="location.href='../overview/'">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/><line x1="7" y1="16" x2="15" y2="16"/></svg>
-      <span class="bnav-label">Overview</span>
-    </button>
     <button class="bnav-item" data-view="settings" onclick="setView('settings')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       <span class="bnav-label">Ajustes</span>
@@ -845,7 +851,7 @@ function localDateStr(d=new Date()){const y=d.getFullYear();const m=String(d.get
 const TODAY=localDateStr();
 const TOMORROW=(()=>{const d=new Date();d.setDate(d.getDate()+1);return localDateStr(d);})();
 const ICONS_LIST=['📁','📈','🎵','✨','💡','🏋️','📚','🎨','🛠','🌱','💼','🎯','🧠','🌙','🚀','⚡','🎯','🏠','💰','❤️'];
-const PRIOS=[{v:'alta',l:'Alta 🔴',c:'var(--c-over)'},{v:'media',l:'Media 🟡',c:'var(--c-mid)'},{v:'baja',l:'Baja ⚪',c:'var(--text3)'}];
+const PRIOS=[{v:'alta',l:'Alta / urgente',c:'var(--c-over)'},{v:'media',l:'Media / normal',c:'var(--c-mid)'},{v:'baja',l:'Baja / simple',c:'var(--text3)'}];
 const WEEKDAYS=['Lu','Ma','Mi','Ju','Vi','Sa','Do'];
 const PALETTE=[
   {k:'green',dot:'#16a34a',dark:'rgba(22,163,74,.12)',light:'rgba(22,163,74,.08)',label:'Verde'},
@@ -1096,7 +1102,7 @@ function renderHeader(){
 }
 
 function renderBottomNav(){
-  const vmap={today:'today',panorama:'panorama',projects:'projects',kanban:'projects',settings:'settings',importantes:'importantes',plansdia:'plansdia'};
+  const vmap={today:'today',panorama:'panorama',projects:'projects',kanban:'projects',settings:'settings',importantes:'importantes',plansdia:'plansdia',semana:'semana'};
   document.querySelectorAll('.bnav-item').forEach(el=>el.classList.toggle('active',el.dataset.view===(vmap[view]||view)));
 }
 
@@ -1840,8 +1846,9 @@ function cardHTML(task,proj,opts={}){
   const isDone=task.columnId===dId;
   const isOv=task.date&&task.date<TODAY&&!isDone;
   const isTd=task.date===TODAY&&!isDone;
-  const cls=['task-card',isOv?'ov':'',isTd?'td':'',isDone?'dn':'',isOverdue?'task-overdue':''].filter(Boolean).join(' ');
+  const cls=['task-card',task.priority?`prio-${task.priority}`:'',isOv?'ov':'',isTd?'td':'',isDone?'dn':'',isOverdue?'task-overdue':''].filter(Boolean).join(' ');
   const pc={alta:'var(--c-over)',media:'var(--c-mid)',baja:'var(--text3)'};
+  const prioLbl={alta:'Alta',media:'Media',baja:'Baja'};
   const fd=d=>{if(!d)return'';const[y,m,dy]=d.split('-');return`${dy}/${m}/${y}`;};
   let dc='';
   if(task.date){const cc=isOv?'cr':isTd?'cb':'';const lb=isTd?'Hoy':isOv?`Vencida ${fd(task.date)}`:fd(task.date);
@@ -1891,7 +1898,7 @@ function cardHTML(task,proj,opts={}){
     <div class="tc-grip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg></div>
     <div class="tc-body">
       <div class="tc-top">
-        <div class="tc-title-row"><div class="prio-dot" style="background:${pc[task.priority]||'#666'}"></div><span class="tc-title">${esc(task.title)}</span></div>
+        <div class="tc-title-row"><span class="prio-badge ${task.priority||'baja'}">${prioLbl[task.priority]||'Baja'}</span><span class="tc-title">${esc(task.title)}</span></div>
         <div class="tc-actions">
           ${(()=>{const ip=(S.pinnedTasks||[]).includes(task.id);const inf=(S.focusNow||[]).includes(task.id);return`<button class="bolt-task-btn" onclick="focusToggle('${task.id}')" style="background:none;border:none;cursor:pointer;padding:2px 4px;opacity:1;transition:all .15s;filter:drop-shadow(0 0 3px #EF9F2780)"><svg viewBox="0 0 24 24" fill="#EF9F27" width="16" height="16"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button><button class="icon-btn${ip?' pinned':''}" onclick="togglePin('${task.id}')" title="${ip?'Quitar de Importantes':'Agregar a Importantes'}" style="${ip?'color:var(--c-mid)':''}"><svg width="13" height="13" viewBox="0 0 24 24" fill="${ip?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>`;})()}
           <button class="icon-btn" onclick="openEditT('${task.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
@@ -2932,7 +2939,7 @@ function renderPlanDia(){
     } else {
       items.forEach((item,i)=>{
         if(item.type==='note'){
-          h+=`<div class="pdia-note-item" draggable="true"
+          h+=`<div class="pdia-note-item" draggable="false"
             ondragstart="window.pdiaDragStart('${b.key}',${i})"
             ondragover="event.preventDefault();event.currentTarget.classList.add('pdia-drag-over')"
             ondragleave="event.currentTarget.classList.remove('pdia-drag-over')"
@@ -2950,7 +2957,7 @@ function renderPlanDia(){
           const t=S.tasks.find(x=>x.id===item.id);
           if(!t)return;
           const proj=S.projects.find(p=>p.id===t.projectId);
-          h+=`<div class="pdia-task" draggable="true"
+          h+=`<div class="pdia-task" draggable="false"
             ondragstart="window.pdiaDragStart('${b.key}',${i})"
             ondragover="event.preventDefault();event.currentTarget.classList.add('pdia-drag-over')"
             ondragleave="event.currentTarget.classList.remove('pdia-drag-over')"
@@ -3460,12 +3467,16 @@ body:has(.pdia-sel-overlay) .nexo-fab,
 body:has(.overlay) .nexo-panel,
 body:has(.sheet) .nexo-panel,
 body:has(.focus-mode.active) .nexo-panel,
-body:has(.pdia-sel-overlay) .nexo-panel{display:none!important}
+body:has(.pdia-sel-overlay) .nexo-panel,
+body.nexo-modal-open .nexo-fab,
+body.nexo-modal-open .nexo-panel{display:none!important}
 </style>
 <button class="nexo-fab" id="nexoFab" title="NEXO"><img src="../assets/nexo.svg" alt="NEXO"></button>
 <nav class="nexo-panel" id="nexoPanel"><div class="nexo-panel-title"><img src="../assets/nexo.svg" alt="">NEXO</div><a class="nexo-link" href="../"><span><img src="../assets/nexo.svg" alt=""></span><strong>Nexo</strong></a><a class="nexo-link" href="../cumbre/"><span><img src="../assets/icon-cumbre-v3.png" alt=""></span><strong>Cumbre</strong></a><a class="nexo-link" href="../overview/"><span><img src="../assets/icon-overview-v3.ico" alt=""></span><strong>Overview</strong></a><a class="nexo-link" href="../taskflow/"><span>⚡</span><strong>TaskFlow</strong></a></nav>
 <div class="nexo-k-overlay" id="nexoKOverlay"><div class="nexo-k-modal"><div class="nexo-k-head"><div class="nexo-k-title"><img src="../assets/nexo.svg" alt="">NEXO · Ir a</div><input class="nexo-k-input" id="nexoKInput" placeholder="Buscar app..." autocomplete="off"></div><div class="nexo-k-list" id="nexoKList"><a class="nexo-k-item" data-name="nexo inicio sistema central" href="../"><b><img src="../assets/nexo.svg" alt=""></b><span>Nexo</span></a><a class="nexo-k-item" data-name="cumbre objetivos seguimiento progreso metas" href="../cumbre/"><b><img src="../assets/icon-cumbre-v3.png" alt=""></b><span>Cumbre</span></a><a class="nexo-k-item" data-name="overview panorama general calendario planificacion" href="../overview/"><b><img src="../assets/icon-overview-v3.ico" alt=""></b><span>Overview</span></a><a class="nexo-k-item" data-name="taskflow ejecucion diaria tareas proyectos habitos" href="../taskflow/"><b>⚡</b><span>TaskFlow</span></a></div></div></div>
 <script id="nexo-nav-script">(function(){var fab=document.getElementById("nexoFab"),panel=document.getElementById("nexoPanel"),overlay=document.getElementById("nexoKOverlay"),input=document.getElementById("nexoKInput"),list=document.getElementById("nexoKList"),items=[].slice.call(list.querySelectorAll(".nexo-k-item"));function closeAll(){panel.classList.remove("open");overlay.classList.remove("open")}fab.addEventListener("click",function(e){e.stopPropagation();panel.classList.toggle("open")});document.addEventListener("click",function(e){if(!panel.contains(e.target)&&e.target!==fab)panel.classList.remove("open")});function openPalette(){overlay.classList.add("open");input.value="";items.forEach(function(i){i.style.display="flex";i.classList.remove("active")});if(items[0])items[0].classList.add("active");setTimeout(function(){input.focus()},30)}function filter(){var q=input.value.toLowerCase().trim(),visible=[];items.forEach(function(i){var ok=!q||i.dataset.name.indexOf(q)>-1||i.textContent.toLowerCase().indexOf(q)>-1;i.style.display=ok?"flex":"none";i.classList.remove("active");if(ok)visible.push(i)});if(visible[0])visible[0].classList.add("active")}document.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openPalette()}if(e.key==="Escape")closeAll();if(e.key==="Enter"&&overlay.classList.contains("open")){var active=list.querySelector(".nexo-k-item.active");if(active){e.preventDefault();window.location.href=active.href}}});input.addEventListener("input",filter);overlay.addEventListener("click",function(e){if(e.target===overlay)closeAll()})})();</script>
+
+<script id="taskflow-modal-guard">(function(){function sync(){var modal=document.querySelector('.overlay[style*="display: block"],.overlay:not([style*="display:none"]),.sheet,.focus-mode.active,.pdia-sel-overlay');document.body.classList.toggle('nexo-modal-open',!!modal)}new MutationObserver(sync).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']});document.addEventListener('click',function(){setTimeout(sync,0)},true);sync();})();</script>
 <!-- NEXO NAVIGATION END -->
 </body>
 </html>
