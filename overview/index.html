@@ -590,12 +590,28 @@ function saveAreas(){
   if(currentUser) save();
 }
 
+function dbgLog(msg){
+  // Log visual temporal — quitar cuando auth funcione
+  let el=document.getElementById('_dbg');
+  if(!el){
+    el=document.createElement('div');
+    el.id='_dbg';
+    el.style.cssText='position:fixed;bottom:80px;left:8px;right:8px;background:rgba(0,0,0,.82);color:#0f0;font-size:10px;font-family:monospace;padding:8px;border-radius:8px;z-index:9999;max-height:160px;overflow-y:auto;pointer-events:none';
+    document.body.appendChild(el);
+  }
+  const line=document.createElement('div');
+  line.textContent=new Date().toISOString().slice(11,19)+' '+msg;
+  el.appendChild(line);
+  el.scrollTop=el.scrollHeight;
+}
+
 function updateUserUI(user){
   const loginBtn=document.getElementById('loginBtn');
   const avatarWrap=document.getElementById('avatarWrap');
   const userPhoto=document.getElementById('userPhoto');
   const userName=document.getElementById('userName');
   const userEmail=document.getElementById('userEmail');
+  dbgLog(user ? 'AUTH OK: '+user.email : 'AUTH: no user');
   if(user){
     loginBtn.classList.add('hide');
     avatarWrap.classList.remove('hide');
@@ -609,38 +625,62 @@ function updateUserUI(user){
 }
 
 // Auth state — igual que TaskFlow
-onAuthStateChanged(auth,async user=>{
-  if(overviewUnsub){overviewUnsub();overviewUnsub=null;}
-  currentUser=user;
+// ── AUTH STATE ──────────────────────────────────────────────────────────────
+// onAuthStateChanged dispara: null (inicial) → user (tras login/redirect)
+// Ignoramos el null inicial si hay un redirect pendiente para evitar parpadeo.
+let authResolved = false;
+
+onAuthStateChanged(auth, async user => {
+  if(overviewUnsub){ overviewUnsub(); overviewUnsub=null; }
+  currentUser = user;
   updateUserUI(user);
+  authResolved = true;
   if(user){
     await loadFromFirestore();
   } else {
-    const local=getLocalData();
-    data=local||{elements:[],nid:1};
+    const local = getLocalData();
+    data = local || {elements:[], nid:1};
     render();
   }
 });
 
-// Login: popup en desktop, redirect en móvil (browsers bloquean popup en móvil)
-document.getElementById('loginBtn').addEventListener('click',async()=>{
-  const provider=new GoogleAuthProvider();
-  const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-  if(isMobile){
-    await signInWithRedirect(auth,provider);
-  } else {
-    try{ await signInWithPopup(auth,provider); }
-    catch(e){ console.error('Login error:',e); }
+// ── LOGIN ────────────────────────────────────────────────────────────────────
+// Siempre popup — es la forma más confiable en todos los browsers modernos.
+// Si el popup es bloqueado (raro en Chrome/Safari actuales), mostramos instrucción.
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  dbgLog('loginBtn clicked');
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  try {
+    dbgLog('signInWithPopup...');
+    await signInWithPopup(auth, provider);
+    dbgLog('popup OK');
+  } catch(e) {
+    dbgLog('popup err: '+e.code);
+    // popup-blocked: intentar redirect como último recurso
+    if(e.code === 'auth/popup-blocked' || e.code === 'auth/popup-cancelled-by-user'){
+      dbgLog('usando redirect...');
+      try { await signInWithRedirect(auth, provider); } catch(e2) { dbgLog('redirect err:'+e2.code); }
+    } else {
+      console.error('Login error:', e.code, e.message);
+    }
   }
 });
 
-// Capturar resultado de redirect al volver (móvil)
-getRedirectResult(auth).catch(e=>console.warn('redirect result:',e));
+// Capturar resultado de redirect si el popup falló y se usó redirect
+getRedirectResult(auth).then(result => {
+  dbgLog('redirectResult: '+(result?.user?.email||'none'));
+  if(result?.user && !currentUser){
+    currentUser = result.user;
+    updateUserUI(currentUser);
+    loadFromFirestore();
+  }
+}).catch(e => dbgLog('redirectResult err: '+(e.code||e.message)));
 
-document.getElementById('logoutItem').addEventListener('click',async()=>{
+document.getElementById('logoutItem').addEventListener('click', async () => {
   document.getElementById('avatarDropdown').classList.remove('open');
   await signOut(auth);
-  data={elements:[],nid:1};
+  data = {elements:[], nid:1};
   render();
 });
 
