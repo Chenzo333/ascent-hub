@@ -423,6 +423,44 @@ const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto
 
 let data = {elements:[], nid:1};
 let db = null, auth = null, currentUser = null;
+let overviewUnsub = null;
+let isApplyingRemote = false;
+
+function getLocalData(){
+  try{
+    const s=localStorage.getItem('ov3');
+    if(!s) return null;
+    const p=JSON.parse(s);
+    if(!p || !Array.isArray(p.elements)) return null;
+    return {elements:p.elements||[], nid:p.nid||1};
+  }catch(e){ return null; }
+}
+
+function setLocalData(next){
+  localStorage.setItem('ov3', JSON.stringify({elements:next.elements||[], nid:next.nid||1}));
+}
+
+function sameElement(a,b){
+  try{ return JSON.stringify(a)===JSON.stringify(b); }catch(e){ return false; }
+}
+
+function mergeDatas(remoteData, localData){
+  const merged={elements:[], nid:1};
+  const byId=new Map();
+  [remoteData, localData].forEach(src=>{
+    if(!src || !Array.isArray(src.elements)) return;
+    src.elements.forEach(el=>{
+      if(!el || el.id==null) return;
+      const prev=byId.get(el.id);
+      if(!prev || !sameElement(prev, el)) byId.set(el.id, el);
+    });
+    if(src.nid && Number(src.nid)>merged.nid) merged.nid=Number(src.nid);
+  });
+  merged.elements=[...byId.values()];
+  const maxId=merged.elements.reduce((m,el)=>Math.max(m, Number(el.id)||0), 0);
+  merged.nid=Math.max(merged.nid||1, maxId+1);
+  return merged;
+}
 
 async function initFirebase() {
   await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
@@ -444,13 +482,15 @@ async function initFirebase() {
 
   // escuchar cambios de sesión
   auth.onAuthStateChanged(user => {
+    if(overviewUnsub){ overviewUnsub(); overviewUnsub=null; }
     currentUser = user;
     updateUserUI(user);
     if (user) {
       loadFromFirestore();
     } else {
-      // sin sesión → mostrar calendario vacío o localStorage
-      try{const s=localStorage.getItem('ov3');if(s){const p=JSON.parse(s);data=p;}}catch(e){}
+      // sin sesión → usar únicamente datos locales del dispositivo
+      const local = getLocalData();
+      data = local || {elements:[], nid:1};
       render();
     }
   });
@@ -499,33 +539,61 @@ function loadScript(src) {
 }
 
 async function loadFromFirestore() {
-  if (!currentUser) return;
+  if (!currentUser || !db) return;
+  const ref = db.doc(`users/${currentUser.uid}/overview/data`);
   try {
-    const snap = await db.doc(`users/${currentUser.uid}/overview/data`).get();
+    const snap = await ref.get();
+    const local = getLocalData();
+    let remote = {elements:[], nid:1};
+
     if (snap.exists) {
-      const d = snap.data();
-      data.elements = d.elements || [];
-      data.nid = d.nid || 1;
-      // sincronizar áreas si existen en Firestore
+      const d = snap.data() || {};
+      remote = {elements:d.elements||[], nid:d.nid||1};
       if (d.areas && Array.isArray(d.areas) && d.areas.length > 0) {
         AREAS = d.areas;
         localStorage.setItem('ov_areas', JSON.stringify(AREAS));
       }
     }
+
+    // Unificar PC/celular: si existe algo local en este dispositivo, se migra/mezcla a Firestore.
+    data = mergeDatas(remote, local);
+    setLocalData(data);
+    await ref.set({ elements:data.elements, nid:data.nid, areas:AREAS }, { merge:true });
+    render();
+
+    // Fuente única en sesión: Firestore manda. Mantiene PC y celular sincronizados.
+    overviewUnsub = ref.onSnapshot(doc => {
+      if(!doc.exists) return;
+      const d = doc.data() || {};
+      isApplyingRemote = true;
+      data = {elements:d.elements||[], nid:d.nid||1};
+      if (d.areas && Array.isArray(d.areas) && d.areas.length > 0) {
+        AREAS = d.areas;
+        localStorage.setItem('ov_areas', JSON.stringify(AREAS));
+        rebuildLegend();
+      }
+      setLocalData(data);
+      render();
+      isApplyingRemote = false;
+    }, e => console.warn('Firestore sync error:', e));
   } catch(e) {
     console.warn('Firestore load error:', e);
-    try{const s=localStorage.getItem('ov3');if(s){const p=JSON.parse(s);data=p;}}catch(e2){}
+    const local = getLocalData();
+    data = local || {elements:[], nid:1};
+    render();
   }
-  render();
 }
 
 async function save() {
-  if (currentUser) {
+  setLocalData(data);
+  if (currentUser && db) {
     try {
-      await db.doc(`users/${currentUser.uid}/overview/data`).set({ elements: data.elements, nid: data.nid, areas: AREAS });
-    } catch(e) { console.warn('Firestore save error:', e); }
+      await db.doc(`users/${currentUser.uid}/overview/data`).set({ elements:data.elements, nid:data.nid, areas:AREAS }, { merge:true });
+    } catch(e) {
+      console.warn('Firestore save error:', e);
+      alert('No se pudo sincronizar con la nube. El cambio quedó solo en este dispositivo.');
+    }
   }
-  localStorage.setItem('ov3', JSON.stringify(data));
 }
 
 function saveAreas(){
@@ -534,7 +602,7 @@ function saveAreas(){
   if(currentUser && db){
     db.doc(`users/${currentUser.uid}/overview/data`).update({ areas: AREAS }).catch(()=>{
       // si el doc no existe todavía, hacer set
-      db.doc(`users/${currentUser.uid}/overview/data`).set({ elements: data.elements, nid: data.nid, areas: AREAS });
+      db.doc(`users/${currentUser.uid}/overview/data`).set({ elements: data.elements, nid: data.nid, areas: AREAS }, { merge:true });
     });
   }
 }
@@ -1224,7 +1292,7 @@ document.getElementById('mSave').addEventListener('click',()=>{
 
   if(mEditId) data.elements=data.elements.map(e=>e.id===mEditId?el:e);
   else data.elements.push(el);
-  save(); closeModal();
+  save().then(()=>render()); closeModal();
 });
 
 /* ═══════════════════════════════════════════════
@@ -1449,8 +1517,9 @@ function rebuildLegend(){
   });
 }
 
-// Render inmediato con localStorage — Firebase actualiza después si hay sesión
-try{const s=localStorage.getItem('ov3');if(s){const p=JSON.parse(s);data=p;}}catch(e){}
+// Render inmediato local solo como vista provisoria. Si hay login, Firestore se vuelve fuente única.
+const bootLocal = getLocalData();
+if(bootLocal) data = bootLocal;
 render();
 
 // Scroll rueda — avanza por mes en modo mes, por semana en otros modos
