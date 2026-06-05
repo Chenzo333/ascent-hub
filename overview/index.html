@@ -494,6 +494,7 @@ async function initFirebase() {
     });
   }
   db   = firebase.firestore();
+  try { db.settings({ ignoreUndefinedProperties: true }); } catch(e) {}
   auth = firebase.auth();
 
   try{ await auth.getRedirectResult(); }catch(e){ console.warn('Google redirect login error:', e); }
@@ -578,7 +579,7 @@ async function loadFromFirestore() {
     const remoteCount = Array.isArray(remote.elements) ? remote.elements.length : 0;
     const localCount = Array.isArray(local.elements) ? local.elements.length : 0;
     if (!snap.exists || localCount > remoteCount || merged.elements.length !== remoteCount) {
-      await ref.set({ elements:data.elements, nid:data.nid, areas:AREAS }, { merge:true });
+      await ref.set(cloudPayload(), { merge:true });
     }
   } catch(e) {
     showSyncWarning('Firestore load error: ' + (e?.message || e));
@@ -613,11 +614,11 @@ async function save() {
   if (applyingRemote) return true;
   syncingNow = true;
   try {
-    await overviewDoc().set({ elements:data.elements, nid:data.nid, areas:AREAS }, { merge:true });
+    await overviewDoc().set(cloudPayload(), { merge:true });
     return true;
   } catch(e) {
     showSyncWarning('Firestore save error: ' + (e?.message || e));
-    alert('No se pudo sincronizar con Google. El cambio quedó solo en este dispositivo. Revisá conexión/permisos e iniciá sesión de nuevo.');
+    alert('No se pudo sincronizar con Google. Error real: ' + (e?.code || '') + ' ' + (e?.message || e));
     return false;
   } finally {
     syncingNow = false;
@@ -628,7 +629,7 @@ function saveAreas(){
   localStorage.setItem('ov_areas', JSON.stringify(AREAS));
   if(currentUser && db){
     syncingNow = true;
-    overviewDoc().set({ elements:data.elements, nid:data.nid, areas:AREAS }, { merge:true })
+    overviewDoc().set(cloudPayload(), { merge:true })
       .catch(e=>showSyncWarning('Firestore areas save error: ' + (e?.message || e)))
       .finally(()=>{ syncingNow = false; });
   }
@@ -900,6 +901,7 @@ function render(){
     // de la celda para que nunca queden invisibles en pantallas chicas.
     addMobileCellEvents(dy, ci);
     cell.dataset.ymd=dy;
+    addMobileCellEvents(dy, ci);
 
     cell.addEventListener('mousedown',e=>{
       if(e.button!==0)return;
