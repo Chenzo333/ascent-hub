@@ -461,9 +461,10 @@ function normalizeData(input){
   const nid = Math.max(Number(input?.nid)||1, maxId+1);
   return {elements, nid};
 }
-function cloudPayload(){
+var buildOverviewCloudPayload = function(){
   return cleanForFirestore({ elements:data.elements, nid:data.nid, areas:AREAS, updatedAt:Date.now() });
-}
+};
+window.buildOverviewCloudPayload = buildOverviewCloudPayload;
 function cloudCandidates(uid){
   return [
     db.doc(`users/${uid}/overview/data`),
@@ -480,7 +481,7 @@ function extractDataFromDoc(doc){
   return null;
 }
 async function writeToRef(ref){
-  const payload = cloudPayload();
+  const payload = buildOverviewCloudPayload();
   // users/{uid} puede necesitar guardar dentro de overview para no pisar otros campos.
   if(ref.path.split('/').length===2 && ref.path.startsWith('users/')){
     await ref.set({ overview: payload }, { merge:true });
@@ -664,7 +665,7 @@ async function save() {
     } catch(e) {
       const msg = e?.code || e?.message || String(e);
       console.warn('Overview cloud save failed:', msg);
-      alert('No se pudo sincronizar con la nube. Error real: '+msg+'\n\nEl cambio quedó solo en este dispositivo.');
+      alert('No se pudo sincronizar con Google. Error real: '+msg+'\n\nEl cambio quedó solo en este dispositivo.');
     }
   }
 }
