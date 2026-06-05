@@ -1303,7 +1303,7 @@ function hideTooltip(){
 }
 
 function buildAreaOpts(){
-  const c=document.getElementById('areaOpts');c.innerHTML='';
+  const c=document.getElementById('areaOpts'); if(!c) return; c.innerHTML='';
   AREAS.forEach(a=>{
     const o=document.createElement('div');o.className='aopt'+(mArea===a.id?' on':'');
     o.style.background=a.bg;o.style.color=a.color;o.textContent=a.label;
@@ -1364,8 +1364,7 @@ function openModal(range){
   document.getElementById('mDel').classList.add('hide');
   setTab('period'); buildAreaOpts(); buildColorRow();
   document.getElementById('overlay').classList.add('open');
-  setTimeout(()=>document.getElementById('mName').focus(),50);
-  render();
+  setTimeout(()=>{const __m=document.getElementById('mName'); if(__m) __m.focus();},50);
 }
 
 function openEdit(id){
@@ -1399,7 +1398,7 @@ function openEdit(id){
   }
   setTab(el.type); buildAreaOpts(); buildColorRow();
   document.getElementById('overlay').classList.add('open');
-  setTimeout(()=>document.getElementById('mName').focus(),50);
+  setTimeout(()=>{const __m=document.getElementById('mName'); if(__m) __m.focus();},50);
 }
 
 function closeModal(){
@@ -1512,6 +1511,7 @@ function colorBg(hex){ const{r,g,b}=hexToRgb(hex); return `rgba(${r},${g},${b},0
 
 function renderVisibilityChips(){
   const wrap = document.getElementById('visibilityChips');
+  if(!wrap) return;
   wrap.innerHTML = '';
   AREAS.forEach(a => {
     const chip = document.createElement('div');
@@ -1706,72 +1706,13 @@ document.getElementById('gridWrap').addEventListener('wheel', e=>{
 },{passive:false});
 
 window.addEventListener('resize', render);
-document.getElementById('addBtn').style.display = 'none';
+{ const __addBtn = document.getElementById('addBtn'); if(__addBtn) __addBtn.style.display = 'none'; }
 
 // Firebase inicializado via import module arriba — onAuthStateChanged activo
 
-// ── LOGO con binoculares pegados al texto ──
-function buildLogo(){
-  const wrap = document.getElementById('logoWrap');
-  wrap.innerHTML = '';
-
-  const fs = 19; // font-size en px, igual que antes
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-
-  // medir O
-  ctx.font = `600 ${fs}px 'DM Sans', sans-serif`;
-  const wO = ctx.measureText('O').width;
-
-  // medir vervie
-  ctx.font = `500 ${fs}px 'DM Sans', sans-serif`;
-  const wV = ctx.measureText('vervie').width;
-
-  const totalTextW = wO + wV;
-  const gap = 2; // px entre texto y binoculares
-  const bH = fs * 0.88; // altura binoculares = ~88% del font-size
-  const bW = bH * 1.55; // ancho total binoculares
-  const svgW = totalTextW + gap + bW + 4;
-  const svgH = fs + 4;
-  const baseline = fs;
-
-  // barrel dims
-  const barW = bW * 0.38;
-  const barH = bH;
-  const rx = barW * 0.38;
-  const bridgeW = bW - barW*2;
-  const bx = totalTextW + gap; // x inicio binoculares
-  const by = 2; // y inicio binoculares
-  const lensR = barW * 0.42;
-  const innerR = lensR * 0.58;
-  const dotR = innerR * 0.42;
-  const lCx = bx + barW/2;
-  const rCx = bx + barW + bridgeW + barW/2;
-  const lCy = by + barH * 0.42;
-
-  const svg = `<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
-    <text x="0" y="${baseline}" font-family="'DM Sans',sans-serif" font-weight="600" font-size="${fs}" fill="#185FA5" letter-spacing="-0.3">O</text>
-    <text x="${wO}" y="${baseline}" font-family="'DM Sans',sans-serif" font-weight="500" font-size="${fs}" fill="#1a1917" letter-spacing="-0.3">vervie</text>
-    <rect x="${bx}" y="${by}" width="${barW}" height="${barH}" rx="${rx}" fill="#1a1917"/>
-    <rect x="${bx+barW+bridgeW}" y="${by}" width="${barW}" height="${barH}" rx="${rx}" fill="#1a1917"/>
-    <rect x="${bx+barW}" y="${by+barH*0.3}" width="${bridgeW}" height="${barH*0.32}" rx="2" fill="#1a1917"/>
-    <circle cx="${lCx}" cy="${lCy}" r="${lensR}" fill="white"/>
-    <circle cx="${lCx}" cy="${lCy}" r="${innerR}" fill="#1a1917"/>
-    <circle cx="${lCx}" cy="${lCy}" r="${dotR}" fill="white"/>
-    <circle cx="${rCx}" cy="${lCy}" r="${lensR}" fill="white"/>
-    <circle cx="${rCx}" cy="${lCy}" r="${innerR}" fill="#1a1917"/>
-    <circle cx="${rCx}" cy="${lCy}" r="${dotR}" fill="white"/>
-  </svg>`;
-
-  wrap.innerHTML = svg;
-}
-
-// esperar a que DM Sans cargue antes de medir
-if (document.fonts) {
-  document.fonts.ready.then(buildLogo);
-} else {
-  setTimeout(buildLogo, 400);
-}
+// ── LOGO disabled safely ──
+// El HTML actual no usa #logoWrap; cualquier intento de reconstruir ese logo rompía la app.
+function buildLogo(){ return; }
 </script>
 
 
@@ -1789,11 +1730,20 @@ if (document.fonts) {
 .nexo-k-overlay{position:fixed!important;inset:0!important;z-index:2147482999!important;background:rgba(0,0,0,.38)!important;backdrop-filter:blur(8px)!important;display:none!important;align-items:flex-start!important;justify-content:center!important;padding-top:12vh!important}.nexo-k-overlay.open{display:flex!important}.nexo-k-modal{width:min(460px,calc(100vw - 32px))!important;border-radius:22px!important;border:1px solid rgba(255,255,255,.16)!important;background:rgba(14,16,22,.92)!important;box-shadow:0 30px 100px rgba(0,0,0,.42)!important;color:white!important;overflow:hidden!important}.nexo-k-head{padding:18px 18px 10px!important}.nexo-k-title{display:flex!important;align-items:center!important;gap:9px!important;font-size:11px!important;letter-spacing:.22em!important;text-transform:uppercase!important;color:rgba(255,255,255,.44)!important;font-weight:800!important}.nexo-k-title img{width:18px!important;height:18px!important}.nexo-k-input{width:100%!important;margin-top:10px!important;background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:14px!important;padding:13px 14px!important;color:white!important;outline:none!important;font-size:15px!important}.nexo-k-list{padding:8px!important}.nexo-k-item{display:flex!important;align-items:center!important;gap:12px!important;padding:13px!important;border-radius:14px!important;color:rgba(255,255,255,.84)!important;text-decoration:none!important;font-size:14px!important;font-weight:650!important}.nexo-k-item:hover,.nexo-k-item.active{background:rgba(255,255,255,.1)!important;color:white!important}.nexo-k-item b{width:28px!important;height:28px!important;border-radius:10px!important;background:rgba(255,255,255,.08)!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}.nexo-k-item img{width:21px!important;height:21px!important;object-fit:contain!important}
 @media(max-width:767px){.nexo-fab{right:14px!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;width:42px!important;height:42px!important;opacity:.55!important}.nexo-panel{right:14px!important;bottom:calc(64px + env(safe-area-inset-bottom,0px))!important;max-width:calc(100vw - 28px)!important}.nexo-k-overlay{padding-top:8vh!important}}
 </style>
+<style id="overview-nexo-css-hide">
+body:has(#overlay.open) #nexoFab,
+body:has(#overlay.open) #nexoPanel,
+body:has(#settingsOverlay.open) #nexoFab,
+body:has(#settingsOverlay.open) #nexoPanel,
+body:has(#avatarDropdown.open) #nexoFab,
+body:has(#avatarDropdown.open) #nexoPanel{display:none!important}
+</style>
+
 <button class="nexo-fab" id="nexoFab" title="NEXO"><img src="../assets/nexo.svg" alt="NEXO"></button>
 <nav class="nexo-panel" id="nexoPanel"><div class="nexo-panel-title"><img src="../assets/nexo.svg" alt="">NEXO</div><a class="nexo-link" href="../"><span><img src="../assets/nexo.svg" alt=""></span><strong>Nexo</strong></a><a class="nexo-link" href="../cumbre/"><span><img src="../assets/icon-cumbre-v3.png" alt=""></span><strong>Cumbre</strong></a><a class="nexo-link" href="../overview/"><span><img src="../assets/icon-overview-v3.ico" alt=""></span><strong>Overview</strong></a><a class="nexo-link" href="../taskflow/"><span>⚡</span><strong>TaskFlow</strong></a></nav>
 <div class="nexo-k-overlay" id="nexoKOverlay"><div class="nexo-k-modal"><div class="nexo-k-head"><div class="nexo-k-title"><img src="../assets/nexo.svg" alt="">NEXO · Ir a</div><input class="nexo-k-input" id="nexoKInput" placeholder="Buscar app..." autocomplete="off"></div><div class="nexo-k-list" id="nexoKList"><a class="nexo-k-item" data-name="nexo inicio sistema central" href="../"><b><img src="../assets/nexo.svg" alt=""></b><span>Nexo</span></a><a class="nexo-k-item" data-name="cumbre objetivos seguimiento progreso metas" href="../cumbre/"><b><img src="../assets/icon-cumbre-v3.png" alt=""></b><span>Cumbre</span></a><a class="nexo-k-item" data-name="overview panorama general calendario planificacion" href="../overview/"><b><img src="../assets/icon-overview-v3.ico" alt=""></b><span>Overview</span></a><a class="nexo-k-item" data-name="taskflow ejecucion diaria tareas proyectos habitos" href="../taskflow/"><b>⚡</b><span>TaskFlow</span></a></div></div></div>
 <script id="nexo-nav-script">(function(){var fab=document.getElementById("nexoFab"),panel=document.getElementById("nexoPanel"),overlay=document.getElementById("nexoKOverlay"),input=document.getElementById("nexoKInput"),list=document.getElementById("nexoKList"),items=[].slice.call(list.querySelectorAll(".nexo-k-item"));function closeAll(){panel.classList.remove("open");overlay.classList.remove("open")}fab.addEventListener("click",function(e){e.stopPropagation();panel.classList.toggle("open")});document.addEventListener("click",function(e){if(!panel.contains(e.target)&&e.target!==fab)panel.classList.remove("open")});function openPalette(){overlay.classList.add("open");input.value="";items.forEach(function(i){i.style.display="flex";i.classList.remove("active")});if(items[0])items[0].classList.add("active");setTimeout(function(){input.focus()},30)}function filter(){var q=input.value.toLowerCase().trim(),visible=[];items.forEach(function(i){var ok=!q||i.dataset.name.indexOf(q)>-1||i.textContent.toLowerCase().indexOf(q)>-1;i.style.display=ok?"flex":"none";i.classList.remove("active");if(ok)visible.push(i)});if(visible[0])visible[0].classList.add("active")}document.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openPalette()}if(e.key==="Escape")closeAll();if(e.key==="Enter"&&overlay.classList.contains("open")){var active=list.querySelector(".nexo-k-item.active");if(active){e.preventDefault();window.location.href=active.href}}});input.addEventListener("input",filter);overlay.addEventListener("click",function(e){if(e.target===overlay)closeAll()})})();</script>
-<script id="overview-nexo-visibility-fix">(function(){var fab=document.getElementById('nexoFab'),panel=document.getElementById('nexoPanel');function upd(){if(!fab||!panel)return;var hide=[].slice.call(document.querySelectorAll('.overlay.open,.settings-overlay.open,.avatar-dropdown.open,.nexo-k-overlay.open')).some(function(el){return el&&el.id!=='nexoKOverlay'});fab.classList.toggle('nexo-suppressed',hide);panel.classList.toggle('nexo-suppressed',hide);if(hide)panel.classList.remove('open')}new MutationObserver(upd).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style']});setTimeout(upd,100);})();</script>
+
 <!-- NEXO NAVIGATION END -->
 </body>
 </html>
