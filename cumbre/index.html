@@ -647,11 +647,11 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <!-- HOME -->
     <div id="page-home" class="page active">
       <div class="stat-cards">
-        <div class="scard-hero">
+        <div class="scard-hero" style="padding:10px 14px">
           <div class="scard-label">Progreso de hoy</div>
           <div class="hero-score-row">
             <div class="ring-wrap">
-              <svg width="58" height="58" viewBox="0 0 76 76" style="transform:rotate(-90deg)" class="ring-svg">
+              <svg viewBox="0 0 76 76" style="transform:rotate(-90deg);width:44px;height:44px;flex-shrink:0" class="ring-svg">
                 <circle cx="38" cy="38" r="31" fill="none" stroke="#EDF0F5" stroke-width="5"/>
                 <circle cx="38" cy="38" r="31" fill="none" stroke="url(#rg)" stroke-width="5" stroke-dasharray="0 195" stroke-linecap="round" id="scoreArc"/>
                 <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#60A5FA"/></linearGradient></defs>
@@ -668,18 +668,18 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
             <div class="hw"></div><div class="hw today"></div><div class="hw"></div><div class="hw"></div>
           </div>
         </div>
-        <div class="scard s-orange">
+        <div class="scard s-orange" style="padding:9px 11px">
           <div class="scard-label">Racha actual</div>
           <div class="scard-val orange" id="streakCard">0<span class="unit"> d</span></div>
           <div class="scard-sub" id="streakMax">Máx. histórico: 0 días</div>
           <div class="trend-badge up"><i class="ti ti-flame" style="font-size:11px"></i> En racha</div>
         </div>
-        <div class="scard s-blue">
+        <div class="scard s-blue" style="padding:9px 11px">
           <div class="scard-label">Esta semana</div>
           <div class="scard-val blue" id="weekPct">—</div>
           <div class="scard-sub" id="weekSub">Registrá metas</div>
         </div>
-        <div class="scard s-green">
+        <div class="scard s-green" style="padding:9px 11px">
           <div class="scard-label">Metas activas</div>
           <div class="scard-val" id="totalMetas">0</div>
           <div class="scard-sub" id="totalMetaSub">Sin metas todavía</div>
@@ -2741,5 +2741,35 @@ window.handleCloseOpt=async(opt)=>{
 <div class="nexo-k-overlay" id="nexoKOverlay"><div class="nexo-k-modal"><div class="nexo-k-head"><div class="nexo-k-title"><img src="../assets/nexo.svg" alt="">NEXO · Ir a</div><input class="nexo-k-input" id="nexoKInput" placeholder="Buscar app..." autocomplete="off"></div><div class="nexo-k-list" id="nexoKList"><a class="nexo-k-item" data-name="nexo inicio sistema central" href="../"><b><img src="../assets/nexo.svg" alt=""></b><span>Nexo</span></a><a class="nexo-k-item" data-name="cumbre objetivos seguimiento progreso metas" href="../cumbre/"><b><img src="../assets/icon-cumbre-v3.png" alt=""></b><span>Cumbre</span></a><a class="nexo-k-item" data-name="overview panorama general calendario planificacion" href="../overview/"><b><img src="../assets/icon-overview-v3.ico" alt=""></b><span>Overview</span></a><a class="nexo-k-item" data-name="taskflow ejecucion diaria tareas proyectos habitos" href="../taskflow/"><b>⚡</b><span>TaskFlow</span></a></div></div></div>
 <script id="nexo-nav-script">(function(){var fab=document.getElementById("nexoFab"),panel=document.getElementById("nexoPanel"),overlay=document.getElementById("nexoKOverlay"),input=document.getElementById("nexoKInput"),list=document.getElementById("nexoKList"),items=[].slice.call(list.querySelectorAll(".nexo-k-item"));function closeAll(){panel.classList.remove("open");overlay.classList.remove("open")}fab.addEventListener("click",function(e){e.stopPropagation();panel.classList.toggle("open")});document.addEventListener("click",function(e){if(!panel.contains(e.target)&&e.target!==fab)panel.classList.remove("open")});function openPalette(){overlay.classList.add("open");input.value="";items.forEach(function(i){i.style.display="flex";i.classList.remove("active")});if(items[0])items[0].classList.add("active");setTimeout(function(){input.focus()},30)}function filter(){var q=input.value.toLowerCase().trim(),visible=[];items.forEach(function(i){var ok=!q||i.dataset.name.indexOf(q)>-1||i.textContent.toLowerCase().indexOf(q)>-1;i.style.display=ok?"flex":"none";i.classList.remove("active");if(ok)visible.push(i)});if(visible[0])visible[0].classList.add("active")}document.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openPalette()}if(e.key==="Escape")closeAll();if(e.key==="Enter"&&overlay.classList.contains("open")){var active=list.querySelector(".nexo-k-item.active");if(active){e.preventDefault();window.location.href=active.href}}});input.addEventListener("input",filter);overlay.addEventListener("click",function(e){if(e.target===overlay)closeAll()})})();</script>
 <!-- NEXO NAVIGATION END -->
+
+// Mobile: ocultar elementos que bugean el layout
+(function(){
+  if(window.innerWidth > 767) return;
+  var style = document.createElement('style');
+  style.textContent = [
+    '.dots { display: none !important }',
+    '.semana-cell { display: none !important }',
+    '.stat-cards { gap: 7px !important }',
+    '.scard { min-height: 0 !important; padding: 9px 11px !important }',
+    '.scard-val { font-size: 22px !important }',
+    '.scard-sub { font-size: 9px !important; margin-top: 2px !important }',
+    '.trend-badge { font-size: 9px !important; padding: 2px 6px !important; margin-top: 3px !important }',
+    '.scard-hero { padding: 10px 14px !important }',
+    '.scard-hero::before { display: none !important }',
+    '.hero-big { font-size: 24px !important }',
+    '.hero-label { font-size: 10px !important }',
+    '.hw { width: 14px !important; height: 14px !important }',
+    '.meta-row { padding: 10px 12px !important; border-radius: 13px !important }',
+    '.m-name { font-size: 13.5px !important }',
+    '.check-c { width: 24px !important; height: 24px !important }',
+    '.bar-track { height: 3px !important }',
+    '.notas-layout { flex-direction: column !important; height: auto !important }',
+    '.notas-sidebar { max-height: none !important; height: auto !important }',
+    '.notas-tree { max-height: 200px !important; overflow-y: auto !important }',
+    '.nota-editor { min-height: 380px !important }',
+  ].join('\n');
+  document.head.appendChild(style);
+})();
+
 </body>
 </html>
