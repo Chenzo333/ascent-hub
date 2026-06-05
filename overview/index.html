@@ -190,9 +190,9 @@ header{display:flex;align-items:center;justify-content:space-between;padding:0 2
   .logo{grid-area:logo;min-width:0;display:flex;align-items:center}.logo img{height:30px!important;max-width:148px;object-fit:contain;object-position:left center}
   .nav{grid-area:month;display:grid;grid-template-columns:38px minmax(0,1fr) 38px;align-items:center;width:100%;gap:8px}.month-lbl{min-width:0;width:100%;font-size:17px;font-weight:600;text-align:center}.ico-btn{width:38px;height:38px;border-radius:10px;background:#fff}
   .hdr-r{grid-area:tools;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;overflow:visible}.zoom-bar{flex:1;min-width:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.z-btn{padding:8px 4px;font-size:11px}.areas-btn,.login-btn{height:36px;border-radius:10px;background:#fff}.hdr-sep{display:none}.avatar-wrap{grid-area:auth;justify-self:end}.avatar-dropdown{position:fixed;right:12px;top:60px}.login-btn.hide,.avatar-wrap.hide{display:none!important}
-  .mobile-area-strip{display:flex;gap:6px;overflow-x:auto;max-width:100vw;padding:8px 10px;background:var(--bg);border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}.mobile-area-strip::-webkit-scrollbar{display:none}
+  .mobile-area-strip{display:none!important}
   .cal-wrap{height:auto;min-height:calc(100dvh - 170px);padding:10px 8px 18px;gap:5px;overflow:visible}.day-hdrs,.cal-grid{gap:4px}.grid-wrap{height:auto;min-height:610px;overflow:visible}.cal-grid{height:auto;min-height:610px;grid-auto-rows:minmax(82px,1fr)}
-  .day{min-height:104px;border-radius:10px;padding:6px 4px 4px;overflow:hidden}.day.dim{visibility:hidden}.day.today .dnum{width:24px;height:24px;font-size:12px}.dnum{font-size:12px}.pill,.kpill{height:18px;font-size:9px;padding-left:4px;padding-right:4px}.band{height:14px!important}.band-lbl{font-size:7.5px;padding:0 3px;line-height:12px}.day-hdr{font-size:10px;padding-bottom:4px}.band-tooltip{display:none!important}.mobile-cell-pill{height:18px;border-radius:5px;padding:2px 4px;font-size:8.5px;font-weight:650;line-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid currentColor;background:color-mix(in srgb,currentColor 12%, #fff);margin-top:2px}.mobile-cell-pill.period{border-style:solid}.mobile-cell-pill.recurrent{border-style:solid}.mobile-cell-pill.keydate{border-style:dashed}.cell-items{margin-top:4px;gap:2px}
+  .day{min-height:104px;border-radius:10px;padding:6px 4px 4px;overflow:hidden}.day.dim{visibility:hidden}.day.today .dnum{width:24px;height:24px;font-size:12px}.dnum{font-size:12px}.pill,.kpill{height:18px;font-size:9px;padding-left:4px;padding-right:4px}.band{height:14px!important}.band-lbl{font-size:7.5px;padding:0 3px;line-height:12px}.day-hdr{font-size:10px;padding-bottom:4px}.band-tooltip{display:none!important}.mobile-cell-pill{height:18px;border-radius:4px;padding:2px 5px;font-size:8.5px;font-weight:600;line-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;display:block;width:100%;box-sizing:border-box}.mobile-cell-pill.period{background:color-mix(in srgb,currentColor 18%,#fff);border-left:3px solid currentColor;border-radius:0 4px 4px 0;padding-left:4px}.mobile-cell-pill.recurrent{background:color-mix(in srgb,currentColor 14%,#fff);border-left:3px solid currentColor;border-radius:0 4px 4px 0;padding-left:4px}.mobile-cell-pill.keydate{background:transparent;border:1px dashed currentColor;border-radius:4px}.cell-items{margin-top:4px;gap:2px}
   .modal,.settings-panel{width:calc(100vw - 24px);max-height:calc(100dvh - 40px);border-radius:18px;padding:18px}.overlay,.settings-overlay{align-items:flex-end;padding:0 0 env(safe-area-inset-bottom,0px)}.overlay.open,.settings-overlay.open{display:flex}.modal,.settings-panel{border-radius:18px 18px 0 0;width:100%;max-height:88dvh}
 }
 @media (max-width: 390px){.z-btn{font-size:10px}.areas-btn,.login-btn{padding-left:9px;padding-right:9px;font-size:11px}.grid-wrap,.cal-grid{min-height:690px}.cal-grid{grid-auto-rows:minmax(98px,1fr)}}
@@ -600,20 +600,7 @@ function saveAreas(){
   if(currentUser) save();
 }
 
-function dbgLog(msg){
-  // Log visual temporal — quitar cuando auth funcione
-  let el=document.getElementById('_dbg');
-  if(!el){
-    el=document.createElement('div');
-    el.id='_dbg';
-    el.style.cssText='position:fixed;bottom:80px;left:8px;right:8px;background:rgba(0,0,0,.82);color:#0f0;font-size:10px;font-family:monospace;padding:8px;border-radius:8px;z-index:9999;max-height:160px;overflow-y:auto;pointer-events:none';
-    document.body.appendChild(el);
-  }
-  const line=document.createElement('div');
-  line.textContent=new Date().toISOString().slice(11,19)+' '+msg;
-  el.appendChild(line);
-  el.scrollTop=el.scrollHeight;
-}
+function dbgLog(msg){ console.log('[OV]', msg); }
 
 function updateUserUI(user){
   const loginBtn=document.getElementById('loginBtn');
@@ -1461,9 +1448,14 @@ document.addEventListener('mouseup',()=>{if(dragging){dragging=false;moved=false
 ═══════════════════════════════════════════════ */
 rebuildLegend();
 
-// ── DISMISS ON OUTSIDE CLICK (fix) ──
-document.getElementById('overlay').addEventListener('mousedown', e => {
-  if(e.target === document.getElementById('overlay')) closeModal();
+// ── DISMISS ON OUTSIDE CLICK — funciona en móvil y desktop ──
+['mousedown','touchend'].forEach(evt=>{
+  document.getElementById('overlay').addEventListener(evt, e => {
+    if(e.target === document.getElementById('overlay')){
+      e.preventDefault();
+      closeModal();
+    }
+  }, {passive:false});
 });
 
 // ── SETTINGS ──
