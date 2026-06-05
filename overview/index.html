@@ -414,7 +414,10 @@ const FB_CFG={apiKey:"AIzaSyAtTH5qxYnjvZJWrcdqqP63kWTxJ1hkh5U",authDomain:"overv
 const fbApp=initializeApp(FB_CFG);
 const auth=getAuth(fbApp);
 const db=getFirestore(fbApp);
-try{await enableIndexedDbPersistence(db);}catch(e){}
+// Persistencia offline — ignorar errores (multi-tab, incógnito, etc.)
+try{ await enableIndexedDbPersistence(db); }catch(e){
+  console.warn('IndexedDB persistence unavailable:', e.code);
+}
 
 /* ═══════════════════════════════════════════════
    DATA
@@ -545,9 +548,16 @@ async function loadFromFirestore(){
     // Realtime listener — igual que TaskFlow
     if(overviewUnsub) overviewUnsub();
     overviewUnsub=onSnapshot(ref,snap=>{
-      if(!snap.exists()||isSaving||(Date.now()-lastSaveTime<2000)) return;
+      if(!snap.exists()) return;
+      // Ignorar solo si YO guardé hace menos de 2s (evitar echo)
+      // Si el update viene del otro dispositivo (updatedAt distinto), aceptarlo siempre
+      const incoming=snap.data()||{};
+      const remoteUpdatedAt=incoming.updatedAt||0;
+      const isMyOwnEcho = isSaving || (Date.now()-lastSaveTime < 2000 && remoteUpdatedAt <= lastSaveTime);
+      if(isMyOwnEcho) return;
       const ex=extractSnap(snap);
       if(!ex) return;
+      dbgLog('snapshot remoto: '+(ex.data.elements.length)+' elementos');
       data=ex.data;
       if(ex.areas&&ex.areas.length){
         AREAS=ex.areas;
@@ -556,7 +566,7 @@ async function loadFromFirestore(){
       }
       setLocalData(data);
       render();
-    },e=>console.warn('Overview snapshot error:',e));
+    },e=>{ dbgLog('snapshot err: '+e.code); console.warn('Overview snapshot error:',e); });
 
   }catch(e){
     console.warn('Overview load error:',e);
@@ -630,17 +640,34 @@ function updateUserUI(user){
 // Ignoramos el null inicial si hay un redirect pendiente para evitar parpadeo.
 let authResolved = false;
 
+let authInitialized = false;
 onAuthStateChanged(auth, async user => {
-  if(overviewUnsub){ overviewUnsub(); overviewUnsub=null; }
-  currentUser = user;
-  updateUserUI(user);
-  authResolved = true;
   if(user){
+    // Login exitoso o sesión restaurada
+    if(overviewUnsub){ overviewUnsub(); overviewUnsub=null; }
+    currentUser = user;
+    updateUserUI(user);
+    authInitialized = true;
+    dbgLog('onAuthStateChanged → user: '+user.email);
     await loadFromFirestore();
   } else {
-    const local = getLocalData();
-    data = local || {elements:[], nid:1};
-    render();
+    dbgLog('onAuthStateChanged → null (authInitialized='+authInitialized+')');
+    if(!authInitialized){
+      // Primera vez que carga, aún sin sesión — mostrar datos locales
+      authInitialized = true;
+      currentUser = null;
+      updateUserUI(null);
+      const local = getLocalData();
+      data = local || {elements:[], nid:1};
+      render();
+    } else {
+      // Sesión cerrada activamente (logout) — limpiar
+      if(overviewUnsub){ overviewUnsub(); overviewUnsub=null; }
+      currentUser = null;
+      updateUserUI(null);
+      data = {elements:[], nid:1};
+      render();
+    }
   }
 });
 
@@ -1401,7 +1428,7 @@ document.getElementById('mSave').addEventListener('click',()=>{
 
   if(mEditId) data.elements=data.elements.map(e=>e.id===mEditId?el:e);
   else data.elements.push(el);
-  save().then(()=>render()); closeModal();
+  save(); closeModal();
 });
 
 /* ═══════════════════════════════════════════════
