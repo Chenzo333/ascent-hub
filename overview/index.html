@@ -405,7 +405,17 @@ header{display:flex;align-items:center;justify-content:space-between;padding:0 2
   </div>
 </div>
 
-<script>
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import{getFirestore,doc,setDoc,getDoc,onSnapshot,enableIndexedDbPersistence}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const FB_CFG={apiKey:"AIzaSyAtTH5qxYnjvZJWrcdqqP63kWTxJ1hkh5U",authDomain:"overview-chenz.firebaseapp.com",projectId:"overview-chenz",storageBucket:"overview-chenz.firebasestorage.app",messagingSenderId:"144806664734",appId:"1:144806664734:web:32b2490421d6b68a406c0f"};
+const fbApp=initializeApp(FB_CFG);
+const auth=getAuth(fbApp);
+const db=getFirestore(fbApp);
+try{await enableIndexedDbPersistence(db);}catch(e){}
+
 /* ═══════════════════════════════════════════════
    DATA
 ═══════════════════════════════════════════════ */
@@ -417,235 +427,222 @@ const DEFAULT_AREAS = [
 ];
 let AREAS = JSON.parse(localStorage.getItem('ov_areas') || 'null') || DEFAULT_AREAS;
 let hiddenAreas = new Set(JSON.parse(localStorage.getItem('ov_hidden_areas') || '[]'));
-if (hiddenAreas.size >= DEFAULT_AREAS.length) { hiddenAreas.clear(); localStorage.removeItem('ov_hidden_areas'); }
 function saveHiddenAreas(){ localStorage.setItem('ov_hidden_areas', JSON.stringify([...hiddenAreas])); }
 // saveAreas definida más abajo junto con loadFromFirestore (con sync a Firestore)
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
 let data = {elements:[], nid:1};
-let db = null, auth = null, currentUser = null;
-let unsubscribeOverview = null;
-let applyingRemote = false;
-let syncingNow = false;
+let currentUser = null;
+let overviewUnsub = null;
+let saveTimeout = null;
+let isSaving = false;
+let lastSaveTime = 0;
 
 function getLocalData(){
   try{
     const s=localStorage.getItem('ov3');
-    if(!s) return {elements:[], nid:1};
+    if(!s) return null;
     const p=JSON.parse(s);
-    return {elements:Array.isArray(p.elements)?p.elements:[], nid:p.nid||1};
-  }catch(e){
-    return {elements:[], nid:1};
-  }
+    if(!p || !Array.isArray(p.elements)) return null;
+    return {elements:p.elements||[], nid:p.nid||1};
+  }catch(e){ return null; }
 }
-function setLocalData(d){
-  localStorage.setItem('ov3', JSON.stringify({elements:d.elements||[], nid:d.nid||1}));
+function setLocalData(next){
+  localStorage.setItem('ov3', JSON.stringify({elements:next.elements||[], nid:next.nid||1}));
 }
-function normalizeElementForCompare(el){
-  const copy={...el};
-  delete copy.id;
-  return JSON.stringify(copy, Object.keys(copy).sort());
-}
-function mergeOverviewData(remote, local){
-  const merged=[];
-  const byId=new Map();
-  const sigs=new Set();
-  let maxId=0;
-  function addElement(src){
-    if(!src || typeof src!=='object') return;
-    const el={...src};
-    const sig=normalizeElementForCompare(el);
-    if(sigs.has(sig)) return;
-    let id=Number(el.id);
-    if(!Number.isFinite(id) || id<=0 || byId.has(id)){
-      id=maxId+1;
-      el.id=id;
-    }
-    maxId=Math.max(maxId,id);
-    byId.set(id,el);
-    sigs.add(sig);
-    merged.push(el);
-  }
-  (remote?.elements||[]).forEach(addElement);
-  (local?.elements||[]).forEach(addElement);
-  const nid=Math.max(remote?.nid||1, local?.nid||1, maxId+1);
-  return {elements:merged, nid};
-}
-function overviewDoc(){
-  // Misma estructura de ruta que TaskFlow: users/{uid}/data/{doc}.
-  // La ruta anterior users/{uid}/overview/data podía quedar fuera de las reglas de Firestore
-  // y provocar que cada dispositivo guardara solo en localStorage.
-  return db && currentUser ? db.doc(`users/${currentUser.uid}/data/overview`) : null;
-}
-
-function cloudPayload(){
-  return {
-    elements: Array.isArray(data.elements) ? data.elements : [],
-    nid: data.nid || 1,
-    areas: Array.isArray(AREAS) ? AREAS : DEFAULT_AREAS,
-    updatedAt: firebase && firebase.firestore && firebase.firestore.FieldValue ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
-  };
-}
-function showSyncWarning(msg){
-  console.warn(msg);
-}
-
-async function initFirebase() {
-  await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
-  await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js');
-  await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js');
-
-  if (!firebase.apps.length) {
-    firebase.initializeApp({
-      apiKey: "AIzaSyAtTH5qxYnjvZJWrcdqqP63kWTxJ1hkh5U",
-      authDomain: "overview-chenz.firebaseapp.com",
-      projectId: "overview-chenz",
-      storageBucket: "overview-chenz.firebasestorage.app",
-      messagingSenderId: "144806664734",
-      appId: "1:144806664734:web:32b2490421d6b68a406c0f"
+function cleanForFirestore(value){
+  if(Array.isArray(value)) return value.map(cleanForFirestore).filter(v=>v!==undefined);
+  if(value && typeof value==='object'){
+    const out={};
+    Object.keys(value).forEach(k=>{
+      const v=cleanForFirestore(value[k]);
+      if(v!==undefined) out[k]=v;
     });
+    return out;
   }
-  db   = firebase.firestore();
-  try { db.settings({ ignoreUndefinedProperties: true }); } catch(e) {}
-  auth = firebase.auth();
+  if(value===undefined || typeof value==='function') return undefined;
+  return value;
+}
+function normalizeData(input){
+  const raw = input && Array.isArray(input.elements) ? input.elements : [];
+  const elements = raw.map(cleanForFirestore).filter(el=>el && el.id!=null && el.name && el.type);
+  const maxId = elements.reduce((m,el)=>Math.max(m, Number(el.id)||0), 0);
+  const nid = Math.max(Number(input?.nid)||1, maxId+1);
+  return {elements, nid};
+}
+/* ═══════════════════════════════════════════════
+   FIREBASE — patrón idéntico a TaskFlow
+   Ruta canónica única: users/{uid}/overview/data
+═══════════════════════════════════════════════ */
+function ovRef(){ return doc(db,'users',currentUser.uid,'overview','data'); }
 
-  try{ await auth.getRedirectResult(); }catch(e){ console.warn('Google redirect login error:', e); }
+function buildPayload(){
+  return cleanForFirestore({ elements:data.elements, nid:data.nid, areas:AREAS, updatedAt:Date.now() });
+}
 
-  // escuchar cambios de sesión
-  auth.onAuthStateChanged(user => {
-    currentUser = user;
-    updateUserUI(user);
-    if (unsubscribeOverview) { unsubscribeOverview(); unsubscribeOverview = null; }
-    if (user) {
-      loadFromFirestore();
+function extractSnap(snap){
+  if(!snap.exists()) return null;
+  const d = snap.data() || {};
+  if(Array.isArray(d.elements)) return {data:normalizeData(d), areas:Array.isArray(d.areas)?d.areas:null};
+  if(d.overview && Array.isArray(d.overview.elements)) return {data:normalizeData(d.overview), areas:Array.isArray(d.overview.areas)?d.overview.areas:null};
+  return null;
+}
+
+// Busca datos en rutas legacy de versiones anteriores
+async function findLegacyData(uid){
+  const legacyPaths=[
+    doc(db,'overview',uid),
+    doc(db,'overviewData',uid),
+    doc(db,'users',uid,'overview','main'),
+  ];
+  for(const r of legacyPaths){
+    try{
+      const s=await getDoc(r);
+      const ex=extractSnap(s);
+      if(ex) return ex;
+    }catch(e){}
+  }
+  return null;
+}
+
+async function loadFromFirestore(){
+  if(!currentUser) return;
+  const ref=ovRef();
+  try{
+    const snap=await getDoc(ref);
+    const extracted=extractSnap(snap);
+
+    if(extracted){
+      data=extracted.data;
+      if(extracted.areas&&extracted.areas.length){
+        AREAS=extracted.areas;
+        localStorage.setItem('ov_areas',JSON.stringify(AREAS));
+      }
+      setLocalData(data);
     } else {
-      data = getLocalData();
-      render();
-    }
-  });
-}
-
-function updateUserUI(user) {
-  const loginBtn   = document.getElementById('loginBtn');
-  const avatarWrap = document.getElementById('avatarWrap');
-  const userPhoto  = document.getElementById('userPhoto');
-  const userName   = document.getElementById('userName');
-  const userEmail  = document.getElementById('userEmail');
-  const addBtn     = document.getElementById('addBtn');
-
-  if (user) {
-    loginBtn.classList.add('hide');
-    avatarWrap.classList.remove('hide');
-    userPhoto.src = user.photoURL || '';
-    userName.textContent = user.displayName || user.email;
-    userEmail.textContent = user.email || '';
-    addBtn.style.display = 'none'; // click en celda abre modal
-  } else {
-    loginBtn.classList.remove('hide');
-    avatarWrap.classList.add('hide');
-    addBtn.style.display = 'none';
-  }
-}
-
-document.getElementById('loginBtn').addEventListener('click', async () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  try {
-    await auth.signInWithPopup(provider);
-  } catch(e) {
-    console.warn('Popup login failed, using redirect:', e);
-    try { await auth.signInWithRedirect(provider); } catch(e2) { console.error(e2); }
-  }
-});
-// logout desde el dropdown del avatar
-document.getElementById('logoutItem').addEventListener('click', async () => {
-  document.getElementById('avatarDropdown').classList.remove('open');
-  await auth.signOut();
-  data = {elements:[], nid:1};
-  render();
-});
-
-function loadScript(src) {
-  return new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = src; s.onload = res; s.onerror = rej;
-    document.head.appendChild(s);
-  });
-}
-
-async function loadFromFirestore() {
-  if (!currentUser || !db) return;
-  const ref = overviewDoc();
-  const local = getLocalData();
-  try {
-    const snap = await ref.get();
-    const remote = snap.exists ? (snap.data() || {}) : {elements:[], nid:1};
-    const merged = mergeOverviewData(remote, local);
-    data = merged;
-
-    if (remote.areas && Array.isArray(remote.areas) && remote.areas.length > 0) {
-      AREAS = remote.areas;
-      localStorage.setItem('ov_areas', JSON.stringify(AREAS));
+      // Doc vacío: migrar desde legacy o local
+      const legacy=await findLegacyData(currentUser.uid);
+      const local=getLocalData();
+      let source;
+      if(legacy&&local){
+        source=legacy.data.elements.length>=local.elements.length?legacy.data:local;
+        if(legacy.areas&&legacy.areas.length) AREAS=legacy.areas;
+      } else if(legacy){
+        source=legacy.data;
+        if(legacy.areas&&legacy.areas.length) AREAS=legacy.areas;
+      } else {
+        source=local||{elements:[],nid:1};
+      }
+      data=normalizeData(source);
+      setLocalData(data);
+      localStorage.setItem('ov_areas',JSON.stringify(AREAS));
+      await setDoc(ref,buildPayload());
+      console.log('Overview: datos migrados a ruta canónica');
     }
 
-    setLocalData(data);
-    const remoteCount = Array.isArray(remote.elements) ? remote.elements.length : 0;
-    const localCount = Array.isArray(local.elements) ? local.elements.length : 0;
-    if (!snap.exists || localCount > remoteCount || merged.elements.length !== remoteCount) {
-      await ref.set(cloudPayload(), { merge:true });
-    }
-  } catch(e) {
-    showSyncWarning('Firestore load error: ' + (e?.message || e));
-    data = local;
-  }
-  render();
-
-  unsubscribeOverview = ref.onSnapshot(snap => {
-    if (!snap.exists || syncingNow) return;
-    const d = snap.data() || {};
-    applyingRemote = true;
-    data.elements = Array.isArray(d.elements) ? d.elements : [];
-    data.nid = d.nid || 1;
-    if (d.areas && Array.isArray(d.areas) && d.areas.length > 0) {
-      AREAS = d.areas;
-      localStorage.setItem('ov_areas', JSON.stringify(AREAS));
-      rebuildLegend();
-      buildAreaOpts();
-    }
-    setLocalData(data);
     render();
-    applyingRemote = false;
-  }, e => showSyncWarning('Firestore realtime error: ' + (e?.message || e)));
+
+    // Realtime listener — igual que TaskFlow
+    if(overviewUnsub) overviewUnsub();
+    overviewUnsub=onSnapshot(ref,snap=>{
+      if(!snap.exists()||isSaving||(Date.now()-lastSaveTime<2000)) return;
+      const ex=extractSnap(snap);
+      if(!ex) return;
+      data=ex.data;
+      if(ex.areas&&ex.areas.length){
+        AREAS=ex.areas;
+        localStorage.setItem('ov_areas',JSON.stringify(AREAS));
+        rebuildLegend();
+      }
+      setLocalData(data);
+      render();
+    },e=>console.warn('Overview snapshot error:',e));
+
+  }catch(e){
+    console.warn('Overview load error:',e);
+    const local=getLocalData();
+    data=local||{elements:[],nid:1};
+    render();
+  }
 }
 
-async function save() {
+// Debounce save — igual que TaskFlow, sin alert molesto
+function save(){
+  data=normalizeData(data);
   setLocalData(data);
-  if (!currentUser || !db) {
-    showSyncWarning('No hay usuario conectado: guardado solo en este dispositivo.');
-    return false;
-  }
-  if (applyingRemote) return true;
-  syncingNow = true;
-  try {
-    await overviewDoc().set(cloudPayload(), { merge:true });
-    return true;
-  } catch(e) {
-    showSyncWarning('Firestore save error: ' + (e?.message || e));
-    alert('No se pudo sincronizar con Google. Error real: ' + (e?.code || '') + ' ' + (e?.message || e));
-    return false;
-  } finally {
-    syncingNow = false;
-  }
+  if(!currentUser) return;
+  isSaving=true;
+  if(saveTimeout) clearTimeout(saveTimeout);
+  saveTimeout=setTimeout(async()=>{
+    try{
+      lastSaveTime=Date.now();
+      await setDoc(ovRef(),buildPayload());
+    }catch(e){
+      console.warn('Overview save error:',e);
+    }finally{
+      isSaving=false;
+    }
+  },800);
 }
 
 function saveAreas(){
-  localStorage.setItem('ov_areas', JSON.stringify(AREAS));
-  if(currentUser && db){
-    syncingNow = true;
-    overviewDoc().set(cloudPayload(), { merge:true })
-      .catch(e=>showSyncWarning('Firestore areas save error: ' + (e?.message || e)))
-      .finally(()=>{ syncingNow = false; });
+  localStorage.setItem('ov_areas',JSON.stringify(AREAS));
+  if(currentUser) save();
+}
+
+function updateUserUI(user){
+  const loginBtn=document.getElementById('loginBtn');
+  const avatarWrap=document.getElementById('avatarWrap');
+  const userPhoto=document.getElementById('userPhoto');
+  const userName=document.getElementById('userName');
+  const userEmail=document.getElementById('userEmail');
+  if(user){
+    loginBtn.classList.add('hide');
+    avatarWrap.classList.remove('hide');
+    userPhoto.src=user.photoURL||'';
+    userName.textContent=user.displayName||user.email;
+    userEmail.textContent=user.email||'';
+  } else {
+    loginBtn.classList.remove('hide');
+    avatarWrap.classList.add('hide');
   }
 }
+
+// Auth state — igual que TaskFlow
+onAuthStateChanged(auth,async user=>{
+  if(overviewUnsub){overviewUnsub();overviewUnsub=null;}
+  currentUser=user;
+  updateUserUI(user);
+  if(user){
+    await loadFromFirestore();
+  } else {
+    const local=getLocalData();
+    data=local||{elements:[],nid:1};
+    render();
+  }
+});
+
+// Login: popup en desktop, redirect en móvil (browsers bloquean popup en móvil)
+document.getElementById('loginBtn').addEventListener('click',async()=>{
+  const provider=new GoogleAuthProvider();
+  const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  if(isMobile){
+    await signInWithRedirect(auth,provider);
+  } else {
+    try{ await signInWithPopup(auth,provider); }
+    catch(e){ console.error('Login error:',e); }
+  }
+});
+
+// Capturar resultado de redirect al volver (móvil)
+getRedirectResult(auth).catch(e=>console.warn('redirect result:',e));
+
+document.getElementById('logoutItem').addEventListener('click',async()=>{
+  document.getElementById('avatarDropdown').classList.remove('open');
+  await signOut(auth);
+  data={elements:[],nid:1};
+  render();
+});
 
 /* ═══════════════════════════════════════════════
    HELPERS
@@ -909,11 +906,10 @@ function render(){
     cell.appendChild(dn);
 
     const ci=document.createElement('div');ci.className='cell-items';cell.appendChild(ci);
-    // Fallback móvil: además de las bandas absolutas, pinta los eventos dentro
-    // de la celda para que nunca queden invisibles en pantallas chicas.
+    // Fallback móvil: si las bandas absolutas no entran/son tapadas, los mismos datos
+    // también quedan visibles dentro de la celda. Desktop no usa este fallback.
     addMobileCellEvents(dy, ci);
     cell.dataset.ymd=dy;
-    addMobileCellEvents(dy, ci);
 
     cell.addEventListener('mousedown',e=>{
       if(e.button!==0)return;
@@ -948,7 +944,28 @@ function render(){
   // pero ymdIdx solo incluye días activos, así que las bandas no se pintan en out-month
   const winS=days.find(d=>!d._outMonth)||days[0];
   const winE=[...days].reverse().find(d=>!d._outMonth)||days[days.length-1];
-  requestAnimationFrame(()=>paintBands(days, ymdIdx, grid, rows, winS, winE));
+
+  // En móvil el layout es height:auto — el grid puede no tener altura real en el primer rAF.
+  // Usamos un helper que reintenta hasta que getBoundingClientRect() tenga dimensiones válidas.
+  schedulePaintBands(days, ymdIdx, grid, rows, winS, winE);
+}
+
+function schedulePaintBands(days, ymdIdx, grid, rows, winS, winE){
+  let attempts=0;
+  function tryPaint(){
+    const r=grid.getBoundingClientRect();
+    // Si el grid ya tiene ancho y alto reales, pintamos. Si no, reintentamos hasta 12 veces.
+    if(r.width>10 && r.height>10){
+      paintBands(days, ymdIdx, grid, rows, winS, winE);
+    } else if(attempts<12){
+      attempts++;
+      setTimeout(tryPaint, attempts<=4 ? 30 : 80);
+    } else {
+      // Último intento de emergencia
+      paintBands(days, ymdIdx, grid, rows, winS, winE);
+    }
+  }
+  requestAnimationFrame(tryPaint);
 }
 
 /* ═══════════════════════════════════════════════
@@ -962,6 +979,17 @@ function paintBands(days, ymdIdx, grid, rows, winS, winE){
   const wRect=wrap.getBoundingClientRect();
   const ox=gRect.left-wRect.left, oy=gRect.top-wRect.top;
   const mobile=isMobileCalendar();
+
+  // En móvil: si el grid no tiene dimensiones reales, salir.
+  // El fallback addMobileCellEvents ya pintó los datos dentro de cada celda.
+  if(mobile && (gRect.width < 10 || gRect.height < 10)) return;
+
+  // En móvil con scroll, las coordenadas absolutas de getBoundingClientRect cambian
+  // según la posición de scroll, lo que desplaza las bandas. El fallback inline
+  // (addMobileCellEvents) ya pintó todos los eventos correctamente dentro de cada celda.
+  // Saltamos el pintado absoluto en móvil para evitar duplicados y desplazamientos.
+  if(mobile) return;
+
   const cols=7, gap=mobile?4:5;
   const cellW=(gRect.width-(cols-1)*gap)/cols;
   const cellH=(gRect.height-(rows-1)*gap)/rows;
@@ -1333,7 +1361,7 @@ document.getElementById('mSave').addEventListener('click',()=>{
 
   if(mEditId) data.elements=data.elements.map(e=>e.id===mEditId?el:e);
   else data.elements.push(el);
-  save(); closeModal();
+  save().then(()=>render()); closeModal();
 });
 
 /* ═══════════════════════════════════════════════
@@ -1558,8 +1586,9 @@ function rebuildLegend(){
   });
 }
 
-// Render inmediato con localStorage — Firebase actualiza después si hay sesión
-try{const s=localStorage.getItem('ov3');if(s){const p=JSON.parse(s);data=p;}}catch(e){}
+// Render inmediato local solo como vista provisoria. Si hay login, Firestore se vuelve fuente única.
+const bootLocal = getLocalData();
+if(bootLocal) data = bootLocal;
 render();
 
 // Scroll rueda — avanza por mes en modo mes, por semana en otros modos
@@ -1581,10 +1610,7 @@ document.getElementById('gridWrap').addEventListener('wheel', e=>{
 window.addEventListener('resize', render);
 document.getElementById('addBtn').style.display = 'none';
 
-// Firebase async — si falla (sin red, preview, etc.) el calendario igual funciona
-initFirebase().catch(e => {
-  console.warn('Firebase no disponible:', e);
-});
+// Firebase inicializado via import module arriba — onAuthStateChanged activo
 
 // ── LOGO con binoculares pegados al texto ──
 function buildLogo(){
