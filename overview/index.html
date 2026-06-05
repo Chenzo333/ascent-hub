@@ -192,7 +192,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:0 2
   .hdr-r{grid-area:tools;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;overflow:visible}.zoom-bar{flex:1;min-width:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.z-btn{padding:8px 4px;font-size:11px}.areas-btn,.login-btn{height:36px;border-radius:10px;background:#fff}.hdr-sep{display:none}.avatar-wrap{grid-area:auth;justify-self:end}.avatar-dropdown{position:fixed;right:12px;top:60px}.login-btn.hide,.avatar-wrap.hide{display:none!important}
   .mobile-area-strip{display:flex;gap:6px;overflow-x:auto;max-width:100vw;padding:8px 10px;background:var(--bg);border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}.mobile-area-strip::-webkit-scrollbar{display:none}
   .cal-wrap{height:auto;min-height:calc(100dvh - 170px);padding:10px 8px 18px;gap:5px;overflow:visible}.day-hdrs,.cal-grid{gap:4px}.grid-wrap{height:auto;min-height:610px;overflow:visible}.cal-grid{height:auto;min-height:610px;grid-auto-rows:minmax(82px,1fr)}
-  .day{min-height:104px;border-radius:10px;padding:6px 4px 4px;overflow:hidden}.day.dim{visibility:hidden}.day.today .dnum{width:24px;height:24px;font-size:12px}.dnum{font-size:12px}.pill,.kpill,.band{height:18px;font-size:9px;padding-left:4px;padding-right:4px}.band-lbl{font-size:9px;padding:0 5px}.day-hdr{font-size:10px;padding-bottom:4px}.band-tooltip{display:none!important}.mobile-cell-pill{height:18px;border-radius:5px;padding:2px 4px;font-size:8.5px;font-weight:650;line-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid currentColor;background:color-mix(in srgb,currentColor 12%, #fff);margin-top:2px}.mobile-cell-pill.period{border-style:solid}.mobile-cell-pill.recurrent{border-style:solid}.mobile-cell-pill.keydate{border-style:dashed}.cell-items{margin-top:4px;gap:2px}
+  .day{min-height:104px;border-radius:10px;padding:6px 4px 4px;overflow:hidden}.day.dim{visibility:hidden}.day.today .dnum{width:24px;height:24px;font-size:12px}.dnum{font-size:12px}.pill,.kpill{height:18px;font-size:9px;padding-left:4px;padding-right:4px}.band{height:14px!important}.band-lbl{font-size:7.5px;padding:0 3px;line-height:12px}.day-hdr{font-size:10px;padding-bottom:4px}.band-tooltip{display:none!important}.mobile-cell-pill{height:18px;border-radius:5px;padding:2px 4px;font-size:8.5px;font-weight:650;line-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid currentColor;background:color-mix(in srgb,currentColor 12%, #fff);margin-top:2px}.mobile-cell-pill.period{border-style:solid}.mobile-cell-pill.recurrent{border-style:solid}.mobile-cell-pill.keydate{border-style:dashed}.cell-items{margin-top:4px;gap:2px}
   .modal,.settings-panel{width:calc(100vw - 24px);max-height:calc(100dvh - 40px);border-radius:18px;padding:18px}.overlay,.settings-overlay{align-items:flex-end;padding:0 0 env(safe-area-inset-bottom,0px)}.overlay.open,.settings-overlay.open{display:flex}.modal,.settings-panel{border-radius:18px 18px 0 0;width:100%;max-height:88dvh}
 }
 @media (max-width: 390px){.z-btn{font-size:10px}.areas-btn,.login-btn{padding-left:9px;padding-right:9px;font-size:11px}.grid-wrap,.cal-grid{min-height:690px}.cal-grid{grid-auto-rows:minmax(98px,1fr)}}
@@ -801,7 +801,9 @@ function render(){
     cell.appendChild(dn);
 
     const ci=document.createElement('div');ci.className='cell-items';cell.appendChild(ci);
-    addMobileCellEvents(dy, ci);
+    // En móvil se mantienen las barras originales (paintBands) para mostrar exactamente
+    // los mismos períodos, recurrentes y fechas clave que en desktop.
+    // No se usan chips alternativos porque podían dejar el calendario móvil sin datos.
     cell.dataset.ymd=dy;
 
     cell.addEventListener('mousedown',e=>{
@@ -837,12 +839,7 @@ function render(){
   // pero ymdIdx solo incluye días activos, así que las bandas no se pintan en out-month
   const winS=days.find(d=>!d._outMonth)||days[0];
   const winE=[...days].reverse().find(d=>!d._outMonth)||days[days.length-1];
-  if(isMobileCalendar()){
-    const wrap=document.getElementById('gridWrap');
-    wrap.querySelectorAll('.band').forEach(b=>b.remove());
-  } else {
-    requestAnimationFrame(()=>paintBands(days, ymdIdx, grid, rows, winS, winE));
-  }
+  requestAnimationFrame(()=>paintBands(days, ymdIdx, grid, rows, winS, winE));
 }
 
 /* ═══════════════════════════════════════════════
@@ -855,11 +852,12 @@ function paintBands(days, ymdIdx, grid, rows, winS, winE){
   const gRect=grid.getBoundingClientRect();
   const wRect=wrap.getBoundingClientRect();
   const ox=gRect.left-wRect.left, oy=gRect.top-wRect.top;
-  const cols=7, gap=5;
+  const mobile=isMobileCalendar();
+  const cols=7, gap=mobile?4:5;
   const cellW=(gRect.width-(cols-1)*gap)/cols;
   const cellH=(gRect.height-(rows-1)*gap)/rows;
   const wsY=ymd(winS), weY=ymd(winE);
-  const BAND_H=20, BAND_TOP=22, SLOT_H=22;
+  const BAND_H=mobile?14:20, BAND_TOP=mobile?31:22, SLOT_H=mobile?16:22;
 
   // slot grid compartido para TODOS los elementos
   const slotGrid={};
