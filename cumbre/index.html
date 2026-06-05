@@ -761,6 +761,20 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 @media(max-width:767px){#page-vision.page.active{padding:12px 14px 88px!important;overflow-y:auto!important;gap:12px!important}.vision-hero{padding:18px;border-radius:20px;align-items:flex-start;flex-direction:column;gap:14px}.vision-title{font-size:24px}.vision-sub{font-size:12px}.vision-morning-btn{width:100%;justify-content:center}.vision-grid{display:flex;flex-direction:column;gap:12px}.vision-card{padding:16px;border-radius:18px}.vision-goals{display:flex;flex-direction:column;gap:12px}.vg-card{min-height:0}.vision-future-grid{display:flex;flex-direction:column;gap:12px}.vf-card{min-height:190px}.affirm-grid{display:flex;flex-direction:column;gap:10px}.affirm-card{min-height:72px}.morning-overlay{padding:16px}.morning-shell{min-height:calc(100dvh - 32px)}.morning-title{font-size:34px}.morning-center{padding-top:9vh}.morning-panel{padding:18px;border-radius:18px}.sidebar-nav .nav-item{padding-top:10px!important;padding-bottom:10px!important}}
 </style>
 
+
+
+<style id="cumbre-vision-v3-style">
+/* V3: polish mobile header/stats + vision config */
+.vision-config-btn{border:1px solid var(--vision-border);background:white;color:var(--vision);border-radius:12px;padding:10px 14px;font-family:var(--font);font-size:12px;font-weight:750;display:flex;align-items:center;gap:7px;cursor:pointer;position:relative;z-index:2;box-shadow:var(--shadow-sm)}
+.vision-hero-actions{display:flex;align-items:center;gap:10px;position:relative;z-index:2;flex-shrink:0}.vision-morning-preview{background:linear-gradient(135deg,rgba(124,58,237,.10),rgba(255,255,255,.98));border:1px solid var(--vision-border);border-radius:20px;padding:18px;display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:center}.vision-morning-preview h3{font-size:18px;letter-spacing:-.4px;margin-bottom:6px}.vision-morning-preview p{font-size:12px;color:var(--t3);line-height:1.5}.vision-morning-preview .vision-morning-btn{width:max-content;margin-top:12px}.vision-morning-phone{border-radius:18px;min-height:150px;background:radial-gradient(circle at 50% 15%,rgba(251,191,36,.42),transparent 28%),linear-gradient(180deg,#281d4b,#080911);color:white;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}.vision-morning-phone strong{font-size:20px;line-height:1.15;display:block;margin-bottom:8px}.vision-morning-phone span{font-size:12px;color:rgba(255,255,255,.72)}
+.vision-config-overlay{display:none;position:fixed;inset:0;z-index:2147483200;background:rgba(15,17,23,.38);backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:18px}.vision-config-overlay.open{display:flex}.vision-config-modal{width:min(860px,100%);max-height:90dvh;background:white;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow-float);overflow:hidden;display:flex;flex-direction:column}.vision-config-header{padding:18px 22px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;gap:14px}.vision-config-title{font-size:18px;font-weight:800;letter-spacing:-.4px;color:var(--t1);display:flex;align-items:center;gap:9px}.vision-config-title i{color:var(--vision)}.vision-config-close{width:34px;height:34px;border-radius:50%;border:0;background:var(--bg);cursor:pointer;color:var(--t2);font-size:18px;display:flex;align-items:center;justify-content:center}.vision-config-body{padding:18px 22px;overflow:auto;display:grid;gap:18px}.vc-section{border:1px solid var(--border);border-radius:16px;padding:16px;background:linear-gradient(180deg,#fff,rgba(244,246,249,.45))}.vc-title{font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.08em;color:var(--vision);margin-bottom:10px;display:flex;align-items:center;gap:7px}.vc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.vc-field{display:flex;flex-direction:column;gap:6px}.vc-label{font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)}.vc-input,.vc-textarea{width:100%;border:1px solid rgba(0,0,0,.08);background:white;border-radius:12px;padding:10px 12px;font-family:var(--font);font-size:13px;color:var(--t1);outline:none}.vc-textarea{min-height:110px;resize:vertical;line-height:1.5}.vc-input:focus,.vc-textarea:focus{border-color:var(--vision-border);box-shadow:0 0 0 4px var(--vision-soft)}.vision-config-footer{padding:16px 22px;border-top:1px solid var(--border2);display:flex;justify-content:flex-end;gap:10px}.vc-btn{border:1px solid var(--border);background:white;border-radius:12px;padding:11px 16px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;color:var(--t2)}.vc-btn.primary{border-color:var(--vision);background:var(--vision);color:white}.vc-btn.danger{color:var(--red)}
+@media(max-width:767px){
+  .topbar{min-height:62px!important;padding:8px 14px 8px 58px!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;column-gap:8px!important}.topbar>div:first-child{min-width:0!important;display:flex!important;flex-direction:column!important;justify-content:center!important}.topbar-title{line-height:1.1!important}.topbar-sub{line-height:1.15!important}.topbar-right{height:44px!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important}.topbar-right .btn-primary{width:42px!important;height:42px!important;min-width:42px!important;border-radius:14px!important;display:flex!important;align-items:center!important;justify-content:center!important;line-height:0!important;transform:none!important;align-self:center!important}.topbar-right .btn-primary i{font-size:22px!important;line-height:1!important}.streak-pill{height:42px!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:0!important}.cumbre-mobile-menu{top:10px!important;width:42px!important;height:42px!important;border-radius:14px!important}
+  #page-home .stat-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;min-height:96px!important;align-items:stretch!important}#page-home .scard-hero,#page-home .scard{height:96px!important;min-height:96px!important;padding:8px 5px!important;justify-content:flex-start!important;gap:2px!important}#page-home .scard-label{height:20px!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:0!important}#page-home .hero-score-row{height:64px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important}#page-home .ring-wrap{width:34px!important;height:34px!important;display:grid!important;place-items:center!important;position:relative!important;flex:0 0 34px!important}#page-home .ring-wrap svg{width:34px!important;height:34px!important;display:block!important;grid-area:1/1!important}#page-home .ring-val{position:absolute!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;line-height:1!important;transform:none!important}#page-home .ring-pct{font-size:8.5px!important;line-height:1!important;letter-spacing:-.2px!important;margin:0!important}.ring-sub{display:none!important}#page-home .hero-big{font-size:20px!important;margin:0!important;line-height:1!important}#page-home .hero-label{font-size:8px!important;line-height:1.05!important;margin:0!important}#page-home .scard-val{margin-top:2px!important;font-size:22px!important}.trend-badge{display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;max-width:100%!important;align-self:center!important}.scard-sub{text-align:center!important}
+  .vision-hero{display:flex!important;flex-direction:column!important;padding:16px!important;border-radius:20px!important;gap:12px!important}.vision-hero-actions{display:grid!important;grid-template-columns:1fr!important;width:100%!important;gap:8px!important}.vision-config-btn,.vision-morning-btn{width:100%!important;justify-content:center!important;height:44px!important}.vision-morning-preview{grid-template-columns:1fr!important;padding:16px!important}.vision-morning-phone{min-height:120px}.vision-config-overlay{align-items:flex-end!important;padding:0!important}.vision-config-modal{border-radius:20px 20px 0 0!important;max-height:92dvh!important}.vision-config-body{padding:14px!important;gap:12px}.vc-grid{grid-template-columns:1fr!important}.vc-section{padding:13px!important}.vision-config-header{padding:16px!important}.vision-config-footer{padding:14px!important}.vc-btn{flex:1}.vf-card{min-height:175px!important}.affirm-card{min-height:68px!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -978,14 +992,14 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
           <div class="vision-title">Identidad, objetivos y afirmaciones</div>
           <div class="vision-sub">Un panel para leer a la mañana, recordar quién sos y orientar el día hacia tus metas importantes.</div>
         </div>
-        <button class="vision-morning-btn" onclick="openMorningMode()"><i class="ti ti-sun"></i> Modo Mañana</button>
+        <div class="vision-hero-actions"><button class="vision-config-btn" onclick="openVisionConfig()"><i class="ti ti-settings"></i> Configurar visión</button><button class="vision-morning-btn" onclick="openMorningMode()"><i class="ti ti-sun"></i> Modo Mañana</button></div>
       </div>
 
       <div class="vision-grid">
         <div class="vision-card">
           <div class="vision-card-head">
             <div><div class="vision-card-title"><i class="ti ti-user-circle"></i> Identidad</div><div class="vision-mini">Quién soy. No negocio estas cosas.</div></div>
-            <button class="vision-edit" onclick="showToast('Edición de Visión: próxima versión')">Editar</button>
+            <button class="vision-edit" onclick="openVisionConfig()">Editar</button>
           </div>
           <div class="identity-list">
             <div class="identity-item"><span class="identity-dot"></span><span>Ejecuto aunque no tenga ganas.</span></div>
@@ -998,7 +1012,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <div class="vision-card">
           <div class="vision-card-head">
             <div><div class="vision-card-title"><i class="ti ti-target-arrow"></i> Objetivos inevitables 2026</div><div class="vision-mini">Lo que voy a construir este año.</div></div>
-            <button class="vision-edit" onclick="showToast('Edición de Visión: próxima versión')">Editar</button>
+            <button class="vision-edit" onclick="openVisionConfig()">Editar</button>
           </div>
           <div class="vision-goals">
             <div class="vg-card"><div class="vg-top"><div class="vg-name c-trading"><i class="ti ti-trending-up"></i> Trading</div><i class="ti ti-chevron-right"></i></div><span class="vg-status green">En construcción</span><div class="vg-list"><div><i class="ti ti-circle-check"></i>Fondear cuenta principal.</div><div><i class="ti ti-circle-check"></i>Mantener consistencia.</div><div><i class="ti ti-circle-check"></i>Realizar retiros mensuales.</div><div><i class="ti ti-circle-check"></i>Operar como profesional.</div></div></div>
@@ -1010,7 +1024,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
 
       <div class="vision-card">
-        <div class="vision-card-head"><div><div class="vision-card-title"><i class="ti ti-eye"></i> Visión de futuro</div><div class="vision-mini">Así veo mi vida cuando todo esto se haya hecho realidad.</div></div><button class="vision-edit" onclick="showToast('Edición de Visión: próxima versión')">Editar</button></div>
+        <div class="vision-card-head"><div><div class="vision-card-title"><i class="ti ti-eye"></i> Visión de futuro</div><div class="vision-mini">Así veo mi vida cuando todo esto se haya hecho realidad.</div></div><button class="vision-edit" onclick="openVisionConfig()">Editar</button></div>
         <div class="vision-future-grid">
           <div class="vf-card vf-trading"><div class="vf-title">Trading</div><div class="vf-lines">• No veo una cuenta fondeada.<br>• Veo retiros constantes.<br>• Veo tranquilidad.<br>• Veo decisiones profesionales.</div></div>
           <div class="vf-card vf-academia"><div class="vf-title">Academia</div><div class="vf-lines">• No veo cursos.<br>• Veo una empresa funcionando sola.<br>• Veo alumnas felices.<br>• Veo crecimiento sostenido.</div></div>
@@ -1020,10 +1034,32 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
 
       <div class="vision-card">
-        <div class="vision-card-head"><div><div class="vision-card-title"><i class="ti ti-heart"></i> Afirmaciones</div><div class="vision-mini">Verdades que elijo recordar cada día.</div></div><button class="vision-edit" onclick="showToast('Edición de Visión: próxima versión')">Editar</button></div>
+        <div class="vision-card-head"><div><div class="vision-card-title"><i class="ti ti-heart"></i> Afirmaciones</div><div class="vision-mini">Verdades que elijo recordar cada día.</div></div><button class="vision-edit" onclick="openVisionConfig()">Editar</button></div>
         <div class="affirm-grid">
           <div class="affirm-card">Soy una persona que ejecuta.</div><div class="affirm-card">El progreso llega por acumulación.</div><div class="affirm-card">Mi trabajo tiene valor.</div><div class="affirm-card">Mi disciplina vale más que mi motivación.</div><div class="affirm-card">Hoy solo necesito cumplir el proceso.</div><div class="affirm-card">Las pequeñas acciones construyen grandes resultados.</div>
         </div>
+      </div>
+
+      <div class="vision-card vision-morning-card">
+        <div class="vision-card-head"><div><div class="vision-card-title"><i class="ti ti-sun"></i> Modo Mañana</div><div class="vision-mini">Ritual de lectura diaria dentro de Visión.</div></div></div>
+        <div class="vision-morning-preview">
+          <div>
+            <h3>Entrar en modo enfoque</h3>
+            <p>Una experiencia de pantalla completa para leer identidad, visión 2026, prioridades y afirmaciones al despertar.</p>
+            <button class="vision-morning-btn" onclick="openMorningMode()"><i class="ti ti-sun"></i> Iniciar Modo Mañana</button>
+          </div>
+          <div class="vision-morning-phone"><div><strong>Buen día,<br>Merlin</strong><span>Enfocate en lo que realmente importa.</span></div></div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="vision-config-overlay" id="visionConfigOverlay">
+      <div class="vision-config-modal">
+        <div class="vision-config-header"><div class="vision-config-title"><i class="ti ti-eye-cog"></i> Configurar Visión</div><button class="vision-config-close" onclick="closeVisionConfig()"><i class="ti ti-x"></i></button></div>
+        <div class="vision-config-body" id="visionConfigBody"></div>
+        <div class="vision-config-footer"><button class="vc-btn danger" onclick="resetVisionData()">Restaurar</button><button class="vc-btn" onclick="closeVisionConfig()">Cancelar</button><button class="vc-btn primary" onclick="saveVisionConfig()">Guardar cambios</button></div>
       </div>
     </div>
 
@@ -3038,6 +3074,74 @@ window.handleCloseOpt=async(opt)=>{
 })();
 </script>
 
+
+
+<script id="cumbre-vision-v3-script">
+(function(){
+  var KEY='cumbreVisionV3';
+  var defaults={
+    identity:['Ejecuto aunque no tenga ganas.','Elijo progreso sobre comodidad.','Termino lo que empiezo.','No necesito motivación para actuar.','Respeto mi proceso.'],
+    goals:[
+      {key:'trading',title:'Trading',icon:'ti-chart-line',color:'green',status:'En construcción',items:['Fondear cuenta principal.','Mantener consistencia.','Realizar retiros mensuales.','Operar como profesional.']},
+      {key:'academia',title:'Academia LUZ',icon:'ti-school',color:'blue',status:'En marcha',items:['Completar ocupación.','Profesionalizar procesos.','Consolidar equipo docente.','Construir el mejor año lectivo.']},
+      {key:'musica',title:'Música',icon:'ti-music',color:'purple',status:'Despertando',items:['Ordenar catálogo.','Finalizar canciones.','Lanzar primer EP.','Construir identidad artística.']},
+      {key:'personal',title:'Personal',icon:'ti-leaf',color:'orange',status:'Activo',items:['Entrenar regularmente.','Leer todos los meses.','Mantener hábitos.','Construir salud a largo plazo.']}
+    ],
+    future:[
+      {key:'trading',title:'Trading',cls:'vf-trading',lines:['No veo una cuenta fondeada.','Veo retiros constantes.','Veo tranquilidad.','Veo decisiones profesionales.']},
+      {key:'academia',title:'Academia',cls:'vf-academia',lines:['No veo cursos.','Veo una empresa funcionando sola.','Veo alumnas felices.','Veo crecimiento sostenido.']},
+      {key:'musica',title:'Música',cls:'vf-musica',lines:['No veo canciones guardadas.','Veo temas publicados.','Veo una obra terminada.','Veo mi arte llegando a otros.']},
+      {key:'personal',title:'Personal',cls:'vf-personal',lines:['No veo objetivos.','Veo una vida ordenada.','Veo disciplina.','Veo coherencia.']}
+    ],
+    affirmations:['Soy una persona que ejecuta.','El progreso llega por acumulación.','Mi trabajo tiene valor.','Mi disciplina vale más que mi motivación.','Hoy solo necesito cumplir el proceso.','Las pequeñas acciones construyen grandes resultados.'],
+    priorities:['Trading','Academia','Música'],
+    reminder:'La paciencia también es acción.'
+  };
+  function clone(o){return JSON.parse(JSON.stringify(o));}
+  function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function load(){try{var d=JSON.parse(localStorage.getItem(KEY));return d&&d.identity?d:clone(defaults);}catch(e){return clone(defaults)}}
+  function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
+  function lines(v){return String(v||'').split('\n').map(function(x){return x.trim()}).filter(Boolean)}
+  function toast(msg){if(typeof window.showToast==='function')window.showToast(msg);}
+  window.renderVision=function(){
+    var d=load();
+    var identity=document.querySelector('.identity-list');
+    if(identity)identity.innerHTML=d.identity.map(function(x){return '<div class="identity-item"><span class="identity-dot"></span>'+esc(x)+'</div>';}).join('');
+    var goals=document.querySelector('.vision-goals');
+    if(goals)goals.innerHTML=d.goals.map(function(g){return '<div class="vg-card"><div class="vg-top"><div class="vg-name c-'+esc(g.key)+'"><i class="ti '+esc(g.icon)+'"></i> '+esc(g.title)+'</div><i class="ti ti-chevron-right"></i></div><span class="vg-status '+esc(g.color)+'">'+esc(g.status)+'</span><div class="vg-list">'+g.items.map(function(it){return '<div><i class="ti ti-circle-check"></i>'+esc(it)+'</div>';}).join('')+'</div></div>';}).join('');
+    var future=document.querySelector('.vision-future-grid');
+    if(future)future.innerHTML=d.future.map(function(f){return '<div class="vf-card '+esc(f.cls)+'"><div class="vf-title">'+esc(f.title)+'</div><div class="vf-lines">'+f.lines.map(function(l){return '• '+esc(l)}).join('<br>')+'</div></div>';}).join('');
+    var aff=document.querySelector('.affirm-grid');
+    if(aff)aff.innerHTML=d.affirmations.map(function(a){return '<div class="affirm-card">'+esc(a)+'</div>';}).join('');
+    var ms=document.querySelector('[data-morning="1"]');
+    if(ms)ms.innerHTML='<div class="morning-panel"><h3><i class="ti ti-user-circle"></i> Identidad</h3><ul>'+d.identity.slice(0,3).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul></div><div class="morning-panel"><h3><i class="ti ti-eye"></i> Visión 2026</h3><ul><li>Academia consolidada.</li><li>Trading profesional.</li><li>Música publicada.</li><li>Vida ordenada.</li></ul></div><div class="morning-panel"><h3><i class="ti ti-sparkles"></i> Recordatorio</h3><ul><li>'+esc(d.reminder)+'</li></ul></div>';
+    var ms2=document.querySelector('[data-morning="2"]');
+    if(ms2)ms2.innerHTML='<div class="morning-panel"><h3><i class="ti ti-calendar"></i> Hoy</h3><div class="morning-sub" style="margin:0;max-width:none">No necesito resolver todo.<br>Solo necesito ganar el día.</div></div><div class="morning-panel"><h3>Mis 3 prioridades</h3><div class="morning-priorities">'+d.priorities.slice(0,3).map(function(p,i){return '<div class="morning-priority"><span class="morning-num">'+(i+1)+'</span>'+esc(p)+'</div>';}).join('')+'</div></div><div class="morning-panel"><div class="morning-quote">'+esc(d.affirmations[0]||'Cada pequeña acción me acerca a la vida que quiero vivir.')+'</div></div>';
+  };
+  window.openVisionConfig=function(){
+    var d=load(), body=document.getElementById('visionConfigBody'); if(!body)return;
+    body.innerHTML='<div class="vc-section"><div class="vc-title"><i class="ti ti-user-circle"></i> Identidad</div><textarea id="vcIdentity" class="vc-textarea" placeholder="Una frase por línea"></textarea></div>'+
+      '<div class="vc-section"><div class="vc-title"><i class="ti ti-target-arrow"></i> Objetivos inevitables</div><div class="vc-grid">'+d.goals.map(function(g,i){return '<div class="vc-field"><label class="vc-label">'+esc(g.title)+' — estado</label><input class="vc-input" id="vcGoalStatus'+i+'"><label class="vc-label">Objetivos</label><textarea class="vc-textarea" id="vcGoalItems'+i+'"></textarea></div>';}).join('')+'</div></div>'+
+      '<div class="vc-section"><div class="vc-title"><i class="ti ti-eye"></i> Visión de futuro</div><div class="vc-grid">'+d.future.map(function(f,i){return '<div class="vc-field"><label class="vc-label">'+esc(f.title)+'</label><textarea class="vc-textarea" id="vcFuture'+i+'"></textarea></div>';}).join('')+'</div></div>'+
+      '<div class="vc-section"><div class="vc-title"><i class="ti ti-heart"></i> Afirmaciones y modo mañana</div><div class="vc-grid"><div class="vc-field"><label class="vc-label">Afirmaciones</label><textarea id="vcAffirm" class="vc-textarea"></textarea></div><div class="vc-field"><label class="vc-label">Mis 3 prioridades</label><textarea id="vcPriorities" class="vc-textarea"></textarea><label class="vc-label">Recordatorio</label><input id="vcReminder" class="vc-input"></div></div></div>';
+    document.getElementById('vcIdentity').value=d.identity.join('\n');
+    d.goals.forEach(function(g,i){document.getElementById('vcGoalStatus'+i).value=g.status;document.getElementById('vcGoalItems'+i).value=g.items.join('\n');});
+    d.future.forEach(function(f,i){document.getElementById('vcFuture'+i).value=f.lines.join('\n');});
+    document.getElementById('vcAffirm').value=d.affirmations.join('\n'); document.getElementById('vcPriorities').value=d.priorities.join('\n'); document.getElementById('vcReminder').value=d.reminder;
+    document.getElementById('visionConfigOverlay').classList.add('open');
+  };
+  window.closeVisionConfig=function(){var o=document.getElementById('visionConfigOverlay');if(o)o.classList.remove('open');};
+  window.saveVisionConfig=function(){
+    var d=load(); d.identity=lines(document.getElementById('vcIdentity').value); d.affirmations=lines(document.getElementById('vcAffirm').value); d.priorities=lines(document.getElementById('vcPriorities').value).slice(0,3); d.reminder=(document.getElementById('vcReminder').value||'').trim()||defaults.reminder;
+    d.goals.forEach(function(g,i){g.status=(document.getElementById('vcGoalStatus'+i).value||g.status).trim(); g.items=lines(document.getElementById('vcGoalItems'+i).value);});
+    d.future.forEach(function(f,i){f.lines=lines(document.getElementById('vcFuture'+i).value);});
+    save(d); renderVision(); closeVisionConfig(); toast('Visión actualizada ✓');
+  };
+  window.resetVisionData=function(){localStorage.removeItem(KEY); renderVision(); closeVisionConfig(); toast('Visión restaurada');};
+  document.addEventListener('DOMContentLoaded',renderVision); setTimeout(renderVision,300);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeVisionConfig();});
+})();
+</script>
 
 <script id="cumbre-mobile-polish-script">
 (function(){
