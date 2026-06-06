@@ -63,7 +63,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 @keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
 
 /* ── HOY / MAÑANA SWIPE ── */
-.today-swipe-wrap{overflow:hidden;width:100%}
+.today-swipe-wrap{overflow:hidden;width:100%;touch-action:pan-y}
 .today-swipe-track{display:flex;transition:transform .3s cubic-bezier(.4,0,.2,1);width:200%}
 .today-swipe-page{width:50%;min-width:50%;flex-shrink:0}
 .today-day-tabs{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px 0}
@@ -200,35 +200,45 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .overdue-bar{font-size:12px;color:var(--c-over);background:var(--c-over-dim);padding:6px 10px;border-radius:var(--rs);border:1px solid #f0524f30;cursor:pointer;text-align:center}
 
 /* ── TASK CARD ── */
-.task-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);display:flex;position:relative;user-select:none;transition:opacity .15s}
+.task-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);display:flex;position:relative;user-select:none;transition:opacity .15s;overflow:hidden}
 .task-card.ov{border-left:3px solid var(--c-over)}
 .task-card.td{border-left:3px solid var(--accent)}
 .task-card.dn{opacity:.5}
 .task-card.dragging{opacity:.2}
 .task-card.da{border-top:2px solid var(--accent)}
 .task-card.db{border-bottom:2px solid var(--accent)}
-.tc-grip{padding:12px 4px 12px 8px;color:var(--text3);cursor:grab;display:flex;align-items:flex-start;opacity:0;transition:opacity .12s}
+.tc-grip{padding:12px 4px 12px 8px;color:var(--text3);cursor:grab;display:flex;align-items:flex-start;opacity:0;transition:opacity .12s;flex-shrink:0}
 .task-card:hover .tc-grip{opacity:1}
-.tc-body{flex:1;padding:12px 12px 10px 4px;min-width:0}
-.tc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:4px}
-.tc-title-row{display:flex;align-items:flex-start;gap:7px;flex:1;min-width:0}
+.tc-body{flex:1;padding:10px 10px 8px 4px;min-width:0;overflow:hidden}
+.tc-top{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px}
+.tc-title-row{display:flex;align-items:flex-start;gap:6px;flex:1;min-width:0;overflow:hidden}
 .prio-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.prio-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.35px;text-transform:uppercase;border:1px solid transparent;line-height:1.2;white-space:nowrap}
+.prio-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;font-size:9px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;border:1px solid transparent;line-height:1.2;white-space:nowrap;flex-shrink:0}
 .prio-badge.alta{color:var(--c-over);background:var(--c-over-dim);border-color:#f0524f40}
 .prio-badge.media{color:var(--c-mid);background:var(--c-mid-dim);border-color:#f5a62340}
 .prio-badge.baja{color:var(--text2);background:var(--bg4);border-color:var(--border2)}
 .task-card.prio-alta{box-shadow:inset 4px 0 0 var(--c-over)}
 .task-card.prio-media{box-shadow:inset 4px 0 0 var(--c-mid)}
-.tc-title{font-size:14px;font-weight:500;line-height:1.4;word-break:break-word}
-.tc-actions{display:flex;align-items:center;gap:2px;flex-shrink:0}
-.tc-desc{font-size:11.5px;color:var(--text3);margin:5px 0 4px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+.tc-title{font-size:13.5px;font-weight:500;line-height:1.35;word-break:break-word;overflow-wrap:anywhere;flex:1;min-width:0}
+.tc-actions{display:flex;align-items:center;gap:1px;flex-shrink:0;margin-left:auto}
+.tc-actions .icon-btn{width:28px;height:28px}
+.tc-desc{font-size:11.5px;color:var(--text3);margin:4px 0 3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;font-weight:400}
 .tc-proj-badge{font-size:11px;font-weight:600;margin-bottom:4px}
 .tc-meta{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:5px;flex-wrap:wrap}
-.mc{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--text3);background:var(--bg4);padding:3px 8px;border-radius:5px;font-family:var(--mono)}
+.mc{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:var(--text3);background:var(--bg4);padding:2px 7px;border-radius:5px;font-family:var(--mono);white-space:nowrap}
 .mc.cr{color:var(--c-over);background:var(--c-over-dim)}
 .mc.cb{color:var(--accent);background:var(--accent-dim)}
 .tc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
 .tgc{font-size:11px;color:var(--accent);background:var(--accent-dim);padding:2px 8px;border-radius:5px;font-family:var(--mono)}
+
+/* Mobile card fixes */
+@media(max-width:767px){
+  .tc-grip{display:none}
+  .tc-body{padding:10px 10px 8px 10px}
+  .tc-actions .icon-btn{width:30px;height:30px}
+  .prio-badge{font-size:9px;padding:2px 5px}
+  .tc-title{font-size:13px}
+}
 
 /* ── SUBTASKS ── */
 .subtasks-wrap{margin-top:8px;border-top:1px solid var(--border);padding-top:7px}
@@ -661,6 +671,33 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
 .pan-list-date{font-size:10px;flex-shrink:0;}
 .pan-check{flex-shrink:0;}
 .pan-check-done{width:17px;height:17px;min-width:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* ── TASK DETAIL MODAL (Panorama) ── */
+.tdm-overlay{position:fixed;inset:0;background:var(--overlay);z-index:300;display:flex;align-items:flex-end;justify-content:center;animation:overlayIn .2s ease}
+.tdm-sheet{background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:sheetIn .25s ease;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+.tdm-handle{width:36px;height:4px;border-radius:2px;background:var(--border2);margin:12px auto 0}
+.tdm-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px}
+.tdm-title-wrap{flex:1;min-width:0}
+.tdm-title{font-size:18px;font-weight:700;line-height:1.3;color:var(--text);margin:0}
+.tdm-proj{font-size:12px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:5px}
+.tdm-hdr-btns{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.tdm-edit-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border2);background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.tdm-edit-btn:active{background:var(--bg3);color:var(--accent);border-color:var(--accent)}
+.tdm-close-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--bg3);color:var(--text3);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tdm-body{padding:0 18px 8px;display:flex;flex-direction:column;gap:14px}
+.tdm-prio-row{display:flex;gap:8px;align-items:center}
+.tdm-section{display:flex;flex-direction:column;gap:4px}
+.tdm-lbl{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3)}
+.tdm-val{font-size:14px;color:var(--text);line-height:1.5}
+.tdm-desc{font-size:13.5px;color:var(--text2);line-height:1.6;background:var(--bg3);border-radius:10px;padding:12px 14px}
+.tdm-divider{height:1px;background:var(--border);margin:2px 0}
+.tdm-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;background:var(--bg3);color:var(--text2)}
+.tdm-chips{display:flex;flex-wrap:wrap;gap:8px}
+.tdm-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tdm-tag{font-size:11.5px;color:var(--accent);background:var(--accent-dim);padding:3px 10px;border-radius:5px;font-family:var(--mono)}
+.tdm-footer{padding:14px 18px 4px;border-top:1px solid var(--border);display:flex;gap:10px}
+.tdm-footer .btn{flex:1;justify-content:center;font-size:14px}
+@media(min-width:768px){.tdm-overlay{align-items:center}.tdm-sheet{border-radius:16px;max-height:80vh;margin:20px}}
 </style>
 </head>
 <body>
@@ -1051,13 +1088,29 @@ window.toggleTheme=()=>{S.theme=S.theme==='dark'?'light':'dark';applyTheme();sav
 
 // ── TODAY SWIPE ──
 function setupTodaySwipe(){
-  const track=document.getElementById('today-swipe-track');
-  if(!track)return;
-  track.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;},{passive:true});
-  track.addEventListener('touchend',e=>{
-    const dx=e.changedTouches[0].clientX-touchStartX;
-    const dy=e.changedTouches[0].clientY-touchStartY;
-    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>50){
+  const wrap=document.getElementById('view-today');
+  if(!wrap||wrap._swipeReady)return;
+  wrap._swipeReady=true;
+  let sx=0,sy=0,tracking=false;
+  wrap.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1)return;
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;tracking=true;
+  },{passive:true});
+  wrap.addEventListener('touchmove',e=>{
+    if(!tracking||e.touches.length!==1)return;
+    const dx=e.touches[0].clientX-sx;
+    const dy=e.touches[0].clientY-sy;
+    // If mostly horizontal, prevent vertical scroll from taking over
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8){
+      e.stopPropagation();
+    }
+  },{passive:true});
+  wrap.addEventListener('touchend',e=>{
+    if(!tracking)return;
+    tracking=false;
+    const dx=e.changedTouches[0].clientX-sx;
+    const dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40){
       if(dx<0&&todayPage===0)switchTodayPage(1);
       else if(dx>0&&todayPage===1)switchTodayPage(0);
     }
@@ -1380,7 +1433,7 @@ function renderPanorama(){
       if(t.date){
         dateStr=isTd?'Hoy':isOv?'Vencida':t.date.split('-').reverse().join('/');
       }
-      h+=`<div class="pan-list-row${done?' pan-list-done':''}">
+      h+=`<div class="pan-list-row${done?' pan-list-done':''}" ${!done?`onclick="openTaskDetail('${t.id}',event)"`:''} style="${!done?'cursor:pointer':''}">
         ${!done
           ?`<button class="pcard-check pan-check" onclick="completeFromPan('${t.id}',this)" style="width:17px;height:17px;min-width:17px"></button>`
           :`<span class="pan-check-done"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--c-done)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>`
@@ -1766,6 +1819,74 @@ window.doSignOut=async()=>{if(!confirm('¿Cerrar sesión?'))return;await signOut
 
 // Expose globals for non-module scripts
 window.palDot=palDot;window.esc=esc;window.TODAY=TODAY;
+// ── TASK DETAIL MODAL ──
+window.openTaskDetail=(tid,e)=>{
+  if(e&&e.target.closest('button'))return; // don't open if clicking a button
+  const t=S.tasks.find(x=>x.id===tid);if(!t)return;
+  const proj=S.projects.find(p=>p.id===t.projectId);
+  const col=proj?.columns.find(c=>c.id===t.columnId);
+  const prioLbl={alta:'Alta / urgente',media:'Media / normal',baja:'Baja / simple'};
+  const prioC={alta:'var(--c-over)',media:'var(--c-mid)',baja:'var(--text3)'};
+  const fd=d=>{if(!d)return'';const[y,m,dy]=d.split('-');return`${dy}/${m}/${y}`;};
+  const dot=proj?palDot(proj.palKey):'var(--accent)';
+
+  let tagsHTML=(t.tags||[]).map(tg=>`<span class="tdm-tag">#${esc(tg)}</span>`).join('');
+  let subsHTML='';
+  if((t.subtasks||[]).length){
+    const done=t.subtasks.filter(s=>s.done).length;
+    subsHTML=`<div class="tdm-section"><div class="tdm-lbl">Subtareas</div><div class="tdm-val">${done}/${t.subtasks.length} completadas</div></div>`;
+  }
+
+  const html=`<div class="tdm-overlay" id="tdm-overlay" onclick="if(event.target.id==='tdm-overlay')closeTaskDetail()">
+    <div class="tdm-sheet">
+      <div class="tdm-handle"></div>
+      <div class="tdm-hdr">
+        <div class="tdm-title-wrap">
+          <p class="tdm-title">${esc(t.title)}</p>
+          ${proj?`<div class="tdm-proj"><span style="color:${dot}">${proj.icon}</span><span style="color:${dot};font-weight:600">${esc(proj.name)}</span>${col?`<span style="color:var(--border2)">·</span><span>${esc(col.name)}</span>`:''}  </div>`:''}
+        </div>
+        <div class="tdm-hdr-btns">
+          <button class="tdm-edit-btn" onclick="closeTaskDetail();openEditT('${tid}')" title="Editar">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="tdm-close-btn" onclick="closeTaskDetail()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="tdm-body">
+        <div class="tdm-prio-row">
+          <span class="prio-badge ${t.priority||'baja'}" style="font-size:11px;padding:4px 10px">${prioLbl[t.priority]||'Baja'}</span>
+          ${(S.pinnedTasks||[]).includes(tid)?`<span class="tdm-chip" style="color:var(--c-mid)">★ Importante</span>`:''}
+          ${(S.focusNow||[]).includes(tid)?`<span class="tdm-chip" style="color:#EF9F27">⚡ En foco</span>`:''}
+        </div>
+        ${t.description?`<div class="tdm-section"><div class="tdm-lbl">Descripción</div><div class="tdm-desc">${esc(t.description).replace(/\n/g,'<br>')}</div></div>`:''}
+        <div class="tdm-divider"></div>
+        <div class="tdm-chips">
+          ${t.date?`<div class="tdm-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${t.date===TODAY?'Hoy':fd(t.date)}</div>`:'<span class="tdm-chip" style="opacity:.5">Sin fecha</span>'}
+          ${t.time?`<div class="tdm-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${t.time}</div>`:''}
+          ${t.repeat?`<div class="tdm-chip">↻ ${t.repeat==='daily'?'Diaria':t.repeat==='weekly'?'Semanal':t.repeatDays?.map(d=>['Lu','Ma','Mi','Ju','Vi','Sa','Do'][d]).join(', ')}</div>`:''}
+        </div>
+        ${tagsHTML?`<div class="tdm-section"><div class="tdm-lbl">Tags</div><div class="tdm-tags">${tagsHTML}</div></div>`:''}
+        ${subsHTML}
+      </div>
+      <div class="tdm-footer">
+        <button class="btn btn-ghost" onclick="closeTaskDetail()">Cerrar</button>
+        <button class="btn btn-primary" onclick="closeTaskDetail();openEditT('${tid}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Editar
+        </button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+};
+
+window.closeTaskDetail=()=>{
+  const el=document.getElementById('tdm-overlay');
+  if(el)el.remove();
+};
+
 try{window.saveData=saveData;window.render=render;}catch(e){}
 
 // ── DESKTOP SIDEBAR ──
@@ -1898,11 +2019,14 @@ function cardHTML(task,proj,opts={}){
     <div class="tc-grip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg></div>
     <div class="tc-body">
       <div class="tc-top">
-        <div class="tc-title-row"><span class="prio-badge ${task.priority||'baja'}">${prioLbl[task.priority]||'Baja'}</span><span class="tc-title">${esc(task.title)}</span></div>
+        <div class="tc-title-row">
+          <span class="prio-badge ${task.priority||'baja'}">${prioLbl[task.priority]||'Baja'}</span>
+          <span class="tc-title">${esc(task.title)}</span>
+        </div>
         <div class="tc-actions">
-          ${(()=>{const ip=(S.pinnedTasks||[]).includes(task.id);const inf=(S.focusNow||[]).includes(task.id);return`<button class="bolt-task-btn" onclick="focusToggle('${task.id}')" style="background:none;border:none;cursor:pointer;padding:2px 4px;opacity:1;transition:all .15s;filter:drop-shadow(0 0 3px #EF9F2780)"><svg viewBox="0 0 24 24" fill="#EF9F27" width="16" height="16"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button><button class="icon-btn${ip?' pinned':''}" onclick="togglePin('${task.id}')" title="${ip?'Quitar de Importantes':'Agregar a Importantes'}" style="${ip?'color:var(--c-mid)':''}"><svg width="13" height="13" viewBox="0 0 24 24" fill="${ip?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>`;})()}
-          <button class="icon-btn" onclick="openEditT('${task.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="icon-btn danger" onclick="delTask('${task.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          ${(()=>{const ip=(S.pinnedTasks||[]).includes(task.id);return`<button class="icon-btn" onclick="focusToggle('${task.id}')" title="Foco" style="opacity:.65"><svg viewBox="0 0 24 24" fill="#EF9F27" width="14" height="14"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button><button class="icon-btn${ip?' pinned':''}" onclick="togglePin('${task.id}')" title="${ip?'Quitar':'Importante'}" style="${ip?'color:var(--c-mid)':''}"><svg width="13" height="13" viewBox="0 0 24 24" fill="${ip?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>`;})()}
+          <button class="icon-btn" onclick="openEditT('${task.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="icon-btn danger" onclick="delTask('${task.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
         </div>
       </div>
       ${task.description?`<p class="tc-desc">${esc(task.description)}</p>`:''}
@@ -2297,7 +2421,7 @@ window.exportData=()=>{const blob=new Blob([JSON.stringify(S,null,2)],{type:'app
 window.importData=(event)=>{const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{try{const imp=JSON.parse(e.target.result);if(!imp.projects||!imp.tasks){showToast('❌ Archivo inválido');return;}if(!confirm('¿Importar datos? Esto reemplaza todo lo actual.'))return;S=imp;migrateState();saveData();render();showToast('✅ Datos importados');}catch{showToast('❌ Error al leer el archivo');}event.target.value='';};reader.readAsText(file);};
 
 window.switchTodayPage=switchTodayPage;
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeT();closeP();exitFocus();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeT();closeP();exitFocus();closeTaskDetail();}});
 
 // expose for inline handlers
 // ── ATTACH KANBAN DND ──
@@ -3111,14 +3235,22 @@ function semanaDateKey(d) {
 }
 
 function semanaGetWeek() {
+  var isMobile = window.innerWidth < 768;
   var now = new Date();
-  var dow = now.getDay();
-  var monday = new Date(now);
-  monday.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1) + semanaOffset * 7);
-  monday.setHours(0,0,0,0);
+  now.setHours(0,0,0,0);
+  var start = new Date(now);
+  if (isMobile) {
+    // Mobile: start from yesterday so today is day 2 (visible without scrolling)
+    start.setDate(now.getDate() - 1 + semanaOffset * 7);
+  } else {
+    // Desktop: start from Monday of current week
+    var dow = now.getDay();
+    start.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1) + semanaOffset * 7);
+  }
+  start.setHours(0,0,0,0);
   return [0,1,2,3,4,5,6].map(function(i) {
-    var d = new Date(monday);
-    d.setDate(monday.getDate() + i);
+    var d = new Date(start);
+    d.setDate(start.getDate() + i);
     return d;
   });
 }
