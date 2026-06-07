@@ -210,21 +210,35 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .tc-grip{padding:12px 4px 12px 8px;color:var(--text3);cursor:grab;display:flex;align-items:flex-start;opacity:0;transition:opacity .12s;flex-shrink:0}
 .task-card:hover .tc-grip{opacity:1}
 .tc-body{flex:1;padding:10px 10px 8px 4px;min-width:0;overflow:hidden}
-.tc-top{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px}
+.tc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:0}
 .tc-title-row{display:flex;align-items:flex-start;gap:6px;flex:1;min-width:0;overflow:hidden}
 .prio-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.prio-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;font-size:9px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;border:1px solid transparent;line-height:1.2;white-space:nowrap;flex-shrink:0}
+.prio-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;border:1px solid transparent;line-height:1.2;white-space:nowrap;flex-shrink:0;margin-top:2px}
 .prio-badge.alta{color:var(--c-over);background:var(--c-over-dim);border-color:#f0524f40}
 .prio-badge.media{color:var(--c-mid);background:var(--c-mid-dim);border-color:#f5a62340}
 .prio-badge.baja{color:var(--text2);background:var(--bg4);border-color:var(--border2)}
 .task-card.prio-alta{}
 .task-card.prio-media{}
 .tc-title{font-size:13.5px;font-weight:500;line-height:1.35;word-break:break-word;overflow-wrap:anywhere;flex:1;min-width:0}
-.tc-actions{display:flex;align-items:center;gap:1px;flex-shrink:0;margin-left:auto}
-.tc-actions .icon-btn{width:28px;height:28px}
+.tc-divider{height:0.5px;background:var(--border);margin:8px 0}
+.task-card.ov .tc-divider{background:color-mix(in srgb,var(--c-over) 30%,transparent)}
+.tc-footer{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.tc-footer-left{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
+.tc-footer-center{font-size:11px;color:var(--text3);text-align:center;flex-shrink:0}
+.task-card.ov .tc-footer-center{color:var(--c-over)}
+.tc-footer-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.tc-date{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;white-space:nowrap}
+.tc-date.today{color:var(--accent)}
+.tc-date.overdue{color:var(--c-over)}
+.tc-arrow-btn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:none;background:none;color:var(--text3);cursor:pointer;opacity:.5;flex-shrink:0;-webkit-tap-highlight-color:transparent;padding:0}
+.tc-arrow-btn:active{opacity:1;color:var(--accent)}
+.tc-ico{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;border:none;background:none;color:var(--text3);cursor:pointer;opacity:.3;transition:opacity .12s;flex-shrink:0;-webkit-tap-highlight-color:transparent;padding:0}
+.tc-ico:active{opacity:1}
+.tc-ico.bolt-on{color:#EF9F27;opacity:1}
+.tc-actions{display:none}
 .tc-desc{font-size:11.5px;color:var(--text3);margin:4px 0 3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;font-weight:400}
 .tc-proj-badge{font-size:11px;font-weight:600;margin-bottom:4px}
-.tc-meta{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:5px;flex-wrap:wrap}
+.tc-meta{display:none}
 .mc{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:var(--text3);background:var(--bg4);padding:2px 7px;border-radius:5px;font-family:var(--mono);white-space:nowrap}
 .mc.cr{color:var(--c-over);background:var(--c-over-dim)}
 .mc.cb{color:var(--accent);background:var(--accent-dim)}
@@ -235,7 +249,6 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 @media(max-width:767px){
   .tc-grip{display:none}
   .tc-body{padding:10px 10px 8px 10px}
-  .tc-actions .icon-btn{width:30px;height:30px}
   .prio-badge{font-size:9px;padding:2px 5px}
   .tc-title{font-size:13px}
 }
@@ -550,13 +563,7 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
 .pdia-drag-over{border:2px dashed var(--accent)!important;}
 
 
-.task-card.task-overdue{position:relative;background:#d8d8d8!important;border-color:#bbb!important;}
-.task-card.task-overdue .tc-title{color:#444!important;}
-.task-card.task-overdue .tc-desc{color:#999!important;}
-.task-card.task-overdue .pcard-prio-dot{background:#aaa!important;}
-.task-card.task-overdue .tc-action-btn,.task-card.task-overdue .icon-btn,.task-card.task-overdue .bolt-task-btn{opacity:.4!important;}
-.task-card.task-overdue .date-badge,.task-card.task-overdue .status-btn{opacity:.5!important;}
-.task-card.task-overdue::before{content:'Vencida';position:absolute;top:6px;right:8px;font-size:9px;font-weight:600;color:#f87171;background:rgba(248,113,113,.15);padding:1px 6px;border-radius:4px;letter-spacing:.3px;z-index:1;}
+
 
 
 /* ── EN FOCO AHORA ── */
@@ -698,6 +705,34 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
 .tdm-footer{padding:14px 18px 4px;border-top:1px solid var(--border);display:flex;gap:10px}
 .tdm-footer .btn{flex:1;justify-content:center;font-size:14px}
 @media(min-width:768px){.tdm-overlay{align-items:center}.tdm-sheet{border-radius:16px;max-height:80vh;margin:20px}}
+
+/* ── VISTA HOY AGENDA ── */
+.today-view-toggle{display:flex;align-items:center;gap:4px;background:var(--bg3);border-radius:8px;padding:3px}
+.tvt-btn{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;border:none;background:none;color:var(--text3);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.tvt-btn.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.agenda-blocks{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.agenda-block{background:var(--bg2);border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+.agenda-block-hdr{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border)}
+.agenda-block-icon{font-size:18px;line-height:1}
+.agenda-block-name{font-size:14px;font-weight:600;color:var(--text);flex:1}
+.agenda-block-range{font-size:11px;color:var(--text3)}
+.agenda-block-tasks{padding:8px;display:flex;flex-direction:column;gap:6px}
+.agenda-block-empty{padding:16px;text-align:center;font-size:12px;color:var(--text3);opacity:.45}
+.agenda-task{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;background:var(--bg3)}
+.agenda-task-check{width:18px;height:18px;min-width:18px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.agenda-task-title{font-size:13px;color:var(--text);flex:1;line-height:1.3}
+.agenda-task-time{font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0}
+.agenda-task-drag{font-size:14px;color:var(--text3);opacity:.2;flex-shrink:0}
+.agenda-fade{height:32px;background:linear-gradient(to bottom,var(--bg),var(--pend-bg,#D3D1C7))}
+.pend-zona{padding:16px;background:var(--pend-bg,#E8E7E1)}
+.pend-zona-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pend-zona-title{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text)}
+.pend-zona-count{font-size:11px;color:var(--text3);background:var(--bg3);border-radius:20px;padding:2px 9px}
+.pend-zona-list{display:flex;flex-direction:column;gap:6px}
+.pend-zona-task{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--bg2);border:1px solid var(--border)}
+.pend-zona-check{width:18px;height:18px;min-width:18px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pend-zona-title-txt{font-size:13px;color:var(--text);flex:1}
+.pend-zona-proj{font-size:11px;color:var(--text3);flex-shrink:0}
 </style>
 </head>
 <body>
@@ -1298,55 +1333,132 @@ function isTaskDone(t){
   const p=S.projects.find(x=>x.id===t.projectId);
   return t.columnId===p?.columns.find(c=>c.id==='done')?.id;
 }
+// ── TODAY VIEW MODE (0=agenda, 1=lista) ──
+let todayViewMode=0;
+window.setTodayViewMode=(m)=>{todayViewMode=m;document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();};
+
 function renderToday(){
   const isDone=t=>{const p=S.projects.find(x=>x.id===t.projectId);return t.columnId===p?.columns.find(c=>c.id==='done')?.id;};
-  const renderDay=(dateStr,pageIdx)=>{
-    const pend=S.tasks.filter(t=>t.date===dateStr&&!isDone(t));
-    const done=S.tasks.filter(t=>t.date===dateStr&&isDone(t));
-    // Include overdue tasks in Hoy (pageIdx===0)
+
+  // ── AGENDA MODE ──
+  const renderAgendaDay=(dateStr,pageIdx)=>{
+    const allTasks=S.tasks.filter(t=>t.date===dateStr&&!isDone(t));
     const overdue=pageIdx===0?S.tasks.filter(t=>t.date&&t.date<TODAY&&!isDone(t)):[];
+    const allForDay=[...allTasks,...overdue.filter(o=>!allTasks.find(t=>t.id===o.id))];
+
+    // Focus tasks
+    const focusIds=S.focusNow||[];
+    const focusTasks=focusIds.map(id=>S.tasks.find(t=>t.id===id)).filter(t=>t&&!isDone(t));
+    let focusHTML='';
+    if(focusTasks.length&&pageIdx===0){
+      focusHTML=`<div style="padding:10px 16px 0">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">⚡ En foco</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${focusTasks.map(t=>{
+            const proj=S.projects.find(p=>p.id===t.projectId);
+            return`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)">
+              <span style="font-size:13px;color:#EF9F27">⚡</span>
+              <span style="font-size:13px;font-weight:500;color:var(--text);flex:1">${esc(t.title)}</span>
+              ${proj?`<span style="font-size:11px;color:var(--text3)">${proj.icon}</span>`:''}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+
+    // Classify into blocks by time
+    const classifyTime=(t)=>{
+      if(!t.time)return null;
+      const h=parseInt(t.time.split(':')[0],10);
+      if(h<13)return'manana';
+      if(h<20)return'tarde';
+      return'noche';
+    };
+
+    // planDia stores manually assigned tasks per block
+    const pd=S.planDia&&S.planDia.date===dateStr?S.planDia:{date:dateStr,manana:[],tarde:[],noche:[]};
+    const assigned=new Set([...pd.manana,...pd.tarde,...pd.noche]);
+
+    const blocks=[
+      {key:'manana',icon:'🌅',name:'Mañana',range:'hasta las 13:00'},
+      {key:'tarde',icon:'☀️',name:'Tarde',range:'13:00 — 20:00'},
+      {key:'noche',icon:'🌙',name:'Noche',range:'desde las 20:00'},
+    ];
+
+    // Auto-assign by time if not manually assigned
+    const autoAssign={manana:[],tarde:[],noche:[]};
+    allForDay.forEach(t=>{
+      if(assigned.has(t.id))return;
+      const blk=classifyTime(t);
+      if(blk)autoAssign[blk].push(t);
+    });
+
+    // Pending: no time and not assigned
+    const pendTasks=allForDay.filter(t=>!assigned.has(t.id)&&!classifyTime(t));
+
+    let blocksHTML='<div class="agenda-blocks">';
+    blocks.forEach(b=>{
+      const manualIds=pd[b.key]||[];
+      const manualTasks=manualIds.map(id=>S.tasks.find(t=>t.id===id)).filter(Boolean);
+      const autoTasks=autoAssign[b.key]||[];
+      const bTasks=[...manualTasks,...autoTasks.filter(t=>!manualTasks.find(m=>m.id===t.id))];
+      const tasksHTML=bTasks.length?bTasks.map(t=>`
+        <div class="agenda-task">
+          <div class="agenda-task-check" onclick="completeFromPan('${t.id}',this)"></div>
+          <span class="agenda-task-title">${esc(t.title)}</span>
+          ${t.time?`<span class="agenda-task-time">${t.time}</span>`:''}
+          <svg class="agenda-task-drag" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg>
+        </div>`).join(''):`<div class="agenda-block-empty">Sin tareas</div>`;
+      blocksHTML+=`<div class="agenda-block">
+        <div class="agenda-block-hdr">
+          <span class="agenda-block-icon">${b.icon}</span>
+          <span class="agenda-block-name">${b.name}</span>
+          <span class="agenda-block-range">${b.range}</span>
+        </div>
+        <div class="agenda-block-tasks">${tasksHTML}</div>
+      </div>`;
+    });
+    blocksHTML+='</div>';
+
+    // Pendientes del día section
+    const pendHTML=`<div class="agenda-fade"></div>
+    <div class="pend-zona">
+      <div class="pend-zona-hdr">
+        <span class="pend-zona-title">Pendientes del día</span>
+        <span class="pend-zona-count">${pendTasks.length}</span>
+      </div>
+      ${pendTasks.length?`<div class="pend-zona-list">${pendTasks.map(t=>{
+        const proj=S.projects.find(p=>p.id===t.projectId);
+        return`<div class="pend-zona-task">
+          <div class="pend-zona-check" onclick="completeFromPan('${t.id}',this)"></div>
+          <span class="pend-zona-title-txt">${esc(t.title)}</span>
+          ${proj?`<span class="pend-zona-proj">${proj.icon}</span>`:''}
+        </div>`;
+      }).join('')}</div>`:'<div style="font-size:12px;color:var(--text3);opacity:.5;text-align:center;padding:12px 0">Sin pendientes 🎉</div>'}
+    </div>`;
+
+    return focusHTML+blocksHTML+pendHTML;
+  };
+
+  // ── LISTA MODE (vista original mejorada) ──
+  const renderListaDay=(dateStr,pageIdx)=>{
+    const pend=S.tasks.filter(t=>t.date===dateStr&&!isDone(t));
+    const overdue=pageIdx===0?S.tasks.filter(t=>t.date&&t.date<TODAY&&!isDone(t)):[];
+    const focusHTML=pageIdx===0?renderFocusNow():'';
     const grp={};
     pend.forEach(t=>{if(!grp[t.projectId])grp[t.projectId]=[];grp[t.projectId].push(t);});
     overdue.forEach(t=>{if(!grp[t.projectId])grp[t.projectId]=[];if(!grp[t.projectId].find(x=>x.id===t.id))grp[t.projectId].push(t);});
-    const focusHTML=pageIdx===0?renderFocusNow():'';
-    let h=focusHTML+`<div class="today-stats">
-      <div class="stat-card"><span class="stat-num">${pend.length}</span><span class="stat-lbl">Pendientes</span></div>
-      <div class="stat-card done-card"><span class="stat-num">${done.length}</span><span class="stat-lbl">Hechas</span></div>
-    </div>`;
-    if(!pend.length&&!done.length){
-      h+=`<div class="empty-state"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>${pageIdx===0?'No hay tareas para hoy':'No hay tareas para mañana'}</p><span>Usá el + para agregar</span></div>`;
+    let h=focusHTML;
+    if(!pend.length&&!overdue.length){
+      h+=`<div class="empty-state"><p>${pageIdx===0?'No hay tareas para hoy':'No hay tareas para mañana'}</p><span>Usá el + para agregar</span></div>`;
     }
-    // PC: grid layout
-    const isPC=window.innerWidth>=768;
-    const grpKeys=Object.keys(grp);
-    if(isPC&&grpKeys.length){
-      h+=`<div class="today-groups-grid" style="margin:16px 16px 0">`;
-      grpKeys.forEach(pid=>{
-        const p=S.projects.find(x=>x.id===pid);if(!p)return;
-        const dot=palDot(p.palKey);
-        const bg=palBg(p.palKey);
-        const borderColor=dot+'30';
-        const hdrBg=dot+'12';
-        const bodyBg=dot+'08';
-        h+=`<div class="group-block group-block-color" style="--group-color-border:${borderColor};--group-color-bg-hdr:${hdrBg};--group-color-bg:${bodyBg}"><div class="group-hdr" style="color:${dot};--gc:${dot}">${p.icon} ${esc(p.name)}</div>
-        <div class="group-tasks-inner">${grp[pid].map(t=>cardHTML(t,p,{mv:true,showStatus:true,overdue:overdue.some(o=>o.id===t.id)})).join('')}</div></div>`;
-      });
-      h+=`</div>`;
-    } else {
-      grpKeys.forEach(pid=>{
-        const p=S.projects.find(x=>x.id===pid);if(!p)return;
-        const dot=palDot(p.palKey);
-        const borderColor=dot+'30';
-        const hdrBg=dot+'12';
-        const bodyBg=dot+'08';
-        h+=`<div class="group-block group-block-color" style="--group-color-border:${borderColor};--group-color-bg-hdr:${hdrBg};--group-color-bg:${bodyBg}"><div class="group-hdr" style="color:${dot};--gc:${dot}">${p.icon} ${esc(p.name)}</div>
-        <div class="group-tasks-inner">${grp[pid].map(t=>cardHTML(t,p,{mv:true,showStatus:true,overdue:overdue.some(o=>o.id===t.id)})).join('')}</div></div>`;
-      });
-    }
-    if(done.length){
-      h+=`<div class="group-block"><div class="group-hdr" style="color:var(--c-done);--gc:var(--c-done)">✅ Completadas</div>
-      <div style="display:flex;flex-direction:column;gap:8px">${done.map(t=>{const p=S.projects.find(x=>x.id===t.projectId);return cardHTML(t,p,{sp:true,showStatus:true});}).join('')}</div></div>`;
-    }
+    Object.keys(grp).forEach(pid=>{
+      const p=S.projects.find(x=>x.id===pid);if(!p)return;
+      const dot=palDot(p.palKey);
+      const borderColor=dot+'30';const hdrBg=dot+'12';const bodyBg=dot+'08';
+      h+=`<div class="group-block group-block-color" style="--group-color-border:${borderColor};--group-color-bg-hdr:${hdrBg};--group-color-bg:${bodyBg}"><div class="group-hdr" style="color:${dot};--gc:${dot}">${p.icon} ${esc(p.name)}</div>
+      <div class="group-tasks-inner">${grp[pid].map(t=>cardHTML(t,p,{mv:true,showStatus:true})).join('')}</div></div>`;
+    });
     return h;
   };
 
@@ -1356,16 +1468,24 @@ function renderToday(){
   const tmrDate=new Date();tmrDate.setDate(tmrDate.getDate()+1);
   const tmrStr=tmrDate.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
 
+  const renderDay=todayViewMode===0?renderAgendaDay:renderListaDay;
+
   return`<div class="section" style="display:flex;align-items:flex-start;justify-content:space-between">
     <div>
       <p style="font-size:13px;color:var(--text2);margin-bottom:4px">${gr}</p>
       <h1 class="section-title" id="today-main-title">${todayPage===0?'Hoy':'Mañana'}</h1>
       <p class="section-sub">${todayPage===0?ds:tmrStr}</p>
     </div>
-    <button onclick="enterFocus()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;border:1px solid var(--border);background:none;color:var(--text2);font-size:13px;cursor:pointer;margin-top:16px;flex-shrink:0;-webkit-tap-highlight-color:transparent" title="Modo Focus">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
-      Focus
-    </button>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+      <div class="today-view-toggle">
+        <button class="tvt-btn${todayViewMode===0?' active':''}" onclick="setTodayViewMode(0)" title="Agenda">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="7" height="7" rx="1"/><rect x="3" y="13" width="7" height="7" rx="1"/><line x1="13" y1="7" x2="21" y2="7"/><line x1="13" y1="12" x2="21" y2="12"/><line x1="13" y1="17" x2="21" y2="17"/></svg>
+        </button>
+        <button class="tvt-btn${todayViewMode===1?' active':''}" onclick="setTodayViewMode(1)" title="Lista">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
   </div>
   <div class="today-day-tabs">
     <button class="day-tab${todayPage===0?' active':''}" onclick="switchTodayPage(0)">Hoy</button>
@@ -2004,7 +2124,7 @@ function cardHTML(task,proj,opts={}){
   const isDone=task.columnId===dId;
   const isOv=task.date&&task.date<TODAY&&!isDone;
   const isTd=task.date===TODAY&&!isDone;
-  const cls=['task-card',task.priority?`prio-${task.priority}`:'',isOv?'ov':'',isTd?'td':'',isDone?'dn':'',isOverdue?'task-overdue':''].filter(Boolean).join(' ');
+  const cls=['task-card',task.priority?`prio-${task.priority}`:'',isOv?'ov':'',isTd?'td':'',isDone?'dn':''].filter(Boolean).join(' ');
   const pc={alta:'var(--c-over)',media:'var(--c-mid)',baja:'var(--text3)'};
   const prioLbl={alta:'Alta',media:'Media',baja:'Baja'};
   const fd=d=>{if(!d)return'';const[y,m,dy]=d.split('-');return`${dy}/${m}/${y}`;};
@@ -2047,31 +2167,45 @@ function cardHTML(task,proj,opts={}){
     </div>`;
   }
 
+  // Build footer parts
+  const inFocus=(S.focusNow||[]).includes(task.id);
+  const dateLabel=isTd?'Hoy':isOv?`Vencida ${fd(task.date)}`:task.date?fd(task.date):'';
+  const dateCls=isTd?'today':isOv?'overdue':'';
+  const dateIcon=`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+  const arrowBtn=isTd?`<button class="tc-arrow-btn" title="Mover a mañana" onclick="event.stopPropagation();mvTomorrow('${task.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>`:'';
+  const colName=p?.columns.find(c=>c.id===task.columnId)?.name||'';
+
   return`<div class="${cls}" id="tc-${task.id}" draggable="true"
     ondragstart="onDs(event,'${task.id}','${task.columnId}')"
     ondragend="onDe()"
     ondragover="onDov(event,'${task.id}')"
     ondragleave="onDlv('${task.id}')"
-    ondrop="onDdrop(event,'${task.id}')">
+    ondrop="onDdrop(event,'${task.id}')"
+    onclick="openTaskDetail('${task.id}',event)">
     <div class="tc-grip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg></div>
     <div class="tc-body">
       <div class="tc-top">
-        <div class="tc-title-row">
-          <span class="prio-badge ${task.priority||'baja'}">${prioLbl[task.priority]||'Baja'}</span>
-          <span class="tc-title">${esc(task.title)}</span>
-        </div>
-        <div class="tc-actions">
-          ${(()=>{const ip=(S.pinnedTasks||[]).includes(task.id);return`<button class="icon-btn" onclick="focusToggle('${task.id}')" title="Foco" style="opacity:.65"><svg viewBox="0 0 24 24" fill="#EF9F27" width="14" height="14"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button><button class="icon-btn${ip?' pinned':''}" onclick="togglePin('${task.id}')" title="${ip?'Quitar':'Importante'}" style="${ip?'color:var(--c-mid)':''}"><svg width="13" height="13" viewBox="0 0 24 24" fill="${ip?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>`;})()}
-          <button class="icon-btn" onclick="openEditT('${task.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="icon-btn danger" onclick="delTask('${task.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
-        </div>
+        <span class="tc-title">${esc(task.title)}</span>
+        <span class="prio-badge ${task.priority||'baja'}">${prioLbl[task.priority]||'Baja'}</span>
       </div>
       ${task.description?`<p class="tc-desc">${esc(task.description)}</p>`:''}
       ${pb}
-      <div class="tc-meta"><div style="display:flex;gap:4px;flex-wrap:wrap">${dc}${tc2}${rc}</div><div>${mv}</div></div>
       ${tgs?`<div class="tc-tags">${tgs}</div>`:''}
-      ${stBtns?`<div style="display:flex;gap:3px;margin-top:8px;flex-wrap:wrap">${stBtns}</div>`:''}
+      ${stBtns?`<div style="display:flex;gap:3px;margin-top:6px;flex-wrap:wrap">${stBtns}</div>`:''}
       ${subsHTML}
+      <div class="tc-divider"></div>
+      <div class="tc-footer">
+        <div class="tc-footer-left">
+          ${dateLabel?`<span class="tc-date ${dateCls}">${dateIcon}${dateLabel}</span>`:'<span class="tc-date"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Sin fecha</span>'}
+          ${arrowBtn}
+        </div>
+        <div class="tc-footer-center">${esc(colName)}</div>
+        <div class="tc-footer-right">
+          <button class="tc-ico${inFocus?' bolt-on':''}" onclick="event.stopPropagation();focusToggle('${task.id}')" title="Foco"><svg viewBox="0 0 24 24" fill="${inFocus?'#EF9F27':'currentColor'}" width="13" height="13"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button>
+          <button class="tc-ico" onclick="event.stopPropagation();openEditT('${task.id}')" title="Editar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="tc-ico" onclick="event.stopPropagation();delTask('${task.id}')" title="Eliminar" style="color:var(--c-over)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>
     </div>
   </div>`;
 }
