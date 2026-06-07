@@ -2088,7 +2088,7 @@ window.openAssignBlock=(tid)=>{
   document.body.appendChild(popup);
 };
 
-window.assignToBlock=(tid,block)=>{
+window.assignToBlock=async(tid,block)=>{
   const today=window.TODAY||new Date().toISOString().slice(0,10);
   const dateStr=window._assignDate||today;
   if(!S.planDia)S.planDia={date:dateStr,manana:[],tarde:[],noche:[],notes:{manana:'',tarde:'',noche:''}};
