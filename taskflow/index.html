@@ -241,8 +241,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .tc-ico:active{opacity:1}
 .tc-ico.bolt-on{color:#EF9F27;opacity:1}
 .tc-actions{display:none}
-.tc-desc{font-size:11.5px;color:var(--text3);margin:4px 0 3px;line-height:1.4;display:none;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;font-weight:400}
-@media(min-width:768px){.task-card:hover .tc-desc{display:-webkit-box}}
+.tc-desc{font-size:11.5px;color:var(--text3);margin:0;line-height:1.4;overflow:hidden;text-overflow:ellipsis;font-weight:400;max-height:0;opacity:0;pointer-events:none;font-size:0}
+@media(min-width:768px){.tc-desc{font-size:11.5px;max-height:0;opacity:0}}
 .tc-proj-badge{font-size:11px;font-weight:600;margin-bottom:4px}
 .tc-meta{display:none}
 .mc{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:var(--text3);background:var(--bg4);padding:2px 7px;border-radius:5px;font-family:var(--mono);white-space:nowrap}
@@ -733,7 +733,6 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
 .agenda-task.agenda-task-ov{border:1px solid color-mix(in srgb,var(--c-over) 30%,transparent);background:color-mix(in srgb,var(--c-over) 6%,var(--bg3))}
 .agenda-task.agenda-task-ov .agenda-task-title{color:var(--c-over)}
 .agenda-time-ov{color:var(--c-over)!important}
-.agenda-task-dragover{border-top:2px solid var(--accent)!important;background:var(--accent-dim)!important}
 .agenda-task[draggable]{cursor:grab}
 .agenda-task[draggable]:active{cursor:grabbing}
 .agenda-task{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;background:var(--bg3)}
@@ -1473,7 +1472,8 @@ function renderToday(){
         const timeTpl=t.time?('<span class="agenda-task-time'+(isOvTask?' agenda-time-ov':'')+'">'+t.time+'</span>'):'';
         const ovLbl=isOvTask?'<span style="font-size:10px;color:var(--c-over);font-weight:600">Vencida</span>':'';
         const tid=t.id,bk=b.key,ds2=dateStr;
-        return '<div class="agenda-task'+ovCls+'" data-tid="'+tid+'" data-block="'+bk+'" data-date="'+ds2+'"'+
+        return '<div class="agenda-task'+ovCls+'" draggable="true" data-tid="'+tid+'" data-block="'+bk+'" data-date="'+ds2+'"'+
+          ' ondragstart="agendaDragStart(event,\''+tid+'\',\''+bk+'\',\''+ds2+'\')"'+
           ' ondragover="agendaDragOver(event)"'+
           ' ondrop="agendaDrop(event,\''+tid+'\',\''+bk+'\',\''+ds2+'\')"'+
           ' ondragleave="agendaDragLeave(event)"'+
@@ -2218,17 +2218,12 @@ window.agendaDragStart=(e,tid,block,dateStr)=>{
 
 window.agendaDragOver=(e)=>{
   e.preventDefault();e.dataTransfer.dropEffect='move';
-  const el=e.currentTarget;
-  el.classList.add('agenda-task-dragover');
 };
 
-window.agendaDragLeave=(e)=>{
-  e.currentTarget.classList.remove('agenda-task-dragover');
-};
+window.agendaDragLeave=(e)=>{};
 
 window.agendaDrop=(e,targetTid,targetBlock,dateStr)=>{
   e.preventDefault();
-  e.currentTarget.classList.remove('agenda-task-dragover');
   if(!_agendaDragTid||_agendaDragTid===targetTid)return;
   
   if(!S.planDias)S.planDias={};
@@ -2839,8 +2834,10 @@ function renderPrioPills(){document.getElementById('prio-pills').innerHTML=PRIOS
 window.setPrio=(v)=>{mPrio=v;renderPrioPills();};
 
 function renderMTags(){
+  const el=document.getElementById('tags-row');
+  if(!el)return; // tags field removed from modal
   const all=[...new Set([...S.tags,...mTags])];
-  document.getElementById('tags-row').innerHTML=all.map(tg=>`
+  el.innerHTML=all.map(tg=>`
     <button class="tpill${mTags.includes(tg)?' active':''}" onclick="toggleMTag('${esc(tg)}')">
       #${esc(tg)}
       <span class="tpill-del" onclick="event.stopPropagation();delGlobalTag('${esc(tg)}')">×</span>
