@@ -258,7 +258,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
 
 /* ── TASK CARD TOOLTIP ── */
-.tc-tooltip{position:absolute;z-index:200;background:#1a1a1a;color:#fff;font-size:12px;line-height:1.5;padding:8px 12px;border-radius:8px;max-width:220px;white-space:normal;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.3);opacity:0;transition:opacity .15s;top:calc(100% + 6px);left:10px}
+.tc-tooltip{position:fixed;z-index:9999;background:#1a1a1a;color:#fff;font-size:12px;line-height:1.5;padding:8px 12px;border-radius:8px;max-width:240px;white-space:normal;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.3)}
 .tc-tooltip::before{content:'';position:absolute;top:-4px;left:14px;width:8px;height:8px;background:#1a1a1a;transform:rotate(45deg);border-radius:1px}
 @media(max-width:767px){.tc-tooltip{display:none!important}}
 /* ── SUBTASKS ── */
@@ -1088,6 +1088,11 @@ async function loadFromFS(){
   }catch(e){setSyncStatus('offline');}
 }
 
+
+// ── SANITIZE FOR FIRESTORE (removes undefined values) ──
+function sanitizeForFS(obj){
+  return JSON.parse(JSON.stringify(obj,(key,val)=>val===undefined?null:val));
+}
 function saveData(){
   if(offlineMode){localStorage.setItem('taskflow_offline',JSON.stringify(S));return;}
   if(!currentUser)return;
@@ -1095,7 +1100,7 @@ function saveData(){
   isSaving=true; // set immediately so onSnapshot doesn't overwrite S while save is pending
   if(saveTimeout)clearTimeout(saveTimeout);
   saveTimeout=setTimeout(async()=>{
-    try{lastSaveTime=Date.now();await setDoc(doc(db,'users',currentUser.uid,'data','main'),S);setSyncStatus('synced');}
+    try{lastSaveTime=Date.now();await setDoc(doc(db,'users',currentUser.uid,'data','main'),sanitizeForFS(S));setSyncStatus('synced');}
     catch(e){setSyncStatus('offline');}
     finally{isSaving=false;}
   },800);
@@ -2176,7 +2181,7 @@ window.assignToBlock=async(tid,block)=>{
   if(!offlineMode&&currentUser){
     isSaving=true;
     if(saveTimeout)clearTimeout(saveTimeout);
-    try{lastSaveTime=Date.now();await setDoc(doc(db,'users',currentUser.uid,'data','main'),S);setSyncStatus('synced');}
+    try{lastSaveTime=Date.now();await setDoc(doc(db,'users',currentUser.uid,'data','main'),sanitizeForFS(S));setSyncStatus('synced');}
     catch(e){setSyncStatus('offline');}
     finally{isSaving=false;}
   } else {saveData();}
@@ -2249,7 +2254,7 @@ window.agendaDrop=(e,targetTid,targetBlock,dateStr)=>{
   if(!offlineMode&&currentUser){
     isSaving=true;
     if(saveTimeout)clearTimeout(saveTimeout);
-    setDoc(doc(db,'users',currentUser.uid,'data','main'),S).then(()=>{setSyncStatus('synced');}).catch(()=>{setSyncStatus('offline');}).finally(()=>{isSaving=false;});
+    setDoc(doc(db,'users',currentUser.uid,'data','main'),sanitizeForFS(S)).then(()=>{setSyncStatus('synced');}).catch(()=>{setSyncStatus('offline');}).finally(()=>{isSaving=false;});
   } else {saveData();}
   
   document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();
@@ -2284,36 +2289,36 @@ window.agendaTouchMove=(e)=>{
 
 // ── TASK CARD TOOLTIP (desktop hover) ──
 (function(){
-  let _ttTimer=null,_ttEl=null;
-  function showTooltip(card,desc){
-    removeTooltip();
-    const tt=document.createElement('div');
-    tt.className='tc-tooltip';
-    tt.textContent=desc;
-    card.style.position='relative';
-    card.appendChild(tt);
-    _ttEl=tt;
-    requestAnimationFrame(()=>tt.style.opacity='1');
+  let _tt=null,_timer=null;
+  function hide(){if(_tt){_tt.remove();_tt=null;}if(_timer){clearTimeout(_timer);_timer=null;}}
+  function show(card,txt){
+    hide();
+    const el=document.createElement('div');
+    el.className='tc-tooltip';
+    el.textContent=txt;
+    el.style.opacity='1';
+    document.body.appendChild(el);
+    _tt=el;
+    // Position below card
+    const r=card.getBoundingClientRect();
+    el.style.position='fixed';
+    el.style.top=(r.bottom+8)+'px';
+    el.style.left=r.left+'px';
+    el.style.zIndex='9999';
   }
-  function removeTooltip(){
-    if(_ttEl){_ttEl.remove();_ttEl=null;}
-    if(_ttTimer){clearTimeout(_ttTimer);_ttTimer=null;}
-  }
-  document.addEventListener('mouseover',e=>{
+  document.addEventListener('mouseover',function(e){
+    if(window.innerWidth<768)return;
     const card=e.target.closest('.task-card');
     if(!card)return;
-    const desc=(card.dataset.desc||'').trim();
+    const desc=(card.getAttribute('data-desc')||'').trim();
     if(!desc)return;
-    if(window.innerWidth<768)return;
-    _ttTimer=setTimeout(()=>showTooltip(card,desc),600);
+    _timer=setTimeout(function(){show(card,desc);},600);
   });
-  document.addEventListener('mouseout',e=>{
-    const card=e.target.closest('.task-card');
-    if(card&&!card.contains(e.relatedTarget))removeTooltip();
-    if(!card)removeTooltip();
+  document.addEventListener('mouseout',function(e){
+    hide();
   });
-  document.addEventListener('click',removeTooltip);
-  document.addEventListener('scroll',removeTooltip,true);
+  document.addEventListener('click',hide);
+  document.addEventListener('scroll',hide,true);
 })();
 
 
@@ -2330,7 +2335,7 @@ window.agendaDropOnBlock=(e,block,dateStr)=>{
   document.querySelectorAll('.agenda-task').forEach(el=>el.style.opacity='');
   if(!offlineMode&&currentUser){
     isSaving=true;if(saveTimeout)clearTimeout(saveTimeout);
-    setDoc(doc(db,'users',currentUser.uid,'data','main'),S).then(()=>setSyncStatus('synced')).catch(()=>setSyncStatus('offline')).finally(()=>{isSaving=false;});
+    setDoc(doc(db,'users',currentUser.uid,'data','main'),sanitizeForFS(S)).then(()=>setSyncStatus('synced')).catch(()=>setSyncStatus('offline')).finally(()=>{isSaving=false;});
   } else {saveData();}
   document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();
 };
@@ -2342,7 +2347,7 @@ window.removeFromBlock=(tid,dateStr)=>{
   ['manana','tarde','noche'].forEach(b=>{pd[b]=(pd[b]||[]).filter(x=>x!==tid);});
   if(!offlineMode&&currentUser){
     isSaving=true;if(saveTimeout)clearTimeout(saveTimeout);
-    setDoc(doc(db,'users',currentUser.uid,'data','main'),S).then(()=>setSyncStatus('synced')).catch(()=>setSyncStatus('offline')).finally(()=>{isSaving=false;});
+    setDoc(doc(db,'users',currentUser.uid,'data','main'),sanitizeForFS(S)).then(()=>setSyncStatus('synced')).catch(()=>setSyncStatus('offline')).finally(()=>{isSaving=false;});
   } else {saveData();}
   document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();
   showToast('Movida a Pendientes');
@@ -2614,7 +2619,7 @@ window.togglePin=async(tid)=>{
   if(!offlineMode&&currentUser){
     isSaving=true;
     if(saveTimeout)clearTimeout(saveTimeout);
-    try{lastSaveTime=Date.now();await setDoc(doc(db,'users',currentUser.uid,'data','main'),S);setSyncStatus('synced');}
+    try{lastSaveTime=Date.now();await setDoc(doc(db,'users',currentUser.uid,'data','main'),sanitizeForFS(S));setSyncStatus('synced');}
     catch(e){setSyncStatus('offline');}
     finally{isSaving=false;}
   } else {
@@ -2671,7 +2676,7 @@ window.clearDoneCol=async(projId)=>{
   if(!offlineMode&&currentUser){
     isSaving=true;
     if(saveTimeout)clearTimeout(saveTimeout);
-    try{lastSaveTime=Date.now();await setDoc(doc(db,'users',currentUser.uid,'data','main'),S);setSyncStatus('synced');}
+    try{lastSaveTime=Date.now();await setDoc(doc(db,'users',currentUser.uid,'data','main'),sanitizeForFS(S));setSyncStatus('synced');}
     catch(e){setSyncStatus('offline');}
     finally{isSaving=false;}
   } else {
@@ -2875,7 +2880,7 @@ window.saveT=()=>{
   if(!offlineMode&&currentUser){
     isSaving=true;
     if(saveTimeout)clearTimeout(saveTimeout);
-    setDoc(doc(db,'users',currentUser.uid,'data','main'),S)
+    setDoc(doc(db,'users',currentUser.uid,'data','main'),sanitizeForFS(S))
       .then(()=>{lastSaveTime=Date.now();setSyncStatus('synced');})
       .catch(()=>{setSyncStatus('offline');saveData();})
       .finally(()=>{isSaving=false;});
