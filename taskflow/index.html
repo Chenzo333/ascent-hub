@@ -1416,20 +1416,23 @@ function renderToday(){
       const manualTasks=manualIds.map(id=>S.tasks.find(t=>t.id===id)).filter(Boolean);
       const autoTasks=autoAssign[b.key]||[];
       const bTasks=[...manualTasks,...autoTasks.filter(t=>!manualTasks.find(m=>m.id===t.id))];
-      const tasksHTML=bTasks.length?bTasks.map(t=>`
-        (()=>{const isOvTask=t.date&&t.date<TODAY&&!isDone(t);return`<div class="agenda-task${isOvTask?' agenda-task-ov':''}" 
-          draggable="true"
-          data-tid="${t.id}" data-block="${b.key}" data-date="${dateStr}"
-          ondragstart="agendaDragStart(event,'${t.id}','${b.key}','${dateStr}')"
-          ondragover="agendaDragOver(event)"
-          ondrop="agendaDrop(event,'${t.id}','${b.key}','${dateStr}')"
-          ondragleave="agendaDragLeave(event)">
-          <div class="agenda-task-check" onclick="completeFromPan('${t.id}',this)"></div>
-          <span class="agenda-task-title">${esc(t.title)}</span>
-          ${t.time?`<span class="agenda-task-time${isOvTask?' agenda-time-ov':''}">${t.time}</span>`:''}
-          ${isOvTask?`<span style="font-size:10px;color:var(--c-over);font-weight:600">Vencida</span>`:''}
-          <svg class="agenda-task-drag" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg>
-        </div>`;})()}).join(''):`<div class="agenda-block-empty">Sin tareas</div>`;
+      const tasksHTML=bTasks.length?bTasks.map(t=>{
+        const isOvTask=t.date&&t.date<TODAY&&!isDone(t);
+        const ovCls=isOvTask?' agenda-task-ov':'';
+        const timeTpl=t.time?('<span class="agenda-task-time'+(isOvTask?' agenda-time-ov':'')+'">'+t.time+'</span>'):'';
+        const ovLbl=isOvTask?'<span style="font-size:10px;color:var(--c-over);font-weight:600">Vencida</span>':'';
+        const tid=t.id,bk=b.key,ds2=dateStr;
+        return '<div class="agenda-task'+ovCls+'" draggable="true" data-tid="'+tid+'" data-block="'+bk+'" data-date="'+ds2+'"'+
+          ' ondragstart="agendaDragStart(event,\''+tid+'\',\''+bk+'\',\''+ds2+'\')"'+
+          ' ondragover="agendaDragOver(event)"'+
+          ' ondrop="agendaDrop(event,\''+tid+'\',\''+bk+'\',\''+ds2+'\')"'+
+          ' ondragleave="agendaDragLeave(event)">'+
+          '<div class="agenda-task-check" onclick="completeFromPan(\''+tid+'\',this)"></div>'+
+          '<span class="agenda-task-title">'+esc(t.title)+'</span>'+
+          timeTpl+ovLbl+
+          '<svg class="agenda-task-drag" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg>'+
+          '</div>';
+      }).join(''):'<div class="agenda-block-empty">Sin tareas</div>';
       blocksHTML+=`<div class="agenda-block">
         <div class="agenda-block-hdr">
           <span class="agenda-block-icon">${b.icon}</span>
