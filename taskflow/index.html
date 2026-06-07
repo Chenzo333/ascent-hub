@@ -67,6 +67,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .today-swipe-track{display:flex;transition:transform .3s cubic-bezier(.4,0,.2,1);width:200%}
 .today-swipe-page{width:50%;min-width:50%;flex-shrink:0}
 .today-day-tabs{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px 0}
+.today-day-tabs-inline{display:flex;align-items:center;gap:8px}
 .day-tab{padding:6px 20px;border-radius:99px;border:1.5px solid var(--border);background:none;color:var(--text3);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
 .day-tab.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
 
@@ -236,7 +237,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .tc-ico:active{opacity:1}
 .tc-ico.bolt-on{color:#EF9F27;opacity:1}
 .tc-actions{display:none}
-.tc-desc{font-size:11.5px;color:var(--text3);margin:4px 0 3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+.tc-desc{font-size:11.5px;color:var(--text3);margin:4px 0 3px;line-height:1.4;display:none;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+@media(min-width:768px){.task-card:hover .tc-desc{display:-webkit-box}}
 .tc-proj-badge{font-size:11px;font-weight:600;margin-bottom:4px}
 .tc-meta{display:none}
 .mc{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:var(--text3);background:var(--bg4);padding:2px 7px;border-radius:5px;font-family:var(--mono);white-space:nowrap}
@@ -719,6 +721,12 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
 .agenda-block-range{font-size:11px;color:var(--text3)}
 .agenda-block-tasks{padding:8px;display:flex;flex-direction:column;gap:6px}
 .agenda-block-empty{padding:16px;text-align:center;font-size:12px;color:var(--text3);opacity:.45}
+.agenda-task.agenda-task-ov{border:1px solid color-mix(in srgb,var(--c-over) 30%,transparent);background:color-mix(in srgb,var(--c-over) 6%,var(--bg3))}
+.agenda-task.agenda-task-ov .agenda-task-title{color:var(--c-over)}
+.agenda-time-ov{color:var(--c-over)!important}
+.agenda-task-dragover{border-top:2px solid var(--accent)!important;background:var(--accent-dim)!important}
+.agenda-task[draggable]{cursor:grab}
+.agenda-task[draggable]:active{cursor:grabbing}
 .agenda-task{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;background:var(--bg3)}
 .agenda-task-check{width:18px;height:18px;min-width:18px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
 .agenda-task-title{font-size:13px;color:var(--text);flex:1;line-height:1.3}
@@ -1133,10 +1141,7 @@ function setupTodaySwipe(){
     if(!tracking||e.touches.length!==1)return;
     const dx=e.touches[0].clientX-sx;
     const dy=e.touches[0].clientY-sy;
-    // If mostly horizontal, prevent vertical scroll from taking over
-    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8){
-      e.stopPropagation();
-    }
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8){e.stopPropagation();}
   },{passive:true});
   wrap.addEventListener('touchend',e=>{
     if(!tracking)return;
@@ -1144,8 +1149,9 @@ function setupTodaySwipe(){
     const dx=e.changedTouches[0].clientX-sx;
     const dy=e.changedTouches[0].clientY-sy;
     if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40){
-      if(dx<0&&todayPage===0)switchTodayPage(1);
-      else if(dx>0&&todayPage===1)switchTodayPage(0);
+      // Swipe horizontal now toggles agenda/lista view mode
+      if(dx<0&&todayViewMode===0)setTodayViewMode(1);
+      else if(dx>0&&todayViewMode===1)setTodayViewMode(0);
     }
   },{passive:true});
 }
@@ -1155,6 +1161,15 @@ function switchTodayPage(page){
   const track=document.getElementById('today-swipe-track');
   if(track)track.style.transform=`translateX(${page===0?0:-50}%)`;
   document.querySelectorAll('.day-tab').forEach((el,i)=>el.classList.toggle('active',i===page));
+  // Update title
+  const titleEl=document.getElementById('today-main-title');
+  if(titleEl){
+    const tmrDate=new Date();tmrDate.setDate(tmrDate.getDate()+1);
+    const tmrStr=tmrDate.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+    const ds=new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+    titleEl.nextSibling&&(titleEl.parentElement.querySelector('span[style*="16px"]')&&(titleEl.parentElement.querySelector('span:last-of-type').textContent=page===0?ds:tmrStr));
+    titleEl.textContent=page===0?'Hoy':'Mañana';
+  }
   updateBadge();
 }
 
@@ -1203,7 +1218,7 @@ function renderViews(){
     const el=document.getElementById('view-'+v);if(!el)return;
     el.classList.toggle('active',view===v);
   });
-  if(view==='today'){document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();}
+  if(view==='today'){document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();setupNexoScroll();}
   if(view==='panorama')document.getElementById('view-panorama').innerHTML=renderPanorama();
   if(view==='importantes')document.getElementById('view-importantes').innerHTML=renderImportantes();
   if(view==='projects'){document.getElementById('view-projects').innerHTML=renderProjects();attachProjDnd();}
@@ -1402,12 +1417,19 @@ function renderToday(){
       const autoTasks=autoAssign[b.key]||[];
       const bTasks=[...manualTasks,...autoTasks.filter(t=>!manualTasks.find(m=>m.id===t.id))];
       const tasksHTML=bTasks.length?bTasks.map(t=>`
-        <div class="agenda-task">
+        (()=>{const isOvTask=t.date&&t.date<TODAY&&!isDone(t);return`<div class="agenda-task${isOvTask?' agenda-task-ov':''}" 
+          draggable="true"
+          data-tid="${t.id}" data-block="${b.key}" data-date="${dateStr}"
+          ondragstart="agendaDragStart(event,'${t.id}','${b.key}','${dateStr}')"
+          ondragover="agendaDragOver(event)"
+          ondrop="agendaDrop(event,'${t.id}','${b.key}','${dateStr}')"
+          ondragleave="agendaDragLeave(event)">
           <div class="agenda-task-check" onclick="completeFromPan('${t.id}',this)"></div>
           <span class="agenda-task-title">${esc(t.title)}</span>
-          ${t.time?`<span class="agenda-task-time">${t.time}</span>`:''}
+          ${t.time?`<span class="agenda-task-time${isOvTask?' agenda-time-ov':''}">${t.time}</span>`:''}
+          ${isOvTask?`<span style="font-size:10px;color:var(--c-over);font-weight:600">Vencida</span>`:''}
           <svg class="agenda-task-drag" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg>
-        </div>`).join(''):`<div class="agenda-block-empty">Sin tareas</div>`;
+        </div>`;})()}).join(''):`<div class="agenda-block-empty">Sin tareas</div>`;
       blocksHTML+=`<div class="agenda-block">
         <div class="agenda-block-hdr">
           <span class="agenda-block-icon">${b.icon}</span>
@@ -1471,13 +1493,18 @@ function renderToday(){
 
   const renderDay=todayViewMode===0?renderAgendaDay:renderListaDay;
 
-  return`<div class="section" style="display:flex;align-items:flex-start;justify-content:space-between">
-    <div>
-      <p style="font-size:13px;color:var(--text2);margin-bottom:4px">${gr}</p>
-      <h1 class="section-title" id="today-main-title">${todayPage===0?'Hoy':'Mañana'}</h1>
-      <p class="section-sub">${todayPage===0?ds:tmrStr}</p>
+  return`<div class="section" style="padding-bottom:0">
+    <p style="font-size:13px;color:var(--text2);margin-bottom:6px">${gr}</p>
+    <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px">
+      <h1 class="section-title" id="today-main-title" style="font-size:26px;margin-bottom:0">${todayPage===0?'Hoy':'Mañana'}</h1>
+      <span style="color:var(--border2);font-size:16px">—</span>
+      <span style="font-size:14px;color:var(--text3);text-transform:capitalize">${todayPage===0?ds:tmrStr}</span>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="today-day-tabs-inline">
+        <button class="day-tab${todayPage===0?' active':''}" onclick="switchTodayPage(0)">Hoy</button>
+        <button class="day-tab${todayPage===1?' active':''}" onclick="switchTodayPage(1)">Mañana</button>
+      </div>
       <div class="today-view-toggle">
         <button class="tvt-btn${todayViewMode===0?' active':''}" onclick="setTodayViewMode(0)" title="Agenda">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="7" height="7" rx="1"/><rect x="3" y="13" width="7" height="7" rx="1"/><line x1="13" y1="7" x2="21" y2="7"/><line x1="13" y1="12" x2="21" y2="12"/><line x1="13" y1="17" x2="21" y2="17"/></svg>
@@ -1487,10 +1514,6 @@ function renderToday(){
         </button>
       </div>
     </div>
-  </div>
-  <div class="today-day-tabs">
-    <button class="day-tab${todayPage===0?' active':''}" onclick="switchTodayPage(0)">Hoy</button>
-    <button class="day-tab${todayPage===1?' active':''}" onclick="switchTodayPage(1)">Mañana</button>
   </div>
   <div class="today-swipe-wrap">
     <div class="today-swipe-track" id="today-swipe-track" style="transform:translateX(${todayPage===0?0:-50}%)">
@@ -1567,7 +1590,6 @@ function renderPanorama(){
         }
         <div class="pcard-prio-dot" style="background:${prioC[t.priority]||'var(--text3)'}"></div>
         <span class="pan-list-title">${esc(t.title)}</span>
-        <span class="pan-list-col" style="color:${done?'var(--c-done)':(col?.color||dot)}">${esc(col?.name||'')}</span>
         ${dateStr?`<span class="pan-list-date" style="color:${isOv?'var(--c-over)':isTd?'var(--accent)':'var(--text3)'}">${dateStr}</span>`:''}
       </div>`;
     });
@@ -2071,9 +2093,95 @@ window.assignToBlock=(tid,block)=>{
   ['manana','tarde','noche'].forEach(b=>{S.planDia[b]=(S.planDia[b]||[]).filter(x=>x!==tid);});
   S.planDia[block].push(tid);
   document.getElementById('assign-block-popup')?.remove();
-  saveData();
+  // Save immediately to Firestore so it persists
+  if(!offlineMode&&currentUser){
+    isSaving=true;
+    if(saveTimeout)clearTimeout(saveTimeout);
+    try{lastSaveTime=Date.now();await setDoc(doc(db,'users',currentUser.uid,'data','main'),S);setSyncStatus('synced');}
+    catch(e){setSyncStatus('offline');}
+    finally{isSaving=false;}
+  } else {saveData();}
   document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();
   showToast('Movido a '+{manana:'Mañana',tarde:'Tarde',noche:'Noche'}[block]);
+};
+
+
+// ── NEXO HUB: hide on scroll ──
+window._nexoScrollSetup=false;
+function setupNexoScroll(){
+  if(window._nexoScrollSetup)return;
+  const main=document.getElementById('main');
+  if(!main)return;
+  window._nexoScrollSetup=true;
+  let lastTop=0;
+  main.addEventListener('scroll',()=>{
+    const top=main.scrollTop;
+    const fab=document.querySelector('.nexo-fab');
+    if(!fab)return;
+    if(top>60){fab.classList.add('nexo-hidden');}
+    else{fab.classList.remove('nexo-hidden');}
+    lastTop=top;
+  },{passive:true});
+}
+
+
+// ── AGENDA BLOCK DRAG AND DROP ──
+let _agendaDragTid=null,_agendaDragBlock=null,_agendaDragDate=null;
+
+window.agendaDragStart=(e,tid,block,dateStr)=>{
+  _agendaDragTid=tid;_agendaDragBlock=block;_agendaDragDate=dateStr;
+  e.dataTransfer.effectAllowed='move';
+  setTimeout(()=>{const el=document.querySelector(`.agenda-task[data-tid="${tid}"]`);if(el)el.style.opacity='.3';},0);
+};
+
+window.agendaDragOver=(e)=>{
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  const el=e.currentTarget;
+  el.classList.add('agenda-task-dragover');
+};
+
+window.agendaDragLeave=(e)=>{
+  e.currentTarget.classList.remove('agenda-task-dragover');
+};
+
+window.agendaDrop=(e,targetTid,targetBlock,dateStr)=>{
+  e.preventDefault();
+  e.currentTarget.classList.remove('agenda-task-dragover');
+  if(!_agendaDragTid||_agendaDragTid===targetTid)return;
+  
+  if(!S.planDia||S.planDia.date!==dateStr){
+    S.planDia={date:dateStr,manana:[],tarde:[],noche:[],notes:{manana:'',tarde:'',noche:''}};
+  }
+  
+  // Remove from all blocks
+  ['manana','tarde','noche'].forEach(b=>{
+    S.planDia[b]=(S.planDia[b]||[]).filter(x=>x!==_agendaDragTid);
+  });
+  
+  // Insert into target block at correct position (shift others down)
+  const targetArr=S.planDia[targetBlock]||[];
+  const targetIdx=targetArr.indexOf(targetTid);
+  if(targetIdx>-1){
+    targetArr.splice(targetIdx,0,_agendaDragTid);
+  } else {
+    // Add to target block if not present
+    S.planDia[targetBlock]=(S.planDia[targetBlock]||[]);
+    S.planDia[targetBlock].push(_agendaDragTid);
+  }
+  
+  _agendaDragTid=null;_agendaDragBlock=null;_agendaDragDate=null;
+  
+  // Reset opacity
+  document.querySelectorAll('.agenda-task').forEach(el=>el.style.opacity='');
+  
+  // Save immediately
+  if(!offlineMode&&currentUser){
+    isSaving=true;
+    if(saveTimeout)clearTimeout(saveTimeout);
+    setDoc(doc(db,'users',currentUser.uid,'data','main'),S).then(()=>{setSyncStatus('synced');}).catch(()=>{setSyncStatus('offline');}).finally(()=>{isSaving=false;});
+  } else {saveData();}
+  
+  document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();
 };
 
 try{window.saveData=saveData;window.render=render;}catch(e){}
@@ -3791,10 +3899,12 @@ window.semanaComplete = function(tid) {
 .nexo-k-overlay{position:fixed!important;inset:0!important;z-index:2147482999!important;background:rgba(0,0,0,.38)!important;backdrop-filter:blur(8px)!important;display:none!important;align-items:flex-start!important;justify-content:center!important;padding-top:12vh!important}.nexo-k-overlay.open{display:flex!important}.nexo-k-modal{width:min(460px,calc(100vw - 32px))!important;border-radius:22px!important;border:1px solid rgba(255,255,255,.16)!important;background:rgba(14,16,22,.92)!important;box-shadow:0 30px 100px rgba(0,0,0,.42)!important;color:white!important;overflow:hidden!important}.nexo-k-head{padding:18px 18px 10px!important}.nexo-k-title{display:flex!important;align-items:center!important;gap:9px!important;font-size:11px!important;letter-spacing:.22em!important;text-transform:uppercase!important;color:rgba(255,255,255,.44)!important;font-weight:800!important}.nexo-k-title img{width:18px!important;height:18px!important}.nexo-k-input{width:100%!important;margin-top:10px!important;background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:14px!important;padding:13px 14px!important;color:white!important;outline:none!important;font-size:15px!important}.nexo-k-list{padding:8px!important}.nexo-k-item{display:flex!important;align-items:center!important;gap:12px!important;padding:13px!important;border-radius:14px!important;color:rgba(255,255,255,.84)!important;text-decoration:none!important;font-size:14px!important;font-weight:650!important}.nexo-k-item:hover,.nexo-k-item.active{background:rgba(255,255,255,.1)!important;color:white!important}.nexo-k-item b{width:28px!important;height:28px!important;border-radius:10px!important;background:rgba(255,255,255,.08)!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}.nexo-k-item img{width:21px!important;height:21px!important;object-fit:contain!important}
 @media(max-width:767px){.nexo-fab{right:82px!important;left:auto!important;bottom:calc(var(--nav-h,64px) + env(safe-area-inset-bottom,0px) + 19px)!important;width:42px!important;height:42px!important;border-radius:50%!important;opacity:.58!important}.nexo-panel{right:12px!important;left:auto!important;bottom:calc(var(--nav-h,64px) + env(safe-area-inset-bottom,0px) + 70px)!important;max-width:calc(100vw - 24px)!important}.nexo-k-overlay{padding-top:8vh!important}}
 
-/* TASKFLOW: NEXO visible únicamente en Hoy, sin JS invasivo */
+/* TASKFLOW: NEXO visible únicamente en Hoy */
 .nexo-fab,.nexo-panel{display:none!important}
-body:has(#view-today.active) .nexo-fab{display:flex!important}
+body:has(#view-today.active) .nexo-fab{display:flex!important;opacity:.25!important}
 body:has(#view-today.active) .nexo-panel.open{display:block!important}
+body:has(#view-today.active) .nexo-fab:hover{opacity:.8!important}
+.nexo-fab.nexo-hidden{opacity:0!important;pointer-events:none!important;transition:opacity .3s!important}
 body:has(.overlay) .nexo-fab,
 body:has(.sheet) .nexo-fab,
 body:has(.focus-mode.active) .nexo-fab,
