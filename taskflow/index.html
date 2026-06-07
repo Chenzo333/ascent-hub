@@ -957,7 +957,7 @@ function defData(){
     tasks:[],
     tags:[],
     hideDone:{},showOver:{},quickAdd:{},panCol:{},projOrder:[],pinnedTasks:[],focusNow:[],focusDate:'',
-    planDia:{date:'',manana:[],tarde:[],noche:[],notes:{manana:'',tarde:'',noche:''}},
+    planDias:{},
     streak:0,lastCompleteDate:'',weekDone:0,weekDoneDate:'',
   };
 }
@@ -1002,10 +1002,10 @@ function migrateState(){
   if(!S.tags)S.tags=[];if(!S.streak)S.streak=0;
   if(!S.weekDone)S.weekDone=0;if(!S.weekDoneDate)S.weekDoneDate='';
   if(!S.lastCompleteDate)S.lastCompleteDate='';
-  if(!S.planDia)S.planDia={date:'',manana:[],tarde:[],noche:[],notes:{manana:'',tarde:'',noche:''}};
-  if(!S.planDia.notes)S.planDia.notes={manana:'',tarde:'',noche:''};
-  // Reset plan if it's from a previous day
-  // Plan del día persists - no auto-reset
+  // Migrate old planDia to planDias
+  if(S.planDia&&!S.planDias){S.planDias={};if(S.planDia.date){const d=S.planDia.date;S.planDias[d]={manana:S.planDia.manana||[],tarde:S.planDia.tarde||[],noche:S.planDia.noche||[]};}
+  delete S.planDia;}
+  if(!S.planDias)S.planDias={};
   (S.projects||[]).forEach(p=>{
     if(!p.palKey)p.palKey='navy';
     if(p.pinned===undefined)p.pinned=false;
@@ -1043,6 +1043,11 @@ async function loadFromFS(){
         // Preserve pinnedTasks from memory if incoming data has fewer entries
         if(prev.pinnedTasks&&prev.pinnedTasks.length>(S.pinnedTasks||[]).length){
           S.pinnedTasks=prev.pinnedTasks;
+        }
+        // Preserve planDias from memory — server may have stale version
+        if(prev.planDias&&Object.keys(prev.planDias).length>0){
+          if(!S.planDias||Object.keys(S.planDias).length===0)S.planDias=prev.planDias;
+          else{Object.assign(S.planDias,prev.planDias);}
         }
         migrateState();render();setSyncStatus('synced');
       }
@@ -1218,7 +1223,7 @@ function renderViews(){
     const el=document.getElementById('view-'+v);if(!el)return;
     el.classList.toggle('active',view===v);
   });
-  if(view==='today'){document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();setupNexoScroll();}
+  if(view==='today'){document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();window._nexoScrollSetup=false;setupNexoScroll();const nf=document.querySelector('.nexo-fab');if(nf)nf.classList.remove('nexo-hidden');}
   if(view==='panorama')document.getElementById('view-panorama').innerHTML=renderPanorama();
   if(view==='importantes')document.getElementById('view-importantes').innerHTML=renderImportantes();
   if(view==='projects'){document.getElementById('view-projects').innerHTML=renderProjects();attachProjDnd();}
@@ -1349,7 +1354,20 @@ function isTaskDone(t){
 }
 // ── TODAY VIEW MODE (0=agenda, 1=lista) ──
 let todayViewMode=0;
-window.setTodayViewMode=(m)=>{todayViewMode=m;document.getElementById('view-today').innerHTML=renderToday();setupTodaySwipe();};
+window.setTodayViewMode=(m)=>{
+  const el=document.getElementById('view-today');
+  if(!el)return;
+  el.style.transition='opacity .18s ease';
+  el.style.opacity='0';
+  setTimeout(()=>{
+    todayViewMode=m;
+    el.innerHTML=renderToday();
+    setupTodaySwipe();
+    el.style.opacity='0';
+    requestAnimationFrame(()=>{requestAnimationFrame(()=>{el.style.opacity='1';});});
+    setTimeout(()=>{el.style.transition='';el.style.opacity='';},200);
+  },180);
+};
 
 function renderToday(){
   const isDone=t=>{const p=S.projects.find(x=>x.id===t.projectId);return t.columnId===p?.columns.find(c=>c.id==='done')?.id;};
@@ -1389,8 +1407,9 @@ function renderToday(){
       return'noche';
     };
 
-    // planDia stores manually assigned tasks per block
-    const pd=S.planDia&&S.planDia.date===dateStr?S.planDia:{date:dateStr,manana:[],tarde:[],noche:[]};
+    // planDias stores manually assigned tasks per block per date
+    if(!S.planDias)S.planDias={};
+    const pd=S.planDias[dateStr]||{manana:[],tarde:[],noche:[]};
     const assigned=new Set([...pd.manana,...pd.tarde,...pd.noche]);
 
     const blocks=[
@@ -2092,10 +2111,10 @@ window.openAssignBlock=(tid)=>{
 window.assignToBlock=async(tid,block)=>{
   const today=window.TODAY||new Date().toISOString().slice(0,10);
   const dateStr=window._assignDate||today;
-  if(!S.planDia)S.planDia={date:dateStr,manana:[],tarde:[],noche:[],notes:{manana:'',tarde:'',noche:''}};
-  if(S.planDia.date!==dateStr){S.planDia={date:dateStr,manana:[],tarde:[],noche:[],notes:{manana:'',tarde:'',noche:''}};}
-  ['manana','tarde','noche'].forEach(b=>{S.planDia[b]=(S.planDia[b]||[]).filter(x=>x!==tid);});
-  S.planDia[block].push(tid);
+  if(!S.planDias)S.planDias={};
+  if(!S.planDias[dateStr])S.planDias[dateStr]={manana:[],tarde:[],noche:[]};
+  ['manana','tarde','noche'].forEach(b=>{S.planDias[dateStr][b]=(S.planDias[dateStr][b]||[]).filter(x=>x!==tid);});
+  S.planDias[dateStr][block].push(tid);
   document.getElementById('assign-block-popup')?.remove();
   // Save immediately to Firestore so it persists
   if(!offlineMode&&currentUser){
@@ -2122,7 +2141,7 @@ function setupNexoScroll(){
     const top=main.scrollTop;
     const fab=document.querySelector('.nexo-fab');
     if(!fab)return;
-    if(top>60){fab.classList.add('nexo-hidden');}
+    if(top>1){fab.classList.add('nexo-hidden');}
     else{fab.classList.remove('nexo-hidden');}
     lastTop=top;
   },{passive:true});
@@ -2153,24 +2172,21 @@ window.agendaDrop=(e,targetTid,targetBlock,dateStr)=>{
   e.currentTarget.classList.remove('agenda-task-dragover');
   if(!_agendaDragTid||_agendaDragTid===targetTid)return;
   
-  if(!S.planDia||S.planDia.date!==dateStr){
-    S.planDia={date:dateStr,manana:[],tarde:[],noche:[],notes:{manana:'',tarde:'',noche:''}};
-  }
+  if(!S.planDias)S.planDias={};
+  if(!S.planDias[dateStr])S.planDias[dateStr]={manana:[],tarde:[],noche:[]};
+  const pd=S.planDias[dateStr];
   
   // Remove from all blocks
-  ['manana','tarde','noche'].forEach(b=>{
-    S.planDia[b]=(S.planDia[b]||[]).filter(x=>x!==_agendaDragTid);
-  });
+  ['manana','tarde','noche'].forEach(b=>{pd[b]=(pd[b]||[]).filter(x=>x!==_agendaDragTid);});
   
   // Insert into target block at correct position (shift others down)
-  const targetArr=S.planDia[targetBlock]||[];
+  if(!pd[targetBlock])pd[targetBlock]=[];
+  const targetArr=pd[targetBlock];
   const targetIdx=targetArr.indexOf(targetTid);
   if(targetIdx>-1){
     targetArr.splice(targetIdx,0,_agendaDragTid);
   } else {
-    // Add to target block if not present
-    S.planDia[targetBlock]=(S.planDia[targetBlock]||[]);
-    S.planDia[targetBlock].push(_agendaDragTid);
+    targetArr.push(_agendaDragTid);
   }
   
   _agendaDragTid=null;_agendaDragBlock=null;_agendaDragDate=null;
@@ -3908,7 +3924,7 @@ window.semanaComplete = function(tid) {
 body:has(#view-today.active) .nexo-fab{display:flex!important;opacity:.25!important}
 body:has(#view-today.active) .nexo-panel.open{display:block!important}
 body:has(#view-today.active) .nexo-fab:hover{opacity:.8!important}
-.nexo-fab.nexo-hidden{opacity:0!important;pointer-events:none!important;transition:opacity .3s!important}
+.nexo-fab.nexo-hidden{opacity:0!important;pointer-events:none!important;transition:opacity .2s ease!important;visibility:hidden!important}
 body:has(.overlay) .nexo-fab,
 body:has(.sheet) .nexo-fab,
 body:has(.focus-mode.active) .nexo-fab,
