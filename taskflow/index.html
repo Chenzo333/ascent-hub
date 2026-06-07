@@ -1451,15 +1451,16 @@ function renderToday(){
         <span class="pend-zona-title">Pendientes del día</span>
         <span class="pend-zona-count">${pendTasks.length}</span>
       </div>
-      ${pendTasks.length?`<div class="pend-zona-list">${pendTasks.map(t=>{
+      ${pendTasks.length?('<div class="pend-zona-list">'+pendTasks.map(t=>{
         const proj=S.projects.find(p=>p.id===t.projectId);
-        return`<div class="pend-zona-task" onclick="window._assignDate='${dateStr}';openAssignBlock('${t.id}')" style="cursor:pointer">
-          <div class="pend-zona-check" onclick="event.stopPropagation();completeFromPan('${t.id}',this)"></div>
-          <span class="pend-zona-title-txt">${esc(t.title)}</span>
-          ${proj?`<span class="pend-zona-proj">${proj.icon}</span>`:''}
-          <span style="font-size:11px;color:var(--text3);opacity:.5">+ bloque</span>
-        </div>`;
-      }).join('')}</div>`:'<div style="font-size:12px;color:var(--text3);opacity:.5;text-align:center;padding:12px 0">Sin pendientes 🎉</div>'}
+        const projIcon=proj?('<span class="pend-zona-proj">'+proj.icon+'</span>'):'';
+        return '<div class="pend-zona-task" onclick="window._assignDate=\''+dateStr+'\';openAssignBlock(\''+t.id+'\')" style="cursor:pointer">'+
+          '<div class="pend-zona-check" onclick="event.stopPropagation();completeFromPan(\''+t.id+'\',this)"></div>'+
+          '<span class="pend-zona-title-txt">'+esc(t.title)+'</span>'+
+          projIcon+
+          '<span style="font-size:11px;color:var(--text3);opacity:.5">+ bloque</span>'+
+          '</div>';
+      }).join('')+'</div>'):'<div style="font-size:12px;color:var(--text3);opacity:.5;text-align:center;padding:12px 0">Sin pendientes 🎉</div>'}
     </div>`;
 
     return focusHTML+blocksHTML+pendHTML;
@@ -1483,7 +1484,7 @@ function renderToday(){
       const ph=palHdr(p.palKey);
       h+=`<div class="group-block group-block-color" style="--group-color-border:${ph.border};--group-color-bg-hdr:${ph.hdr};--group-color-bg:${ph.hdr}20">
         <div class="group-hdr" style="color:${ph.hdrTxt};--gc:${ph.hdrTxt};background:${ph.hdr};border-bottom:1px solid ${ph.border}">${p.icon} ${esc(p.name)}</div>
-        <div class="group-tasks-inner" style="background:#fff">${grp[pid].map(t=>{const card=cardHTML(t,p,{mv:true,showStatus:true});return card.replace('class="task-card','class="task-card" style="border:1.5px solid ${ph.border}"').replace('style="border:1.5px','style="border:1.5px');}).join('')}</div></div>`;
+        <div class="group-tasks-inner" style="background:#fff">${grp[pid].map(t=>cardHTML(t,p,{mv:true,showStatus:true})).join('')}</div></div>`;
     });
     return h;
   };
