@@ -177,7 +177,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .kanban-header{padding:10px 16px;display:flex;align-items:center;justify-content:flex-end;gap:8px}
 .kanban-scroll{display:flex;gap:12px;overflow-x:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory}
 .kanban-scroll::-webkit-scrollbar{display:none}
-.k-col{background:var(--bg2);border-radius:var(--r);border:1px solid var(--border);display:flex;flex-direction:column;min-width:min(280px,80vw);width:min(280px,80vw);flex-shrink:0;scroll-snap-align:start;transition:background .2s}
+.k-col{background:var(--bg2);border-radius:var(--r);border:1px solid var(--border);display:flex;flex-direction:column;min-width:min(280px,80vw);width:min(280px,80vw);flex-shrink:0;scroll-snap-align:start;transition:background .2s;overflow:hidden}
 .k-col.done-col.hd{display:none!important}
 .k-col-hdr{display:flex;align-items:center;gap:6px;padding:12px 14px 10px;border-bottom:1px solid var(--border);border-top:4px solid var(--cc,#444);border-radius:var(--r) var(--r) 0 0}
 .k-col-lbl{font-size:14px;font-weight:700;flex:1;cursor:default}
@@ -189,7 +189,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .col-color-swatch.selected{border-color:var(--text)}
 .k-col-lbl-inp{font-size:14px;font-weight:700;flex:1;background:none;border:none;border-bottom:2px solid var(--accent);outline:none;color:var(--text);padding:0;width:100%}
 .k-col-cnt{font-size:11px;color:var(--text3);font-family:var(--mono);background:var(--bg3);padding:2px 8px;border-radius:99px}
-.k-col-body{padding:10px;display:flex;flex-direction:column;gap:8px;min-height:80px}
+.k-col-body{padding:10px;display:flex;flex-direction:column;gap:8px;min-height:80px;overflow:hidden}
 .k-col-body.dov{background:var(--accent-dim)}
 .col-empty-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:18px;color:var(--text3);font-size:13px;border:1.5px dashed var(--border2);border-radius:var(--rs);cursor:pointer;transition:all .15s;width:100%;background:none;-webkit-tap-highlight-color:transparent}
 .col-empty-btn:active{border-color:var(--accent);color:var(--accent)}
@@ -201,8 +201,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
 /* ── TASK CARD ── */
 .task-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);display:flex;position:relative;user-select:none;transition:opacity .15s;overflow:hidden}
-.task-card.ov{border-left:3px solid var(--c-over)}
-.task-card.td{border-left:3px solid var(--accent)}
+.task-card.ov{border:1.5px solid var(--c-over)!important;background:color-mix(in srgb,var(--c-over) 10%,var(--bg3))!important}
+.task-card.td{}
 .task-card.dn{opacity:.5}
 .task-card.dragging{opacity:.2}
 .task-card.da{border-top:2px solid var(--accent)}
@@ -217,8 +217,8 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .prio-badge.alta{color:var(--c-over);background:var(--c-over-dim);border-color:#f0524f40}
 .prio-badge.media{color:var(--c-mid);background:var(--c-mid-dim);border-color:#f5a62340}
 .prio-badge.baja{color:var(--text2);background:var(--bg4);border-color:var(--border2)}
-.task-card.prio-alta{box-shadow:inset 4px 0 0 var(--c-over)}
-.task-card.prio-media{box-shadow:inset 4px 0 0 var(--c-mid)}
+.task-card.prio-alta{}
+.task-card.prio-media{}
 .tc-title{font-size:13.5px;font-weight:500;line-height:1.35;word-break:break-word;overflow-wrap:anywhere;flex:1;min-width:0}
 .tc-actions{display:flex;align-items:center;gap:1px;flex-shrink:0;margin-left:auto}
 .tc-actions .icon-btn{width:28px;height:28px}
@@ -761,7 +761,7 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
   <button class="fab" id="fab" onclick="onFabClick()">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
-  <nav class="bottom-nav">
+    <nav class="bottom-nav">
     <button class="bnav-item" data-view="today" onclick="setView('today')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span class="bnav-label">Hoy</span>
@@ -771,23 +771,22 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       <span class="bnav-label">Plan</span>
     </button>
-    <button class="bnav-item" data-view="semana" onclick="setView('semana')">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span class="bnav-label">Semana</span>
-    </button>
     <button class="bnav-item" data-view="panorama" onclick="setView('panorama')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       <span class="bnav-label">Panorama</span>
     </button>
+    <button class="bnav-item" data-view="semana" onclick="setView('semana')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span class="bnav-label">Semana</span>
+    </button>
     <button class="bnav-item" data-view="projects" onclick="setView('projects')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-      <span class="bnav-label">Proyectos</span>
+      <span class="bnav-label">Categorías</span>
     </button>
     <button class="bnav-item" data-view="importantes" onclick="setView('importantes')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       <span class="bnav-label">Importantes</span>
     </button>
-
     <button class="bnav-item" data-view="settings" onclick="setView('settings')">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       <span class="bnav-label">Ajustes</span>
@@ -1293,6 +1292,12 @@ window.focusOpenSel=()=>{
   document.body.insertAdjacentHTML('beforeend',h);
 };
 
+
+// ── HELPER: check if task is done ──
+function isTaskDone(t){
+  const p=S.projects.find(x=>x.id===t.projectId);
+  return t.columnId===p?.columns.find(c=>c.id==='done')?.id;
+}
 function renderToday(){
   const isDone=t=>{const p=S.projects.find(x=>x.id===t.projectId);return t.columnId===p?.columns.find(c=>c.id==='done')?.id;};
   const renderDay=(dateStr,pageIdx)=>{
@@ -1403,7 +1408,7 @@ function renderPanorama(){
     <div class="pan-stat-chip"><span class="pan-stat-num">${S.streak||0}🔥</span><span class="pan-stat-lbl">Racha días</span></div>
   </div>`;
 
-  if(!S.projects.length)return h+`<div class="empty-state" style="margin-top:40px"><p>No hay proyectos</p></div>`;
+  if(!S.projects.length)return h+`<div class="empty-state" style="margin-top:40px"><p>No hay categorías</p></div>`;
 
   const sorted=[...S.projects].sort((a,b)=>(a.order??0)-(b.order??0));
 
@@ -1424,7 +1429,7 @@ function renderPanorama(){
       </div>
       <div class="pan-list-rows">`;
 
-    [...pendTasks, ...doneTasks].forEach(t=>{
+    pendTasks.forEach(t=>{
       const col=proj.columns.find(c=>c.id===t.columnId);
       const done=t.columnId===doneId;
       const isOv=!done&&t.date&&t.date<TODAY;
@@ -1579,7 +1584,7 @@ function renderProjects(){
   });
   h+=`<button class="add-proj-btn" onclick="openProjModal()">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    Nuevo proyecto
+    Nueva categoría
   </button></div>`;
   return h;
 }
@@ -1602,7 +1607,7 @@ function attachProjDnd(){}
 // ── KANBAN ──
 function renderKanban(){
   const proj=S.projects.find(p=>p.id===kanbanProjId);
-  if(!proj)return`<div class="empty-state"><p>Proyecto no encontrado</p></div>`;
+  if(!proj)return`<div class="empty-state"><p>Categoría no encontrada</p></div>`;
   
   if(!S.hideDone)S.hideDone={};
   if(!S.showOver)S.showOver={};
@@ -1887,6 +1892,38 @@ window.closeTaskDetail=()=>{
   if(el)el.remove();
 };
 
+
+// ── ANDROID BACK BUTTON (History API) ──
+(function(){
+  var _viewHistory=[];
+  var _origSetView=null;
+  function initBackNav(){
+    // Push initial state
+    history.replaceState({tf:true,view:'today'},'');
+    // Wrap setView to push history
+    _origSetView=window.setView;
+    window.setView=function(v,projId){
+      _origSetView(v,projId);
+      history.pushState({tf:true,view:v,projId:projId||null},'');
+    };
+    window.addEventListener('popstate',function(e){
+      if(e.state&&e.state.tf){
+        // Navigate back within app
+        _origSetView(e.state.view,e.state.projId||undefined);
+      } else {
+        // No more app history — ask to exit
+        if(confirm('¿Salir de TaskFlow?')){
+          history.back();
+        } else {
+          history.pushState({tf:true,view:window._currentView||'today'},'');
+        }
+      }
+    });
+  }
+  // Run after app is ready
+  window.addEventListener('load',function(){setTimeout(initBackNav,500);});
+})();
+
 try{window.saveData=saveData;window.render=render;}catch(e){}
 
 // ── DESKTOP SIDEBAR ──
@@ -1914,7 +1951,7 @@ function renderDesktopSidebar(){
     </div>
     <div class="dsb-divider" style="margin:2px 0"></div>
     <div class="dsb-section">
-      <div class="dsb-sec-hdr">Proyectos<button class="icon-btn" onclick="openProjModal()" style="width:28px;height:28px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div>
+      <div class="dsb-sec-hdr">Categorías<button class="icon-btn" onclick="openProjModal()" style="width:28px;height:28px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div>
       ${sorted.map(p=>{
         const dId=p.columns.find(c=>c.id==='done')?.id;
         const cnt=S.tasks.filter(t=>t.projectId===p.id&&t.columnId!==dId).length;
@@ -2146,7 +2183,7 @@ window.togglePin=async(tid)=>{
 
 function renderImportantes(){
   if(!S.pinnedTasks)S.pinnedTasks=[];
-  const pinned=S.pinnedTasks.map(id=>S.tasks.find(t=>t.id===id)).filter(Boolean);
+  const pinned=S.pinnedTasks.map(id=>S.tasks.find(t=>t.id===id)).filter(t=>t&&!isTaskDone(t));
   const prioC={alta:'var(--c-over)',media:'var(--c-mid)',baja:'var(--text3)'};
 
   if(!pinned.length)return`
@@ -3282,7 +3319,7 @@ function renderSemana() {
     var dateKey = semanaDateKey(day);
     var isToday = dateKey === TODAY_KEY;
     var tasks = window.S.tasks
-      .filter(function(t){return t.date===dateKey;})
+      .filter(function(t){return t.date===dateKey && !isDone(t);})
       .sort(function(a,b){
         if(a.time&&b.time)return a.time.localeCompare(b.time);
         if(a.time)return -1; if(b.time)return 1;
