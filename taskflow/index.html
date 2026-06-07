@@ -212,8 +212,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .task-card.dragging{opacity:.2}
 .task-card.da{border-top:2px solid var(--accent)}
 .task-card.db{border-bottom:2px solid var(--accent)}
-.tc-grip{width:0;overflow:hidden;color:var(--text3);cursor:grab;display:flex;align-items:flex-start;opacity:0;transition:opacity .12s,width .12s;flex-shrink:0;padding:0}
-.task-card:hover .tc-grip{opacity:1;width:24px;padding:12px 4px 12px 8px}
+
 .tc-body{flex:1;padding:10px 10px 8px 10px;min-width:0;overflow:hidden}
 .tc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:0}
 .tc-title-row{display:flex;align-items:flex-start;gap:6px;flex:1;min-width:0;overflow:hidden}
@@ -241,8 +240,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .tc-ico:active{opacity:1}
 .tc-ico.bolt-on{color:#EF9F27;opacity:1}
 .tc-actions{display:none}
-.tc-desc{font-size:11.5px;color:var(--text3);margin:0;line-height:1.4;overflow:hidden;text-overflow:ellipsis;font-weight:400;max-height:0;opacity:0;pointer-events:none;font-size:0}
-@media(min-width:768px){.tc-desc{font-size:11.5px;max-height:0;opacity:0}}
+.tc-desc{display:none}
 .tc-proj-badge{font-size:11px;font-weight:600;margin-bottom:4px}
 .tc-meta{display:none}
 .mc{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:var(--text3);background:var(--bg4);padding:2px 7px;border-radius:5px;font-family:var(--mono);white-space:nowrap}
@@ -253,7 +251,6 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
 /* Mobile card fixes */
 @media(max-width:767px){
-  .tc-grip{display:none}
   .tc-body{padding:10px 10px 8px 10px}
   .prio-badge{font-size:9px;padding:2px 5px}
   .tc-title{font-size:13px}
@@ -739,7 +736,7 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
 .agenda-task-check{width:18px;height:18px;min-width:18px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
 .agenda-task-title{font-size:13px;color:var(--text);flex:1;line-height:1.3}
 .agenda-task-time{font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0}
-.agenda-task-drag{font-size:14px;color:var(--text3);opacity:.2;flex-shrink:0}
+
 .agenda-fade{height:32px;background:linear-gradient(to bottom,var(--bg),var(--pend-bg,#D3D1C7))}
 .pend-zona{padding:16px;background:var(--pend-bg,#E8E7E1)}
 .pend-zona-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -1484,7 +1481,7 @@ function renderToday(){
           '<div class="agenda-task-check" onclick="event.stopPropagation();completeFromPan(\''+tid+'\',this)"></div>'+
           '<span class="agenda-task-title">'+esc(t.title)+'</span>'+
           timeTpl+ovLbl+
-          '<svg class="agenda-task-drag" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg>'+
+
           '<button onclick="event.stopPropagation();removeFromBlock(\''+tid+'\',\''+ds2+'\')" style="border:none;background:none;color:var(--text3);opacity:.4;cursor:pointer;padding:2px;display:flex;align-items:center;flex-shrink:0;font-size:14px" title="Quitar del bloque">×</button>'+
           '</div>';
       }).join(''):'<div class="agenda-block-empty">Sin tareas</div>';
@@ -2305,11 +2302,10 @@ window.agendaTouchMove=(e)=>{
   document.addEventListener('mouseover',e=>{
     const card=e.target.closest('.task-card');
     if(!card)return;
-    const desc=card.querySelector('.tc-desc');
-    if(!desc||!desc.textContent.trim())return;
-    // Only on desktop
+    const desc=(card.dataset.desc||'').trim();
+    if(!desc)return;
     if(window.innerWidth<768)return;
-    _ttTimer=setTimeout(()=>showTooltip(card,desc.textContent.trim()),600);
+    _ttTimer=setTimeout(()=>showTooltip(card,desc),600);
   });
   document.addEventListener('mouseout',e=>{
     const card=e.target.closest('.task-card');
@@ -2484,13 +2480,14 @@ function cardHTML(task,proj,opts={}){
   const colName=p?.columns.find(c=>c.id===task.columnId)?.name||'';
 
   return`<div class="${cls}" id="tc-${task.id}" draggable="true"
+    data-desc="${task.description?esc(task.description):''}"
     ondragstart="onDs(event,'${task.id}','${task.columnId}')"
     ondragend="onDe()"
     ondragover="onDov(event,'${task.id}')"
     ondragleave="onDlv('${task.id}')"
     ondrop="onDdrop(event,'${task.id}')"
     onclick="openTaskDetail('${task.id}',event)">
-    <div class="tc-grip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg></div>
+
     <div class="tc-body">
       <div class="tc-top">
         <span class="tc-title">${esc(task.title)}</span>
@@ -2873,7 +2870,16 @@ window.saveT=()=>{
   const pinIdx=S.pinnedTasks.indexOf(taskId);
   if(mStar&&pinIdx===-1)S.pinnedTasks.push(taskId);
   else if(!mStar&&pinIdx>-1)S.pinnedTasks.splice(pinIdx,1);
-  closeT();saveData();render();
+  closeT();render();
+  // Save immediately (bypass debounce) to avoid onSnapshot race condition
+  if(!offlineMode&&currentUser){
+    isSaving=true;
+    if(saveTimeout)clearTimeout(saveTimeout);
+    setDoc(doc(db,'users',currentUser.uid,'data','main'),S)
+      .then(()=>{lastSaveTime=Date.now();setSyncStatus('synced');})
+      .catch(()=>{setSyncStatus('offline');saveData();})
+      .finally(()=>{isSaving=false;});
+  } else {saveData();}
 };
 
 // ── PROJECT MODAL ──
