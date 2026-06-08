@@ -1496,6 +1496,7 @@ function renderToday(){
         const task=S.tasks.find(x=>x.id===id);
         if(!task)return false; // task deleted
         if(task.date&&task.date!==dateStr)return false; // date changed
+        if(isDone(task))return false; // task completed — remove from block
         return true;
       });
     });
