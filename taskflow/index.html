@@ -3925,7 +3925,7 @@ function renderSemana() {
 
     h += '<div class="semana-col">';
     h += '<div class="semana-col-hdr' + (isToday?' is-today':'') + '">';
-    h += '<div><div class="semana-day-name">' + DAY_NAMES[idx] + '</div>';
+    h += '<div><div class="semana-day-name">' + DAY_NAMES[day.getDay()===0?6:day.getDay()-1] + '</div>';
     h += '<div class="semana-day-num' + (isToday?' is-today-num':'') + '">' + day.getDate() + '</div></div>';
     h += '<button class="semana-add-btn" onclick="window.semanaShowAddMenu(event,\'' + dateKey + '\')" title="Agregar tarea">';
     h += '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>';
