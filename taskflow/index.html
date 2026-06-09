@@ -1496,7 +1496,6 @@ function renderToday(){
         const task=S.tasks.find(x=>x.id===id);
         if(!task)return false; // task deleted
         if(task.date&&task.date!==dateStr)return false; // date changed
-        if(isDone(task))return false; // task completed — remove from block
         return true;
       });
     });
@@ -1511,12 +1510,20 @@ function renderToday(){
       const autoTasks=autoAssign[b.key]||[];
       const bTasks=[...manualTasks,...autoTasks.filter(t=>!manualTasks.find(m=>m.id===t.id))];
       const tasksHTML=bTasks.length?bTasks.map(t=>{
-        const isOvTask=t.date&&t.date<TODAY&&!isDone(t);
+        const tDone=isDone(t);
+        const isOvTask=t.date&&t.date<TODAY&&!tDone;
         const ovCls=isOvTask?' agenda-task-ov':'';
+        const doneCls=tDone?' done-task':'';
         const timeTpl=t.time?('<span class="agenda-task-time'+(isOvTask?' agenda-time-ov':'')+'">'+t.time+'</span>'):'';
         const ovLbl=isOvTask?'<span style="font-size:10px;color:var(--c-over);font-weight:600">Vencida</span>':'';
         const tid=t.id,bk=b.key,ds2=dateStr;
-        return '<div class="agenda-task'+ovCls+'" draggable="true" data-tid="'+tid+'" data-block="'+bk+'" data-date="'+ds2+'"'+
+        const checkEl=tDone
+          ?'<div class="agenda-task-check" style="background:var(--c-done);border-color:var(--c-done);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'
+          :'<div class="agenda-task-check" onclick="event.stopPropagation();completeFromPan(\''+tid+'\',this)"></div>';
+        const actionBtn=tDone
+          ?'<button onclick="event.stopPropagation();uncompleteTodo(\''+tid+'\',this)" style="border:none;background:none;font-size:14px;color:var(--text3);cursor:pointer;padding:2px 4px;flex-shrink:0" title="Desmarcar">↩</button>'
+          :'<button onclick="event.stopPropagation();removeFromBlock(\''+tid+'\',\''+ds2+'\')" style="border:none;background:none;color:var(--text3);opacity:.4;cursor:pointer;padding:2px;display:flex;align-items:center;flex-shrink:0;font-size:14px" title="Quitar del bloque">×</button>';
+        return '<div class="agenda-task'+ovCls+doneCls+'" draggable="true" data-tid="'+tid+'" data-block="'+bk+'" data-date="'+ds2+'"'+
           ' ondragstart="agendaDragStart(event,\''+tid+'\',\''+bk+'\',\''+ds2+'\')"'+
           ' ondragover="agendaDragOver(event)"'+
           ' ondrop="agendaDrop(event,\''+tid+'\',\''+bk+'\',\''+ds2+'\')"'+
@@ -1525,11 +1532,10 @@ function renderToday(){
           ' ontouchstart="agendaTouchStart(event,\''+tid+'\',\''+bk+'\',\''+ds2+'\')"'+
           ' ontouchend="agendaTouchEnd(event)"'+
           ' ontouchmove="agendaTouchMove(event)">'+
-          '<div class="agenda-task-check" onclick="event.stopPropagation();completeFromPan(\''+tid+'\',this)"></div>'+
+          checkEl+
           '<span class="agenda-task-title">'+esc(t.title)+'</span>'+
           timeTpl+ovLbl+
-
-          '<button onclick="event.stopPropagation();removeFromBlock(\''+tid+'\',\''+ds2+'\')" style="border:none;background:none;color:var(--text3);opacity:.4;cursor:pointer;padding:2px;display:flex;align-items:center;flex-shrink:0;font-size:14px" title="Quitar del bloque">×</button>'+
+          actionBtn+
           '</div>';
       }).join(''):'<div class="agenda-block-empty">Sin tareas</div>';
       blocksHTML+=`<div class="agenda-block">
