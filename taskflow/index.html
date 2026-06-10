@@ -641,7 +641,11 @@ input[type=date].inp,input[type=time].inp{color-scheme:dark}
 .semana-add-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border);background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);transition:all .15s;flex-shrink:0;}
 .semana-add-btn:hover{border-color:var(--accent);color:var(--accent);}
 .semana-tasks{padding:8px;display:flex;flex-direction:column;gap:6px;flex:1;}
-.semana-task{background:var(--bg2);border-radius:10px;padding:8px 10px;border:1px solid var(--border);border-left:3px solid var(--accent);cursor:pointer;transition:box-shadow .15s;}
+.semana-task{background:var(--bg2);border-radius:10px;padding:8px 10px;border:1px solid var(--border);cursor:pointer;transition:box-shadow .15s;}
+.semana-block-div{display:flex;align-items:center;gap:5px;padding:8px 2px 4px;}
+.semana-block-div:first-child{padding-top:2px;}
+.semana-block-div span{font-size:9px;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;opacity:.7;}
+.semana-block-div .sbd-line{flex:1;height:1px;background:var(--border);opacity:.6;}
 .semana-task:hover{box-shadow:0 2px 8px rgba(0,0,0,.08);}
 .semana-task.is-done{opacity:.45;}
 .semana-task.is-done .semana-task-title{text-decoration:line-through;}
@@ -1102,10 +1106,10 @@ async function loadFromFS(){
         if(prev.pinnedTasks&&prev.pinnedTasks.length>(S.pinnedTasks||[]).length){
           S.pinnedTasks=prev.pinnedTasks;
         }
-        // Preserve planDias from memory
+        // Preserve planDias: Firestore wins, but fill missing keys from local
         if(prev.planDias&&Object.keys(prev.planDias).length>0){
           if(!S.planDias||Object.keys(S.planDias).length===0)S.planDias=prev.planDias;
-          else{Object.assign(S.planDias,prev.planDias);}
+          else{S.planDias=Object.assign(prev.planDias,S.planDias);}
         }
         // Preserve streak from localStorage — more reliable than Firestore
         const lsStreak=parseInt(localStorage.getItem('tf_streak')||'0',10);
@@ -3932,21 +3936,41 @@ function renderSemana() {
     h += '</div>';
     h += '<div class="semana-tasks">';
 
+    // Group tasks by planDias block
+    var pd = (window.S.planDias && window.S.planDias[dateKey]) || {manana:[],tarde:[],noche:[]};
+    var mananaIds = pd.manana || [];
+    var tardeIds  = pd.tarde  || [];
+    var nocheIds  = pd.noche  || [];
+    var allBlockIds = mananaIds.concat(tardeIds).concat(nocheIds);
+
+    function taskHTML(t) {
+      var proj = window.S.projects.find(function(p){return p.id===t.projectId;});
+      var done = isDone(t);
+      var h2 = '<div class="semana-task' + (done?' is-done':'') + '" draggable="true" data-tid="' + t.id + '" data-date="' + dateKey + '" onclick="window.semanaTaskMenu(event,\'' + t.id + '\')">';
+      h2 += '<p class="semana-task-title">' + (window.esc ? window.esc(t.title) : t.title) + '</p>';
+      h2 += '<div class="semana-task-meta">';
+      if (t.time) h2 += '<span class="semana-task-time">' + t.time + '</span>';
+      if (proj) h2 += '<span class="semana-task-proj">' + proj.icon + ' ' + (window.esc ? window.esc(proj.name) : proj.name) + '</span>';
+      h2 += '</div></div>';
+      return h2;
+    }
+
+    function blockDiv(label) {
+      return '<div class="semana-block-div"><span>' + label + '</span><div class="sbd-line"></div></div>';
+    }
+
+    var manTasks  = mananaIds.map(function(id){return tasks.find(function(t){return t.id===id;});}).filter(Boolean);
+    var tarTasks  = tardeIds.map(function(id){return tasks.find(function(t){return t.id===id;});}).filter(Boolean);
+    var nochTasks = nocheIds.map(function(id){return tasks.find(function(t){return t.id===id;});}).filter(Boolean);
+    var sinTasks  = tasks.filter(function(t){return allBlockIds.indexOf(t.id)===-1;});
+
     if (!tasks.length) {
       h += '<div class="semana-empty">—</div>';
     } else {
-      tasks.forEach(function(t) {
-        var proj = window.S.projects.find(function(p){return p.id===t.projectId;});
-        var color = proj && window.palDot ? window.palDot(proj.palKey) : 'var(--accent)';
-        var done = isDone(t);
-        h += '<div class="semana-task' + (done?' is-done':'') + '" draggable="true" data-tid="' + t.id + '" data-date="' + dateKey + '" style="border-left-color:' + color + '" onclick="window.semanaTaskMenu(event,\'' + t.id + '\')">'; 
-        h += '<div style="display:flex;align-items:flex-start;gap:6px">';
-        h += '<div style="flex:1;min-width:0"><p class="semana-task-title">' + (window.esc ? window.esc(t.title) : t.title) + '</p>';
-        h += '<div class="semana-task-meta">';
-        if (t.time) h += '<span class="semana-task-time">' + t.time + '</span>';
-        if (proj) h += '<span class="semana-task-proj">' + proj.icon + ' ' + (window.esc ? window.esc(proj.name) : proj.name) + '</span>';
-        h += '</div></div></div></div>';
-      });
+      if (manTasks.length)  { h += blockDiv('Mañana');     manTasks.forEach(function(t){h+=taskHTML(t);}); }
+      if (tarTasks.length)  { h += blockDiv('Tarde');      tarTasks.forEach(function(t){h+=taskHTML(t);}); }
+      if (nochTasks.length) { h += blockDiv('Noche');      nochTasks.forEach(function(t){h+=taskHTML(t);}); }
+      if (sinTasks.length)  { h += blockDiv('Sin bloque'); sinTasks.forEach(function(t){h+=taskHTML(t);}); }
     }
 
     h += '</div></div>';
