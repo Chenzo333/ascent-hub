@@ -905,7 +905,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <div class="section-title"><i class="ti ti-repeat" style="font-size:11px;margin-right:4px"></i>Hábitos</div>
       </div>
       <div class="metas-table" id="habitosTable">
-        <div class="table-head view-compact" id="habitosTableHead">
+        <div class="table-head view-habitos" id="habitosTableHead">
           <div class="th"></div><div class="th">Hábito</div>
           <div class="th">Esta semana</div><div class="th">Racha · Cumpl.</div><div class="th">Estado</div>
         </div>
@@ -1637,8 +1637,8 @@ function renderStats(){
   document.getElementById('scoreArc').setAttribute('stroke-dasharray',`${dash} ${circum}`);
   document.getElementById('scorePct').textContent=pct+'%';
   document.getElementById('scoreText').innerHTML=`${done}<span class="unit">/${total}</span>`;
-  document.getElementById('totalMetas').textContent=`${habitos.length}h · ${nonHabitos.length}m`;
-  document.getElementById('totalMetaSub').textContent=active.length?`${risk} en riesgo · ${archivedMetas.length} lograda${archivedMetas.length!==1?'s':''}`:'Sin registros todavía';
+  document.getElementById('totalMetas').textContent=active.length;
+  document.getElementById('totalMetaSub').textContent=active.length?`${habitos.length} hábitos · ${nonHabitos.length} metas`:'Sin registros todavía';
   const streak=calcStreak();
   document.getElementById('streakCard').innerHTML=`${streak.current}<span class="unit"> d</span>`;
   document.getElementById('streakMax').textContent=`Máx. histórico: ${streak.max} días`;
@@ -1660,13 +1660,13 @@ function renderStats(){
   }
 }
 
-function catSeparator(thisCat,i,userCats){
-  const catColors=userCats||{'trading':'#3B82F6','musica':'#A855F7','academia':'#22C55E','personal':'#E8703A','':'var(--t4)'};
-  const catLabel={'trading':'Trading','musica':'Música','academia':'Academia','personal':'Personal','':'Sin categoría'};
+function catSeparator(thisCat,i){
   const cats=window._userCategories||[];
   const catObj=cats.find(c=>c.id===thisCat);
-  const label=catObj?`${catObj.emoji||''} ${catObj.name}`:catLabel[thisCat]||thisCat;
-  return`<div style="height:20px;${i>0?'border-top:0.5px solid var(--border2)':'background:transparent'};background:var(--bg);display:flex;align-items:center;padding:0 22px"><span style="font-size:9.5px;font-weight:500;color:var(--t3);letter-spacing:0.05em">${label}</span></div>`;
+  const fallback={'trading':'Trading','musica':'Música','academia':'Academia','personal':'Personal','':'Sin categoría'};
+  const label=catObj?`${catObj.emoji||''} ${catObj.name}`:(fallback[thisCat]||thisCat);
+  const borderTop=i>0?'border-top:0.5px solid var(--border2);':'';
+  return`<div style="height:22px;${borderTop}background:var(--bg);display:flex;align-items:center;padding:0 22px"><span style="font-size:9.5px;font-weight:500;color:var(--t3);letter-spacing:0.05em">${label}</span></div>`;
 }
 
 function renderHabitosList(){
@@ -1701,7 +1701,7 @@ function renderHabitoRow(m){
   const statusHtml=risk?'<div class="status-risk"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Atención</div>':'<div class="status-ok">Al día</div>';
   const freqLabel=m.freqType==='mensual'?`${m.freqMensual||1}×/mes`:`${m.freq||4}d/sem`;
   const nameCell=`<div style="min-width:0"><div class="m-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div><div class="m-type"><span class="type-badge c"><i class="ti ti-repeat" style="font-size:9px"></i>${freqLabel}</span></div></div>`;
-  return`<div class="meta-row view-compact ${risk?'risk':''}" onclick="openDetailModal('${m.id}')">${checkHtml}${nameCell}${weekDots}${rachaHtml}${statusHtml}</div>`;
+  return`<div class="meta-row view-habitos ${risk?'risk':''}" onclick="openDetailModal('${m.id}')">${checkHtml}${nameCell}${weekDots}${rachaHtml}${statusHtml}</div>`;
 }
 
 function calcHabitoStreak(m){
