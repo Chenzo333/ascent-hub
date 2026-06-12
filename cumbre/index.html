@@ -824,8 +824,9 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
     <div class="sidebar-nav">
       <div class="nav-item active" onclick="showPage('home',this)"><i class="ti ti-home"></i> Inicio</div>
+      <div class="nav-item" onclick="showPage('metas',this)"><i class="ti ti-target"></i> Metas</div>
+      <div class="nav-item" onclick="showPage('habitos',this)"><i class="ti ti-repeat"></i> Hábitos</div>
       <div class="nav-item" onclick="showPage('noventa',this)"><i class="ti ti-layout-columns"></i> 90's</div>
-      <div class="nav-item" onclick="showPage('metas',this)"><i class="ti ti-target"></i> Mis metas</div>
       <div class="nav-item" onclick="showPage('notas',this)"><i class="ti ti-notebook"></i> Notas</div>
       <div class="nav-item" onclick="showPage('vision',this)"><i class="ti ti-eye"></i> Visión</div>
       <div class="nav-item" onclick="showPage('stats',this)"><i class="ti ti-chart-bar"></i> Estadísticas</div>
@@ -847,7 +848,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
       <div class="topbar-right">
         <div class="streak-pill"><i class="ti ti-flame"></i> <span id="streakVal">0</span> días de racha</div>
-        <button class="btn-primary" onclick="openCreateModal()"><i class="ti ti-plus"></i> Nueva meta</button>
+        <button class="btn-primary" onclick="openCreateModal()"><i class="ti ti-plus"></i> Nuevo</button>
       </div>
     </div>
 
@@ -867,7 +868,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
             </div>
             <div class="hero-numbers">
               <div class="hero-big" id="scoreText">0<span class="unit">/0</span></div>
-              <div class="hero-label">metas diarias</div>
+              <div class="hero-label">hábitos de hoy</div>
             </div>
           </div>
           <div class="hero-week" id="heroWeek">
@@ -902,8 +903,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
       <div class="metas-table">
         <div class="table-head view-compact" id="tableHead">
-          <div class="th"></div><div class="th">Meta</div>
-          <div class="th">Progreso</div><div class="th">Esta semana</div><div class="th">Estado</div>
+          <div class="th"></div><div class="th">Nombre</div>
+          <div class="th">Progreso</div><div class="th">Semana</div><div class="th">Estado</div>
         </div>
         <div id="metasList"></div>
       </div>
@@ -911,13 +912,31 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
     <!-- METAS -->
     <div id="page-metas" class="page">
-      <div class="section-head"><div class="section-title">Todas las metas</div></div>
+      <div class="section-head"><div><div class="section-title">Metas</div><div style="font-size:12px;color:var(--t3);margin-top:3px">Objetivos con resultado final, hitos o avance medible.</div></div></div>
       <div class="metas-table">
         <div class="table-head view-compact">
           <div class="th"></div><div class="th">Meta</div>
-          <div class="th">Progreso</div><div class="th">Esta semana</div><div class="th">Estado</div>
+          <div class="th">Progreso</div><div class="th">Plan</div><div class="th">Estado</div>
         </div>
         <div id="allMetasList"></div>
+      </div>
+    </div>
+
+    <!-- HABITOS -->
+    <div id="page-habitos" class="page">
+      <div class="section-head"><div><div class="section-title">Hábitos</div><div style="font-size:12px;color:var(--t3);margin-top:3px">Acciones repetidas: diario, semanal o mensual.</div></div></div>
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:2px">
+        <div class="stats-card"><div class="stats-card-title">Activos</div><div class="scard-val" id="habitosActivos">0</div></div>
+        <div class="stats-card"><div class="stats-card-title">Hoy</div><div class="scard-val blue" id="habitosHoy">0/0</div></div>
+        <div class="stats-card"><div class="stats-card-title">Semana</div><div class="scard-val green" id="habitosSemana">—</div></div>
+        <div class="stats-card"><div class="stats-card-title">Racha</div><div class="scard-val orange" id="habitosRacha">0<span class="unit"> d</span></div></div>
+      </div>
+      <div class="metas-table">
+        <div class="table-head view-compact">
+          <div class="th"></div><div class="th">Hábito</div>
+          <div class="th">Progreso</div><div class="th">Semana</div><div class="th">Estado</div>
+        </div>
+        <div id="habitosList"></div>
       </div>
     </div>
 
@@ -935,9 +954,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
               <circle cx="45" cy="45" r="35" fill="none" stroke="#EDF0F5" stroke-width="12"/>
             </svg>
             <div class="donut-legend" id="donutLegend">
-              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#3B82F6"></div>Consistencia</div>
-              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#E8703A"></div>Hito</div>
-              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#22C55E"></div>Resultado</div>
+              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#E8703A"></div>Hábito</div>
+              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#3B82F6"></div>Meta</div>
             </div>
           </div>
         </div>
@@ -1128,7 +1146,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 <div class="modal-overlay" id="createModal" onclick="if(event.target===this)closeCreateModal()">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Nueva meta</div>
+      <div class="modal-title" id="createModalTitle">Nuevo</div>
       <button class="modal-close" onclick="closeCreateModal()"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
@@ -1139,15 +1157,14 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
       <div id="createStep1">
         <div class="form-group">
-          <label class="form-label">¿Qué querés lograr?</label>
-          <input class="form-input" id="metaName" placeholder="Ej: Ir al gimnasio, Ganar $10.000..." maxlength="80">
+          <label class="form-label">Nombre</label>
+          <input class="form-input" id="metaName" placeholder="Ej: Gimnasio 4x semana, Lanzar EP..." maxlength="80">
         </div>
         <div class="form-group">
-          <label class="form-label">Tipo de meta</label>
-          <div class="type-selector">
-            <div class="type-opt selected" onclick="selectType('consistencia',this)"><i class="ti ti-repeat"></i><div class="type-opt-name">Consistencia</div><div class="type-opt-desc">Repetir con frecuencia</div></div>
-            <div class="type-opt" onclick="selectType('hito',this)"><i class="ti ti-target"></i><div class="type-opt-name">Hito</div><div class="type-opt-desc">Lograr algo específico</div></div>
-            <div class="type-opt" onclick="selectType('resultado',this)"><i class="ti ti-trending-up"></i><div class="type-opt-name">Resultado</div><div class="type-opt-desc">Alcanzar un valor</div></div>
+          <label class="form-label">¿Qué estás creando?</label>
+          <div class="type-selector" style="grid-template-columns:repeat(2,1fr)">
+            <div class="type-opt selected" onclick="selectType('consistencia',this)"><i class="ti ti-repeat"></i><div class="type-opt-name">Hábito</div><div class="type-opt-desc">Acción repetida</div></div>
+            <div class="type-opt" onclick="selectType('hito',this)"><i class="ti ti-target"></i><div class="type-opt-name">Meta</div><div class="type-opt-desc">Resultado final</div></div>
           </div>
         </div>
         <div class="form-group">
@@ -1266,7 +1283,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         </div>
         <div class="modal-footer">
           <button class="btn-back" onclick="createStep(2)">← Atrás</button>
-          <button class="btn-create" onclick="createMeta()">Crear meta</button>
+          <button class="btn-create" onclick="createMeta()">Crear</button>
         </div>
       </div>
     </div>
@@ -1356,6 +1373,23 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 <div class="toast" id="toast"></div>
 
+
+/* UPGRADE 1.1 — separación real metas/hábitos + home compacto */
+@media (min-width:768px){
+  #page-home{gap:16px;padding-top:20px}
+  #page-home .stat-cards{grid-template-columns:1.15fr .85fr .85fr .85fr;gap:10px}
+  #page-home .scard-hero{padding:13px 16px;border-radius:16px}
+  #page-home .scard{padding:12px 15px;border-radius:16px}
+  #page-home .hero-big{font-size:28px}
+  #page-home .scard-val{font-size:25px}
+  #page-home .hero-week{margin-top:9px}
+}
+.habito-row .bar-fill{background:linear-gradient(90deg,var(--accent) 0%,var(--accent2) 100%)}
+.habito-row .bar-fill::after{box-shadow:0 0 0 2px var(--accent)}
+.meta-only-badge{background:var(--blue-soft)!important;color:var(--blue)!important}
+.habito-only-badge{background:var(--accent-soft)!important;color:var(--accent)!important}
+@media (max-width:767px){#page-habitos .stats-grid{grid-template-columns:1fr 1fr!important}}
+
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut as fbSignOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -1428,7 +1462,9 @@ function loadMetas(){
   });
 }
 
-function renderAll(){renderStats();renderMetasList();renderAllMetas();renderLogros();renderHeatmap();renderBarChart();renderDonut()}
+function isHabit(m){return m && (m.kind==='habito'||m.type==='consistencia')}
+function isMeta(m){return m && !isHabit(m)}
+function renderAll(){renderStats();renderMetasList();renderAllMetas();renderHabitos();renderLogros();renderHeatmap();renderBarChart();renderDonut()}
 
 function isCompletedToday(m){
   const t=today();
@@ -1601,8 +1637,10 @@ function calcWeekPct(){
 
 function renderStats(){
   const active=metas.filter(m=>!m.archived);
+  const activeHabits=active.filter(isHabit);
+  const activeGoals=active.filter(isMeta);
   const todayLabel=['D','L','M','X','J','V','S'][new Date().getDay()];
-  const dailyMetas=active.filter(m=>{
+  const dailyMetas=activeHabits.filter(m=>{
     if(m.type!=='consistencia')return false;
     if(m.freqType==='mensual')return false;
     const days=m.days||[];
@@ -1615,15 +1653,15 @@ function renderStats(){
   document.getElementById('scoreArc').setAttribute('stroke-dasharray',`${dash} ${circum}`);
   document.getElementById('scorePct').textContent=pct+'%';
   document.getElementById('scoreText').innerHTML=`${done}<span class="unit">/${total}</span>`;
-  document.getElementById('totalMetas').textContent=active.length;
-  document.getElementById('totalMetaSub').textContent=active.length?`${risk} en riesgo · ${archivedMetas.length} lograda${archivedMetas.length!==1?'s':''}`:'Sin metas todavía';
+  document.getElementById('totalMetas').textContent=activeGoals.length;
+  document.getElementById('totalMetaSub').textContent=activeGoals.length?`${activeHabits.length} hábitos activos · ${risk} en atención`:'Sin metas todavía';
   const streak=calcStreak();
   document.getElementById('streakVal').textContent=streak.current;
   document.getElementById('streakCard').innerHTML=`${streak.current}<span class="unit"> d</span>`;
   document.getElementById('streakMax').textContent=`Máx. histórico: ${streak.max} días`;
   const wp=calcWeekPct();
   document.getElementById('weekPct').innerHTML=wp!==null?`${wp}<span class="unit">%</span>`:'—';
-  document.getElementById('weekSub').textContent=wp!==null?'cumplimiento':'Registrá metas';
+  document.getElementById('weekSub').textContent=wp!==null?'cumplimiento hábitos':'Registrá hábitos';
   // Hero week dots
   const now=new Date(),dow=now.getDay();
   const ws=new Date(now);ws.setDate(now.getDate()-(dow===0?6:dow-1));
@@ -1640,8 +1678,8 @@ function renderStats(){
 function renderMetasList(){
   const list=document.getElementById('metasList');
   const head=document.getElementById('tableHead');
-  const active=metas.filter(m=>!m.archived);
-  if(!active.length){list.innerHTML='<div class="empty-state"><i class="ti ti-target"></i><p>Aún no tenés metas. ¡Creá tu primera!</p></div>';return}
+  const active=metas.filter(m=>!m.archived).filter(m=>isHabit(m)||isAtRisk(m));
+  if(!active.length){list.innerHTML='<div class="empty-state"><i class="ti ti-target"></i><p>No hay hábitos para hoy ni metas en atención</p></div>';return}
   const sorted=[...active].sort((a,b)=>{
     const ar=isAtRisk(a)?0:1,br=isAtRisk(b)?0:1;
     if(ar!==br)return ar-br;
@@ -1651,11 +1689,11 @@ function renderMetasList(){
   const vc=currentView==='compact'?'view-compact':currentView==='detail'?'view-detail':'view-semana';
   head.className=`table-head ${vc}`;
   if(currentView==='semana'){
-    head.innerHTML='<div class="th"></div><div class="th">Meta</div><div class="th" style="text-align:center">L</div><div class="th" style="text-align:center">M</div><div class="th" style="text-align:center">X</div><div class="th" style="text-align:center">J</div><div class="th" style="text-align:center">V</div><div class="th" style="text-align:center">S/D</div>';
+    head.innerHTML='<div class="th"></div><div class="th">Nombre</div><div class="th" style="text-align:center">L</div><div class="th" style="text-align:center">M</div><div class="th" style="text-align:center">X</div><div class="th" style="text-align:center">J</div><div class="th" style="text-align:center">V</div><div class="th" style="text-align:center">S/D</div>';
   }else if(currentView==='detail'){
-    head.innerHTML='<div class="th"></div><div class="th">Meta</div><div class="th">Progreso</div><div class="th">Estado</div>';
+    head.innerHTML='<div class="th"></div><div class="th">Nombre</div><div class="th">Progreso</div><div class="th">Estado</div>';
   }else{
-    head.innerHTML='<div class="th"></div><div class="th">Meta</div><div class="th">Progreso</div><div class="th">Esta semana</div><div class="th">Estado</div>';
+    head.innerHTML='<div class="th"></div><div class="th">Nombre</div><div class="th">Progreso</div><div class="th">Semana</div><div class="th">Estado</div>';
   }
   list.innerHTML=sorted.map((m,i)=>{
     const prevCat=i>0?sorted[i-1].category||'':'__never_matches__';
@@ -1672,9 +1710,10 @@ function renderMetasList(){
 function renderMetaRow(m,view){
   const prog=getProgress(m),risk=isAtRisk(m),isDone=prog.pct>=100,todayDone=isCompletedToday(m);
   const vc=`view-${view}`;
+  const habit=isHabit(m), goal=isMeta(m);
   const typeIconMap={consistencia:'ti-repeat',hito:'ti-target',resultado:'ti-trending-up'};
   const typeIcon=typeIconMap[m.type]||'ti-target';
-  const typeCls=m.type==='consistencia'?'c':m.type==='hito'?'h':'r';
+  const typeCls=habit?'c':'h';
   const typeSub=m.type==='consistencia'
     ?(m.freqType==='mensual'?`${m.freqMensual||1}×/mes`:`${m.freq||4}d`)
     :m.type==='hito'?`${prog.current}/${prog.total}`
@@ -1684,7 +1723,7 @@ function renderMetaRow(m,view){
     <div class="m-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
     <div class="m-type">
       ${catDot}
-      <span class="type-badge ${typeCls}"><i class="ti ${typeIcon}" style="font-size:9px"></i>${typeSub}</span>
+      <span class="type-badge ${habit?'habito-only-badge':'meta-only-badge'}"><i class="ti ${typeIcon}" style="font-size:9px"></i>${habit?'Hábito · ':''}${typeSub}</span>
     </div>
   </div>`;  let checkHtml='';
   if(m.type==='consistencia'){
@@ -1706,11 +1745,11 @@ function renderMetaRow(m,view){
   const weekHtml=m.type==='consistencia'?`<div class="dots">${getWeekDots(m).map(d=>`<div class="d ${d.cls}">${d.label}</div>`).join('')}</div>`:`<div style="font-size:10.5px;color:var(--t4)">—</div>`;
   const statusHtml=isDone?'<div class="status-done">✓ Lograda</div>':risk?'<div class="status-risk"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Atención</div>':'<div class="status-ok">Al día</div>';
   // nameCell defined above
-  if(view==='compact')return`<div class="meta-row ${vc} ${risk?'risk':''} ${isDone?'done':''}" onclick="openDetailModal('${m.id}')">${checkHtml}${nameCell}${progHtml}${weekHtml}${statusHtml}</div>`;
+  if(view==='compact')return`<div class="meta-row ${vc} ${habit?'habito-row':''} ${risk?'risk':''} ${isDone?'done':''}" onclick="openDetailModal('${m.id}')">${checkHtml}${nameCell}${progHtml}${weekHtml}${statusHtml}</div>`;
   if(view==='detail'){
-    const typeLabel=m.type==='consistencia'?'Consistencia':m.type==='hito'?'Hito':'Resultado';
+    const typeLabel=habit?'Hábito':'Meta';
     const why=m.why?`<div style="font-family:var(--font);font-style:normal;font-size:12px;color:var(--t2);margin-top:5px;border-left:2px solid var(--accent);padding-left:7px;line-height:1.5">${m.why}</div>`:'';
-    return`<div class="meta-row ${vc} ${risk?'risk':''} ${isDone?'done':''}" onclick="openDetailModal('${m.id}')">${checkHtml}<div><div class="m-name">${m.name}</div><div class="m-type">${catDot}<span class="type-badge ${typeCls}"><i class="ti ${typeIcon}" style="font-size:9px"></i> ${typeLabel}</span></div>${why}</div>${progHtml}${statusHtml}</div>`;
+    return`<div class="meta-row ${vc} ${risk?'risk':''} ${isDone?'done':''}" onclick="openDetailModal('${m.id}')">${checkHtml}<div><div class="m-name">${m.name}</div><div class="m-type">${catDot}<span class="type-badge ${habit?'habito-only-badge':'meta-only-badge'}"><i class="ti ${typeIcon}" style="font-size:9px"></i> ${typeLabel}</span></div>${why}</div>${progHtml}${statusHtml}</div>`;
   }
   if(view==='semana'){
     const dots=m.type==='consistencia'?getWeekDots(m):Array(6).fill({label:'·',cls:'no'});
@@ -1720,7 +1759,7 @@ function renderMetaRow(m,view){
 
 function renderAllMetas(){
   const list=document.getElementById('allMetasList');
-  const all=metas.filter(m=>!m.archived);
+  const all=metas.filter(m=>!m.archived).filter(isMeta);
   if(!all.length){list.innerHTML='<div class="empty-state"><i class="ti ti-target"></i><p>No tenés metas activas</p></div>';return}
   const sorted=[...all].sort((a,b)=>{
     const co={trading:0,musica:1,academia:2,personal:3,'':4};
@@ -1738,10 +1777,37 @@ function renderAllMetas(){
   }).join('');
 }
 
+function renderHabitos(){
+  const list=document.getElementById('habitosList');
+  const habits=metas.filter(m=>!m.archived).filter(isHabit);
+  const active=metas.filter(m=>!m.archived);
+  if(document.getElementById('habitosActivos')){
+    const t=today();
+    const todayLabel=['D','L','M','X','J','V','S'][new Date().getDay()];
+    const todayHabits=habits.filter(m=>{if(m.freqType==='mensual')return false;const days=m.days||[];return !days.length||days.includes(todayLabel)});
+    const doneToday=todayHabits.filter(m=>(m.completedDays||[]).includes(t)).length;
+    const wp=calcWeekPct();
+    const st=calcStreak();
+    document.getElementById('habitosActivos').textContent=habits.length;
+    document.getElementById('habitosHoy').textContent=`${doneToday}/${todayHabits.length}`;
+    document.getElementById('habitosSemana').innerHTML=wp!==null?`${wp}<span class="unit">%</span>`:'—';
+    document.getElementById('habitosRacha').innerHTML=`${st.current}<span class="unit"> d</span>`;
+  }
+  if(!list)return;
+  if(!habits.length){list.innerHTML='<div class="empty-state"><i class="ti ti-repeat"></i><p>No tenés hábitos activos</p></div>';return}
+  const sorted=[...habits].sort((a,b)=>{
+    const ar=isAtRisk(a)?0:1,br=isAtRisk(b)?0:1;
+    if(ar!==br)return ar-br;
+    const co={trading:0,musica:1,academia:2,personal:3,'':4};
+    return(co[a.category||'']??4)-(co[b.category||'']??4);
+  });
+  list.innerHTML=sorted.map(m=>renderMetaRow(m,'compact')).join('');
+}
+
 function renderLogros(){
   const list=document.getElementById('logrosList');
   if(!archivedMetas.length){list.innerHTML='<div class="empty-state"><i class="ti ti-trophy"></i><p>Todavía no hay logros archivados</p></div>';return}
-  list.innerHTML=archivedMetas.map(m=>`<div class="logro-card"><div class="logro-icon">🏆</div><div><div class="logro-name">${m.name}</div><div class="logro-meta">${m.type}</div></div><div class="logro-date">${m.archivedDate?formatDate(m.archivedDate):'—'}</div></div>`).join('');
+  list.innerHTML=archivedMetas.map(m=>`<div class="logro-card"><div class="logro-icon">🏆</div><div><div class="logro-name">${m.name}</div><div class="logro-meta">${isHabit(m)?'Hábito':'Meta'}</div></div><div class="logro-date">${m.archivedDate?formatDate(m.archivedDate):'—'}</div></div>`).join('');
 }
 
 function renderHeatmap(){
@@ -1768,18 +1834,17 @@ function renderBarChart(){
 function renderDonut(){
   const active=metas.filter(m=>!m.archived);
   const total=active.length;
-  const byType={consistencia:0,hito:0,resultado:0};
-  active.forEach(m=>byType[m.type]=(byType[m.type]||0)+1);
+  const byType={habito:0,meta:0};
+  active.forEach(m=>{if(isHabit(m))byType.habito++;else byType.meta++;});
   const circum=2*Math.PI*35;
   // Build segments
   const data=[
-    {type:'consistencia',color:'#3B82F6',count:byType.consistencia},
-    {type:'hito',color:'#E8703A',count:byType.hito},
-    {type:'resultado',color:'#22C55E',count:byType.resultado}
+    {type:'habito',color:'#E8703A',count:byType.habito},
+    {type:'meta',color:'#3B82F6',count:byType.meta}
   ];
   const donutSvg=document.getElementById('donutSvg');
   if(!donutSvg)return;
-  if(!total){donutSvg.innerHTML='<circle cx="45" cy="45" r="35" fill="none" stroke="#EDF0F5" stroke-width="12"/>';return;}
+  if(!total){donutSvg.innerHTML='<circle cx="45" cy="45" r="35" fill="none" stroke="#EDF0F5" stroke-width="12"/>';const legend=document.getElementById('donutLegend');if(legend)legend.innerHTML='<div class="donut-legend-item"><div class="donut-legend-dot" style="background:#E8703A"></div>Hábito <span style="color:var(--t4);margin-left:3px">0</span></div><div class="donut-legend-item"><div class="donut-legend-dot" style="background:#3B82F6"></div>Meta <span style="color:var(--t4);margin-left:3px">0</span></div>';return;}
   let offset=0;
   const segments=data.map(d=>{
     const pct=d.count/total;
@@ -1793,7 +1858,7 @@ function renderDonut(){
       `<circle cx="45" cy="45" r="35" fill="none" stroke="${s.color}" stroke-width="12" stroke-dasharray="${s.dash} ${circum}" stroke-dashoffset="${-s.offset}" transform="rotate(-90 45 45)" stroke-linecap="round"/>`
     ).join('');
   const legend=document.getElementById('donutLegend');
-  if(legend)legend.innerHTML=data.map(d=>`<div class="donut-legend-item"><div class="donut-legend-dot" style="background:${d.color}"></div>${d.type==='consistencia'?'Consistencia':d.type==='hito'?'Hito':'Resultado'} <span style="color:var(--t4);margin-left:3px">${d.count}</span></div>`).join('');
+  if(legend)legend.innerHTML=data.map(d=>`<div class="donut-legend-item"><div class="donut-legend-dot" style="background:${d.color}"></div>${d.type==='habito'?'Hábito':'Meta'} <span style="color:var(--t4);margin-left:3px">${d.count}</span></div>`).join('');
 }
 
 window.showPage=(page,el)=>{
@@ -1802,6 +1867,7 @@ window.showPage=(page,el)=>{
   document.getElementById(`page-${page}`).classList.add('active');
   el.classList.add('active');
   if(page==='metas')renderAllMetas();
+  if(page==='habitos')renderHabitos();
   // Restore topbar for non-noventa pages
   if(page!=='noventa'){
     const name=currentUser?(currentUser.displayName?currentUser.displayName.split(' ')[0]:'tú'):'';
@@ -1832,7 +1898,7 @@ window.toggleMetaCheck=async(id,e)=>{
   const m=metas.find(x=>x.id===id);
   if(!m)return;
 
-  // Consistencia: marca/desmarca el día actual.
+  // Hábito: marca/desmarca el día actual.
   if(m.type==='consistencia'){
     return toggleToday(id,e||{stopPropagation(){}});
   }
@@ -1869,6 +1935,7 @@ window.openCreateModal=()=>{
   selectedType='consistencia';selectedPeriod='mensual';
   document.querySelectorAll('.type-opt').forEach(o=>o.classList.remove('selected'));
   document.querySelector('[onclick*="consistencia"]').classList.add('selected');
+  const cmt=document.getElementById('createModalTitle');if(cmt)cmt.textContent='Nuevo hábito o meta';
   document.querySelectorAll('#catSelector .period-opt').forEach(o=>o.classList.remove('selected'));
   // Reset freq type to semanal
   const _fts=document.getElementById('freqTypeSelector');
@@ -1885,7 +1952,7 @@ window.openCreateModal=()=>{
 };
 window.closeCreateModal=()=>{
   document.getElementById('createModal').classList.remove('open');
-  if(window._editingMetaId){window._editingMetaId=null;document.querySelector('.btn-create').textContent='Crear meta';}
+  if(window._editingMetaId){window._editingMetaId=null;document.querySelector('.btn-create').textContent='Crear';}
 };
 
 window.createStep=(n)=>{
@@ -1893,7 +1960,7 @@ window.createStep=(n)=>{
     document.getElementById(`createStep${i}`).style.display=i===n?'block':'none';
     document.getElementById(`step${i}dot`).classList.toggle('active',i<=n);
   });
-  if(n===2) ['consistencia','hito','resultado'].forEach(t=>{document.getElementById(`s2-${t}`).style.display=t===selectedType?'block':'none'});
+  if(n===2){['consistencia','hito','resultado'].forEach(t=>{const el=document.getElementById(`s2-${t}`);if(el)el.style.display=(selectedType==='consistencia'?t==='consistencia':t==='hito')?'block':'none'});}
 };
 
 window.selectType=(type,el)=>{
@@ -1986,7 +2053,7 @@ window.createMeta=async()=>{
     if(cv)startDate=cv;
   }
 
-  const meta={name,type:selectedType,why:document.getElementById('metaWhy').value.trim(),category:selectedCat,createdAt:new Date().toISOString(),startDate,completedDays:[],archived:false};
+  const meta={name,type:selectedType,kind:selectedType==='consistencia'?'habito':'meta',why:document.getElementById('metaWhy').value.trim(),category:selectedCat,createdAt:new Date().toISOString(),startDate,completedDays:[],archived:false};
   if(selectedType==='consistencia'){
     const freqTypeSel=document.querySelector('#freqTypeSelector .period-opt.selected');
     const freqType=freqTypeSel?freqTypeSel.dataset.freqtype:'semanal';
@@ -2015,22 +2082,22 @@ window.createMeta=async()=>{
     let editStartDate=today();
     if(startType2==='next'){const d=new Date();d.setDate(d.getDate()+(8-d.getDay())%7||7);editStartDate=d.toISOString().split('T')[0];}
     else if(startType2==='custom'){const cv=document.getElementById('metaStartDate').value;if(cv)editStartDate=cv;}
-    const update={name,why:document.getElementById('metaWhy').value.trim(),category:selectedCat,startDate:editStartDate};
-    if(selectedType==='consistencia'){update.freq=parseInt(document.getElementById('freqVal').textContent);update.days=[...document.querySelectorAll('#daySelector .period-opt.selected')].map(o=>o.dataset.day);}
+    const update={name,type:selectedType,kind:selectedType==='consistencia'?'habito':'meta',why:document.getElementById('metaWhy').value.trim(),category:selectedCat,startDate:editStartDate};
+    if(selectedType==='consistencia'){const fts=document.querySelector('#freqTypeSelector .period-opt.selected');const ft=fts?fts.dataset.freqtype:'semanal';update.freqType=ft;if(ft==='mensual'){update.freqMensual=parseInt(document.getElementById('freqMensualVal').textContent)||1;update.freq=update.freqMensual;update.days=[];update.endDate=document.getElementById('metaEndDate').value||null;}else{update.freq=parseInt(document.getElementById('freqVal').textContent);update.days=[...document.querySelectorAll('#daySelector .period-opt.selected')].map(o=>o.dataset.day);}}
     else if(selectedType==='hito'){update.subtasks=subtasks.map(s=>({...s}));update.deadline=document.getElementById('metaDeadline').value||null;}
     else{update.target=parseFloat(document.getElementById('metaTarget').value)||0;update.unit=document.getElementById('metaUnit').value.trim();update.period=selectedPeriod;}
     await updateDoc(doc(db,'users',currentUser.uid,'metas',window._editingMetaId),update);
     window._editingMetaId=null;
-    document.querySelector('.btn-create').textContent='Crear meta';
-    closeCreateModal();showToast('Meta actualizada ✓');
+    document.querySelector('.btn-create').textContent='Crear';
+    closeCreateModal();showToast((selectedType==='consistencia'?'Hábito':'Meta')+' actualizado ✓');
     return;
   }
   await addDoc(collection(db,'users',currentUser.uid,'metas'),meta);
-  closeCreateModal();showToast('Meta creada 🎯');
+  closeCreateModal();showToast(selectedType==='consistencia'?'Hábito creado 🔁':'Meta creada 🎯');
 };
 
 window.deleteMeta=async(id)=>{
-  if(!confirm('¿Eliminar esta meta? No se puede deshacer.'))return;
+  if(!confirm('¿Eliminar este elemento? No se puede deshacer.'))return;
   await deleteDoc(doc(db,'users',currentUser.uid,'metas',id));
   closeDetailModal();showToast('Meta eliminada');
 };
@@ -2039,14 +2106,14 @@ window.openEditMeta=(id)=>{
   const m=metas.find(x=>x.id===id);if(!m)return;
   closeDetailModal();
   subtasks=m.subtasks?m.subtasks.map(s=>({...s})):[];
-  selectedType=m.type;selectedPeriod=m.period||'mensual';selectedCat=m.category||'';
+  selectedType=isHabit(m)?'consistencia':(m.type==='resultado'?'resultado':'hito');selectedPeriod=m.period||'mensual';selectedCat=m.category||'';
   document.getElementById('metaName').value=m.name||'';
   document.getElementById('metaWhy').value=m.why||'';
   document.getElementById('freqVal').textContent=m.freq||4;
   if(m.type==='resultado'){document.getElementById('metaTarget').value=m.target||'';document.getElementById('metaUnit').value=m.unit||'';}
   if(m.type==='hito'&&m.deadline)document.getElementById('metaDeadline').value=m.deadline;
   document.querySelectorAll('.type-opt').forEach(o=>o.classList.remove('selected'));
-  document.querySelectorAll('.type-opt').forEach(o=>{if(o.getAttribute('onclick')&&o.getAttribute('onclick').includes(`'${m.type}'`))o.classList.add('selected')});
+  document.querySelectorAll('.type-opt').forEach(o=>{const oc=o.getAttribute('onclick')||'';if(isHabit(m)&&oc.includes(`'consistencia'`))o.classList.add('selected');if(!isHabit(m)&&oc.includes(`'hito'`))o.classList.add('selected');});
   document.querySelectorAll('#catSelector .period-opt').forEach(o=>o.classList.toggle('selected',o.dataset.cat===m.category));
   // Restore freqType selector for consistencia
   if(m.type==='consistencia'){
@@ -2082,6 +2149,7 @@ window.openEditMeta=(id)=>{
   window._editingMetaId=id;
   createStep(1);
   document.getElementById('createModal').classList.add('open');
+  const cmt=document.getElementById('createModalTitle');if(cmt)cmt.textContent=isHabit(m)?'Editar hábito':'Editar meta';
   setTimeout(()=>{document.querySelector('.btn-create').textContent='Guardar cambios';},50);
 };
 
@@ -2097,7 +2165,7 @@ function renderDetailModal(m){
   const band=document.getElementById('detailHeaderBand');
   const notStarted=m.startDate&&m.startDate>today();
   band.className='detail-header-band'+(notStarted?' orange':risk?' orange':prog.pct>=100?' green':'');
-  document.getElementById('detailBadge').textContent=(m.type==='consistencia'?'🔁 Consistencia':m.type==='hito'?'🎯 Hito':'📈 Resultado')+(notStarted?` · Empieza ${formatDate(m.startDate)}`:'')+(risk?' · ⚠️ Atención':'');
+  document.getElementById('detailBadge').textContent=(isHabit(m)?'🔁 Hábito':'🎯 Meta')+(notStarted?` · Empieza ${formatDate(m.startDate)}`:'')+(risk?' · ⚠️ Atención':'');
   document.getElementById('detailTitle').textContent=m.name;
   document.getElementById('detailProgressFill').style.width=prog.pct+'%';
   document.getElementById('detailProgressRight').textContent=prog.pct+'%';
