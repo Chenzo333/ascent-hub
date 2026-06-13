@@ -829,8 +829,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="nav-item active" onclick="showPage('home',this)"><i class="ti ti-home"></i> Inicio</div>
       <div class="nav-item" onclick="showPage('habitos',this)"><i class="ti ti-repeat"></i> Hábitos</div>
       <div class="nav-item" onclick="showPage('metas',this)"><i class="ti ti-target"></i> Mis metas</div>
-      <div class="nav-item" onclick="showPage('listas',this)"><i class="ti ti-list"></i> Listas</div>
       <div class="nav-item" onclick="showPage('noventa',this)"><i class="ti ti-layout-columns"></i> 90's</div>
+      <div class="nav-item" onclick="showPage('listas',this)"><i class="ti ti-list"></i> Listas</div>
       <div class="nav-item" onclick="showPage('vision',this)"><i class="ti ti-eye"></i> Visión</div>
       <div class="nav-item" onclick="showPage('notas',this)"><i class="ti ti-notebook"></i> Notas</div>
       <div class="nav-item" onclick="showPage('stats',this)"><i class="ti ti-chart-bar"></i> Estadísticas</div>
@@ -1380,7 +1380,7 @@ const db=getFirestore(app);
 let currentUser=null,metas=[],archivedMetas=[],currentView='compact',currentMetaId=null,closingMetaId=null;
 let selectedType='consistencia',selectedPeriod='mensual',selectedCat='',subtasks=[],unsubMetas=null;
 
-function today(){return new Date().toISOString().split('T')[0]}
+function today(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function greeting(){const h=new Date().getHours();return h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches'}
 function formatDate(d){return new Date(d).toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'})}
 function capitalize(s){return s.charAt(0).toUpperCase()+s.slice(1)}
@@ -1771,11 +1771,7 @@ function renderMetaRow(m,view){
     ?(m.freqType==='mensual'?`${m.freqMensual||1}×/mes`:`${m.freq||4}d`)
     :m.type==='hito'?`${prog.current}/${prog.total}`
     :`${m.unit||''}`;
-  const catDot=m.category?`<div class="cat-dot ${catDotClass(m.category)}" title="${m.category}"></div>`:'';
-  const nameCell=`<div style="min-width:0">
-    <div class="m-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
-    <div class="m-type">${catDot}</div>
-  </div>`;  let checkHtml='';
+  const nameCell=`<div style="min-width:0"><div class="m-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div></div>`;  let checkHtml='';
   if(m.type==='consistencia'){
     if(todayDone)checkHtml=`<div class="check-c done" onclick="toggleToday('${m.id}',event)"><i class="ti ti-check"></i></div>`;
     else if(risk)checkHtml=`<div class="check-c warn" onclick="toggleToday('${m.id}',event)"><i class="ti ti-alert-triangle"></i></div>`;
@@ -1794,8 +1790,8 @@ function renderMetaRow(m,view){
   const progHtml=`<div class="prog-wrap"><div class="prog-labels"><span>${prgLabel}</span><span class="pval ${pvalCls}">${prog.pct}%</span></div><div class="bar-track"><div class="bar-fill ${prgCls} ${isDone?'full':''}" style="width:${prog.pct}%"></div></div></div>`;
   const weekHtml=m.type==='consistencia'?`<div class="dots">${getWeekDots(m).map(d=>`<div class="d ${d.cls}">${d.label}</div>`).join('')}</div>`:`<div style="font-size:10.5px;color:var(--t4)">—</div>`;
   const statusHtml=isDone?'<div class="status-done">✓ Lograda</div>':risk?'<div class="status-risk"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Atención</div>':'<div class="status-ok">Al día</div>';
-  const typeBadgeHtml=`<span class="type-badge ${typeCls}" style="margin-bottom:3px"><i class="ti ${typeIcon}" style="font-size:9px"></i>${typeSub}</span>`;
-  const statusWithBadge=`<div style="display:flex;flex-direction:column;gap:3px">${typeBadgeHtml}${statusHtml}</div>`;
+  const typeBadgeHtml=`<span class="type-badge ${typeCls}"><i class="ti ${typeIcon}" style="font-size:9px"></i>${typeSub}</span>`;
+  const statusWithBadge=`<div style="display:flex;align-items:center;gap:7px">${typeBadgeHtml}${statusHtml}</div>`;
   // nameCell defined above
   if(view==='compact')return`<div class="meta-row ${vc} ${risk?'risk':''} ${isDone?'done':''}" onclick="openDetailModal('${m.id}')">${checkHtml}${nameCell}${progHtml}${weekHtml}${statusWithBadge}</div>`;
   if(view==='detail'){
@@ -2858,12 +2854,34 @@ function renderListaContent(id){
 }
 
 function renderListaItem(listaId,item,idx){
-  return`<div style="display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid var(--border2)">
+  return`<div class="lista-item" draggable="true" data-idx="${idx}"
+    ondragstart="listaDragStart(event,${idx})"
+    ondragover="listaDragOver(event)"
+    ondrop="listaDrop(event,'${listaId}',${idx})"
+    ondragend="listaDragEnd(event)"
+    style="display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid var(--border2);cursor:grab;transition:background 0.1s">
+    <i class="ti ti-grip-vertical" style="font-size:13px;color:var(--t4);flex-shrink:0"></i>
     <div style="flex:1;font-size:13px;color:var(--t1);${item.done?'text-decoration:line-through;color:var(--t3)':''}">${item.text}</div>
     <button onclick="convertirComoMeta('${listaId}',${idx})" title="Crear como meta" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;color:var(--t3);font-family:var(--font);display:flex;align-items:center;gap:4px"><i class="ti ti-target" style="font-size:11px"></i> Crear meta</button>
     <button onclick="deleteListaItem('${listaId}',${idx})" style="background:none;border:none;cursor:pointer;color:var(--t4);font-size:14px"><i class="ti ti-x"></i></button>
   </div>`;
 }
+
+let _dragIdx=null;
+window.listaDragStart=(e,idx)=>{_dragIdx=idx;e.currentTarget.style.opacity='0.4';};
+window.listaDragEnd=(e)=>{e.currentTarget.style.opacity='';document.querySelectorAll('.lista-item').forEach(el=>el.style.background='');};
+window.listaDragOver=(e)=>{e.preventDefault();e.currentTarget.style.background='var(--bg2)';};
+window.listaDrop=async(e,listaId,toIdx)=>{
+  e.preventDefault();
+  if(_dragIdx===null||_dragIdx===toIdx)return;
+  const lista=listas.find(l=>l.id===listaId);
+  if(!lista)return;
+  const items=[...(lista.items||[])];
+  const [moved]=items.splice(_dragIdx,1);
+  items.splice(toIdx,0,moved);
+  _dragIdx=null;
+  await updateDoc(doc(db,'users',currentUser.uid,'listas',listaId),{items});
+};
 
 window.addListaItem=async(listaId)=>{
   const input=document.getElementById('newListaItem');
