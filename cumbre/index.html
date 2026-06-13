@@ -120,8 +120,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .metas-table{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--shadow-md)}
 .table-head{display:grid;padding:11px 22px;border-bottom:1px solid var(--border2);background:rgba(0,0,0,0.012)}
 .table-head.view-compact{grid-template-columns:40px 260px 1fr 190px 100px;column-gap:16px}
-.table-head.view-habitos{grid-template-columns:40px 280px 1fr 130px 160px;column-gap:16px}
-.meta-row.view-habitos{grid-template-columns:40px 280px 1fr 130px 160px;column-gap:16px;padding:10px 22px}
+.table-head.view-habitos{grid-template-columns:40px 260px 1fr 190px 180px;column-gap:16px}
+.meta-row.view-habitos{grid-template-columns:40px 260px 1fr 190px 180px;column-gap:16px;padding:10px 22px}
 #habitosTable .metas-table{margin-bottom:0}
 .table-head.view-detail{grid-template-columns:40px 260px 1fr 100px;column-gap:16px}
 .table-head.view-semana{grid-template-columns:40px 220px 48px 48px 48px 48px 48px 48px;column-gap:8px}
@@ -131,8 +131,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .meta-row.view-compact{grid-template-columns:40px 260px 1fr 190px 100px;column-gap:16px}
 .meta-row.view-detail{grid-template-columns:40px 260px 1fr 100px;column-gap:16px}
 .meta-row.view-semana{grid-template-columns:40px 220px 48px 48px 48px 48px 48px 48px;column-gap:8px}
-.meta-row::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:0;border-radius:0 3px 3px 0;background:var(--accent);transition:height 0.18s ease;pointer-events:none}
-.meta-row:hover::before{height:28px}.meta-row.risk::before{height:28px;background:var(--accent)}
+.meta-row::before{display:none}
+.meta-row:hover::before{display:none}.meta-row.risk::before{display:none}
 .meta-row.risk{background:rgba(232,112,58,0.018)}.meta-row.done{opacity:0.42}
 .check-c{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;transition:all 0.18s;cursor:pointer;background:white;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
 .check-c:hover{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
@@ -210,34 +210,34 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* DETAIL MODAL */
 .detail-modal{width:640px}
-.detail-header-band{background:var(--blue);padding:24px 28px 22px;border-radius:22px 22px 0 0;position:relative;overflow:hidden}
+.detail-header-band{background:var(--blue);padding:16px 22px 14px;border-radius:22px 22px 0 0;position:relative;overflow:hidden}
 .detail-header-band::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 70%);pointer-events:none}
 .detail-header-band.orange{background:var(--accent)}.detail-header-band.green{background:var(--green)}
-.detail-back{display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,0.7);cursor:pointer;margin-bottom:14px;width:fit-content;border:none;background:none;font-family:var(--font);transition:color 0.1s}
+.detail-back{display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,0.7);cursor:pointer;margin-bottom:8px;width:fit-content;border:none;background:none;font-family:var(--font);transition:color 0.1s}
 .detail-back:hover{color:white}
-.detail-meta-badge{font-size:10px;font-weight:600;color:rgba(255,255,255,0.7);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
-.detail-meta-title{font-size:22px;font-weight:600;color:white;letter-spacing:-0.4px;margin-bottom:16px}
-.detail-progress-bar{height:4px;background:rgba(255,255,255,0.25);border-radius:4px;overflow:hidden}
+.detail-meta-badge{font-size:10px;font-weight:600;color:rgba(255,255,255,0.7);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
+.detail-meta-title{font-size:17px;font-weight:600;color:white;letter-spacing:-0.3px;margin-bottom:10px}
+.detail-progress-bar{height:3px;background:rgba(255,255,255,0.25);border-radius:4px;overflow:hidden}
 .detail-progress-fill{height:100%;background:white;border-radius:4px;transition:width 0.5s}
-.detail-progress-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.7);margin-top:7px}
-.detail-body{padding:20px 28px 28px;display:flex;flex-direction:column;gap:16px}
-.why-section{background:var(--bg);border-radius:var(--rsm);border:1px solid rgba(0,0,0,0.06);overflow:hidden}
-.why-toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none;transition:background 0.1s}
-.why-toggle:hover{background:rgba(0,0,0,0.02)}
-.why-toggle-left{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--t2)}.why-toggle i{font-size:15px;color:var(--accent)}
-.why-content{display:none;padding:12px 14px;border-top:1px solid rgba(0,0,0,0.05)}.why-content.open{display:block}
-.why-text{font-family:var(--font);font-style:normal;font-size:13px;color:var(--t2);line-height:1.6}
-.why-empty{font-size:12px;color:var(--t3);font-style:normal}
-.cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.detail-progress-labels{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.7);margin-top:5px}
+.detail-body{padding:14px 22px 18px;display:flex;flex-direction:column;gap:10px}
+.cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .cal-title{font-size:12px;font-weight:600;color:var(--t2)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cal-day-name{font-size:9px;font-weight:600;color:var(--t4);text-align:center;padding:4px 0;letter-spacing:0.04em}
-.cal-day{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;transition:all 0.12s;color:var(--t3)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-day-name{font-size:9px;font-weight:600;color:var(--t4);text-align:center;padding:3px 0;letter-spacing:0.04em}
+.cal-day{height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;transition:all 0.12s;color:var(--t3)}
 .cal-day:hover{background:var(--border2)}.cal-day.done{background:var(--blue);color:white}
 .cal-day.missed{background:var(--red-soft);color:var(--red)}.cal-day.today-empty{border:1.5px solid var(--blue);color:var(--blue);font-weight:600}
 .cal-day.today-done{background:var(--blue);color:white;border:2.5px solid rgba(59,130,246,0.3)}.cal-day.future{opacity:0.2;cursor:default}
-.mark-today-btn{width:100%;background:var(--accent);color:white;border:none;border-radius:var(--rsm);padding:13px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.12s,transform 0.1s}
-.mark-today-btn:hover{opacity:0.9;transform:translateY(-1px)}.mark-today-btn.done{background:var(--green)}
+.mark-today-btn{width:100%;background:var(--accent);color:white;border:none;border-radius:var(--rsm);padding:10px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.12s}
+.mark-today-btn:hover{opacity:0.9}.mark-today-btn.done{background:var(--green)}
+.why-section{background:var(--bg);border-radius:var(--rsm);border:1px solid rgba(0,0,0,0.06);overflow:hidden}
+.why-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none;transition:background 0.1s}
+.why-toggle:hover{background:rgba(0,0,0,0.02)}
+.why-toggle-left{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--t2)}.why-toggle i{font-size:15px;color:var(--accent)}
+.why-content{display:none;padding:10px 14px;border-top:1px solid rgba(0,0,0,0.05)}.why-content.open{display:block}
+.why-text{font-family:var(--font);font-style:normal;font-size:13px;color:var(--t2);line-height:1.6}
+.why-empty{font-size:12px;color:var(--t3);font-style:normal}
 .notes-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
 .note-item{background:var(--bg);border-radius:var(--rsm);padding:10px 13px;border:1px solid rgba(0,0,0,0.05)}
 .note-date{font-size:9.5px;color:var(--t4);margin-bottom:4px;letter-spacing:0.04em}
@@ -829,6 +829,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="nav-item active" onclick="showPage('home',this)"><i class="ti ti-home"></i> Inicio</div>
       <div class="nav-item" onclick="showPage('habitos',this)"><i class="ti ti-repeat"></i> Hábitos</div>
       <div class="nav-item" onclick="showPage('metas',this)"><i class="ti ti-target"></i> Mis metas</div>
+      <div class="nav-item" onclick="showPage('listas',this)"><i class="ti ti-list"></i> Listas</div>
       <div class="nav-item" onclick="showPage('noventa',this)"><i class="ti ti-layout-columns"></i> 90's</div>
       <div class="nav-item" onclick="showPage('vision',this)"><i class="ti ti-eye"></i> Visión</div>
       <div class="nav-item" onclick="showPage('notas',this)"><i class="ti ti-notebook"></i> Notas</div>
@@ -1098,6 +1099,16 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
             <p>Todavía no hay disciplinas de 90 días.<br>Creá una para empezar a trackear.</p>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- LISTAS -->
+    <div id="page-listas" class="page">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="listasTabBar">
+        <button onclick="openNewListaModal()" style="padding:7px 14px;border:1.5px dashed var(--border);border-radius:20px;background:none;font-family:var(--font);font-size:12px;color:var(--t3);cursor:pointer;display:flex;align-items:center;gap:5px"><i class="ti ti-plus"></i> Nueva lista</button>
+      </div>
+      <div id="listaContent">
+        <div class="empty-state"><i class="ti ti-list"></i><p>Creá tu primera lista para empezar</p></div>
       </div>
     </div>
 
@@ -1633,18 +1644,17 @@ function renderHabitosList(){
 function renderHabitoRow(m){
   const risk=isAtRisk(m),todayDone=isCompletedToday(m);
   const prog=getProgress(m);
-  const streak=calcHabitoStreak(m);
   let checkHtml='';
   if(todayDone)checkHtml=`<div class="check-c done" onclick="event.stopPropagation();toggleToday('${m.id}',event)"><i class="ti ti-check"></i></div>`;
   else if(risk)checkHtml=`<div class="check-c warn" onclick="event.stopPropagation();toggleToday('${m.id}',event)"><i class="ti ti-alert-triangle"></i></div>`;
   else checkHtml=`<div class="check-c" onclick="event.stopPropagation();toggleToday('${m.id}',event)"></div>`;
   const dots=getWeekDots(m);
-  const weekDots=`<div style="display:flex;gap:4px;align-items:center">${dots.map(d=>{
-    const isInactive=d.cls==='inactive';
+  const weekDots=`<div style="display:flex;gap:5px;align-items:center">${dots.map(d=>{
     const isDone=d.cls==='ok';
     const isWarn=d.cls==='wnow';
     const isNow=d.cls==='now';
-    const dotStyle=isDone?'background:#3B82F6;border-color:#3B82F6':isWarn?'border-color:#E8703A;border-style:dashed;background:transparent':isNow?'border-color:#3B82F6;background:transparent':isInactive?'background:transparent;border-color:rgba(0,0,0,0.08);opacity:0.3':'';
+    const isInactive=d.cls==='inactive';
+    const dotStyle=isDone?'background:#3B82F6;border-color:#3B82F6':isWarn?'border-color:#E8703A;border-style:dashed;background:transparent':isNow?'border-color:#3B82F6;background:transparent':isInactive?'background:transparent;border-color:rgba(0,0,0,0.08);opacity:0.3':'border-color:rgba(0,0,0,0.12);background:transparent';
     const labelColor=isDone?'color:#3B82F6':isWarn?'color:#E8703A':isNow?'color:#3B82F6;font-weight:600':isInactive?'opacity:0.3':'color:var(--t3)';
     const checkIcon=isDone?`<i class="ti ti-check" style="font-size:9px;color:white"></i>`:'';
     return`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer" onclick="event.stopPropagation();toggleHabitoDay('${m.id}','${d.dStr}',this)">
@@ -1652,10 +1662,30 @@ function renderHabitoRow(m){
       <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;${dotStyle}">${checkIcon}</div>
     </div>`;
   }).join('')}</div>`;
-  const rachaHtml=`<div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:12px;font-weight:500;color:var(--accent)"><i class="ti ti-flame" style="font-size:10px"></i> ${streak}d</span><span style="font-size:11px;color:var(--blue)">${prog.pct}% sem.</span></div>`;
+  const weekPct=prog.pct;
+  const cumplPct=(()=>{
+    const now=new Date(),dow=now.getDay();
+    const ws=new Date(now);ws.setDate(now.getDate()-(dow===0?6:dow-1));ws.setHours(12,0,0,0);
+    const days=m.completedDays||[];
+    let done=0,total=0;
+    const metaDays=m.days||[];
+    const labels=['L','M','X','J','V','S','D'];
+    for(let i=0;i<7;i++){
+      const d=new Date(ws);d.setDate(ws.getDate()+i);d.setHours(12,0,0,0);
+      const label=labels[i];
+      const isActive=!metaDays.length||metaDays.includes(label);
+      if(!isActive)continue;
+      total++;
+      if(days.includes(d.toISOString().split('T')[0]))done++;
+    }
+    return total?Math.round(done/total*100):0;
+  })();
+  const rachaHtml=`<div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:13px;font-weight:600;color:var(--blue)">${cumplPct}%</span><span style="font-size:10px;color:var(--t3)">esta semana</span></div>`;
   const freqLabel=m.freqType==='mensual'?`${m.freqMensual||1}×/mes`:`${m.freq||4}×/sem`;
-  const statusHtml=risk?`<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--t3)">${freqLabel}</span><div style="width:1px;height:11px;background:rgba(0,0,0,0.1)"></div><span style="font-size:11px;font-weight:500;color:var(--accent);display:flex;align-items:center;gap:3px"><i class="ti ti-alert-triangle" style="font-size:10px"></i> Atención</span></div>`:`<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--t3)">${freqLabel}</span><div style="width:1px;height:11px;background:rgba(0,0,0,0.1)"></div><span style="font-size:11px;font-weight:500;color:var(--green);display:flex;align-items:center;gap:3px"><i class="ti ti-check" style="font-size:10px"></i> Al día</span></div>`;
-  const nameCell=`<div style="min-width:0"><div class="m-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div></div>`;
+  const statusHtml=risk
+    ?`<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--t3)">${freqLabel}</span><div style="width:1px;height:11px;background:rgba(0,0,0,0.1)"></div><span style="font-size:11px;font-weight:500;color:var(--accent);display:flex;align-items:center;gap:3px"><i class="ti ti-alert-triangle" style="font-size:10px"></i> Atención</span></div>`
+    :`<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--t3)">${freqLabel}</span><div style="width:1px;height:11px;background:rgba(0,0,0,0.1)"></div><span style="font-size:11px;font-weight:500;color:var(--green);display:flex;align-items:center;gap:3px"><i class="ti ti-check" style="font-size:10px"></i> Al día</span></div>`;
+  const nameCell=`<div style="min-width:0"><div class="m-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px">${m.name}</div></div>`;
   return`<div class="meta-row view-habitos ${risk?'risk':''}" onclick="openDetailModal('${m.id}')">${checkHtml}${nameCell}${weekDots}${rachaHtml}${statusHtml}</div>`;
 }
 
@@ -1744,10 +1774,7 @@ function renderMetaRow(m,view){
   const catDot=m.category?`<div class="cat-dot ${catDotClass(m.category)}" title="${m.category}"></div>`:'';
   const nameCell=`<div style="min-width:0">
     <div class="m-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
-    <div class="m-type">
-      ${catDot}
-      <span class="type-badge ${typeCls}"><i class="ti ${typeIcon}" style="font-size:9px"></i>${typeSub}</span>
-    </div>
+    <div class="m-type">${catDot}</div>
   </div>`;  let checkHtml='';
   if(m.type==='consistencia'){
     if(todayDone)checkHtml=`<div class="check-c done" onclick="toggleToday('${m.id}',event)"><i class="ti ti-check"></i></div>`;
@@ -1767,8 +1794,10 @@ function renderMetaRow(m,view){
   const progHtml=`<div class="prog-wrap"><div class="prog-labels"><span>${prgLabel}</span><span class="pval ${pvalCls}">${prog.pct}%</span></div><div class="bar-track"><div class="bar-fill ${prgCls} ${isDone?'full':''}" style="width:${prog.pct}%"></div></div></div>`;
   const weekHtml=m.type==='consistencia'?`<div class="dots">${getWeekDots(m).map(d=>`<div class="d ${d.cls}">${d.label}</div>`).join('')}</div>`:`<div style="font-size:10.5px;color:var(--t4)">—</div>`;
   const statusHtml=isDone?'<div class="status-done">✓ Lograda</div>':risk?'<div class="status-risk"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Atención</div>':'<div class="status-ok">Al día</div>';
+  const typeBadgeHtml=`<span class="type-badge ${typeCls}" style="margin-bottom:3px"><i class="ti ${typeIcon}" style="font-size:9px"></i>${typeSub}</span>`;
+  const statusWithBadge=`<div style="display:flex;flex-direction:column;gap:3px">${typeBadgeHtml}${statusHtml}</div>`;
   // nameCell defined above
-  if(view==='compact')return`<div class="meta-row ${vc} ${risk?'risk':''} ${isDone?'done':''}" onclick="openDetailModal('${m.id}')">${checkHtml}${nameCell}${progHtml}${weekHtml}${statusHtml}</div>`;
+  if(view==='compact')return`<div class="meta-row ${vc} ${risk?'risk':''} ${isDone?'done':''}" onclick="openDetailModal('${m.id}')">${checkHtml}${nameCell}${progHtml}${weekHtml}${statusWithBadge}</div>`;
   if(view==='detail'){
     const typeLabel=m.type==='consistencia'?'Consistencia':m.type==='hito'?'Hito':'Resultado';
     const why=m.why?`<div style="font-family:var(--font);font-style:normal;font-size:12px;color:var(--t2);margin-top:5px;border-left:2px solid var(--accent);padding-left:7px;line-height:1.5">${m.why}</div>`:'';
@@ -1782,7 +1811,7 @@ function renderMetaRow(m,view){
 
 function renderAllMetas(){
   const list=document.getElementById('allMetasList');
-  const all=metas.filter(m=>!m.archived);
+  const all=metas.filter(m=>!m.archived&&m.type!=='consistencia');
   if(!all.length){list.innerHTML='<div class="empty-state"><i class="ti ti-target"></i><p>No tenés metas activas</p></div>';return}
   const sorted=[...all].sort((a,b)=>{
     const co={trading:0,musica:1,academia:2,personal:3,'':4};
@@ -2732,6 +2761,7 @@ window.showPage=(page,el)=>{
   if(page==='notas'&&currentUser&&!unsubNotas)loadNotas();
   if(page==='ajustes')renderCatManageList();
   if(page==='habitos')renderAllHabitosList();
+  if(page==='listas'){loadListas();if(listas.length&&!currentListaId)currentListaId=listas[0].id;}
   if(page==='stats'){renderHeatmap();renderBarChart();renderDonut();renderLogros();}
   if(page==='noventa'){
     document.getElementById('topbarTitle').textContent='90s';
@@ -2778,7 +2808,104 @@ window.openCreateHabitoModal=()=>{
   if(cOpt)cOpt.classList.add('selected');
 };
 
-// ── CATEGORÍAS PERSONALIZADAS ──
+// ── LISTAS ──
+let listas=[];
+let currentListaId=null;
+let unsubListas=null;
+
+function loadListas(){
+  if(!currentUser||unsubListas)return;
+  unsubListas=onSnapshot(collection(db,'users',currentUser.uid,'listas'),snap=>{
+    listas=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderListasTabBar();
+    if(currentListaId)renderListaContent(currentListaId);
+    else if(listas.length)renderListaContent(listas[0].id);
+  });
+}
+
+function renderListasTabBar(){
+  const bar=document.getElementById('listasTabBar');
+  if(!bar)return;
+  const tabs=listas.map(l=>`<button onclick="selectLista('${l.id}')" style="padding:7px 14px;border-radius:20px;font-family:var(--font);font-size:12px;cursor:pointer;transition:all 0.12s;${currentListaId===l.id?'background:var(--t1);color:white;border:1.5px solid var(--t1)':'background:none;border:1.5px solid var(--border);color:var(--t2)'}">${l.name}</button>`).join('');
+  bar.innerHTML=tabs+`<button onclick="openNewListaModal()" style="padding:7px 14px;border:1.5px dashed var(--border);border-radius:20px;background:none;font-family:var(--font);font-size:12px;color:var(--t3);cursor:pointer;display:flex;align-items:center;gap:5px"><i class="ti ti-plus"></i> Nueva lista</button>`;
+}
+
+window.selectLista=(id)=>{
+  currentListaId=id;
+  renderListasTabBar();
+  renderListaContent(id);
+};
+
+function renderListaContent(id){
+  const lista=listas.find(l=>l.id===id);
+  const el=document.getElementById('listaContent');
+  if(!lista||!el)return;
+  const items=lista.items||[];
+  el.innerHTML=`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--shadow-md)">
+      <div style="padding:14px 20px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:15px;font-weight:600;color:var(--t1)">${lista.name}</div>
+        <button onclick="deleteListaConfirm('${id}')" style="background:none;border:none;cursor:pointer;color:var(--t4);font-size:14px"><i class="ti ti-trash"></i></button>
+      </div>
+      <div id="listaItems">
+        ${items.length?items.map((item,i)=>renderListaItem(id,item,i)).join(''):'<div class="empty-state" style="padding:32px 20px"><i class="ti ti-note"></i><p>Lista vacía. Agregá tu primer ítem.</p></div>'}
+      </div>
+      <div style="padding:12px 20px;border-top:1px solid var(--border2);display:flex;gap:8px">
+        <input id="newListaItem" class="form-input" placeholder="Agregar ítem..." style="flex:1" onkeydown="if(event.key==='Enter')addListaItem('${id}')">
+        <button onclick="addListaItem('${id}')" class="btn-next" style="flex:none;padding:10px 16px">Agregar</button>
+      </div>
+    </div>`;
+}
+
+function renderListaItem(listaId,item,idx){
+  return`<div style="display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid var(--border2)">
+    <div style="flex:1;font-size:13px;color:var(--t1);${item.done?'text-decoration:line-through;color:var(--t3)':''}">${item.text}</div>
+    <button onclick="convertirComoMeta('${listaId}',${idx})" title="Crear como meta" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;color:var(--t3);font-family:var(--font);display:flex;align-items:center;gap:4px"><i class="ti ti-target" style="font-size:11px"></i> Crear meta</button>
+    <button onclick="deleteListaItem('${listaId}',${idx})" style="background:none;border:none;cursor:pointer;color:var(--t4);font-size:14px"><i class="ti ti-x"></i></button>
+  </div>`;
+}
+
+window.addListaItem=async(listaId)=>{
+  const input=document.getElementById('newListaItem');
+  const text=input?.value?.trim();
+  if(!text)return;
+  const lista=listas.find(l=>l.id===listaId);
+  const items=[...(lista?.items||[]),{text,done:false,createdAt:new Date().toISOString()}];
+  await updateDoc(doc(db,'users',currentUser.uid,'listas',listaId),{items});
+  input.value='';
+};
+
+window.deleteListaItem=async(listaId,idx)=>{
+  const lista=listas.find(l=>l.id===listaId);
+  const items=[...(lista?.items||[])];
+  items.splice(idx,1);
+  await updateDoc(doc(db,'users',currentUser.uid,'listas',listaId),{items});
+};
+
+window.convertirComoMeta=async(listaId,idx)=>{
+  const lista=listas.find(l=>l.id===listaId);
+  const item=lista?.items?.[idx];
+  if(!item)return;
+  openCreateModal();
+  setTimeout(()=>{
+    const nameInput=document.getElementById('metaName');
+    if(nameInput)nameInput.value=item.text;
+  },100);
+  showToast('Completá los detalles de la meta');
+};
+
+window.deleteListaConfirm=async(id)=>{
+  if(!confirm('¿Eliminar esta lista?'))return;
+  await deleteDoc(doc(db,'users',currentUser.uid,'listas',id));
+  currentListaId=null;
+  showToast('Lista eliminada');
+};
+
+window.openNewListaModal=()=>{
+  const name=prompt('Nombre de la lista:');
+  if(!name?.trim())return;
+  addDoc(collection(db,'users',currentUser.uid,'listas'),{name:name.trim(),items:[],createdAt:new Date().toISOString()});
+};
 window._userCategories=[
   {id:'trading',name:'Trading',emoji:'💹',color:'#3B82F6'},
   {id:'musica',name:'Música',emoji:'🎵',color:'#A855F7'},
