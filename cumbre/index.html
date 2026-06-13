@@ -119,8 +119,9 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* METAS TABLE */
 .metas-table{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--shadow-md)}
 .table-head{display:grid;padding:11px 22px;border-bottom:1px solid var(--border2);background:rgba(0,0,0,0.012)}
-.table-head.view-habitos{grid-template-columns:40px 1fr 190px 130px 100px;column-gap:16px}
-.meta-row.view-habitos{grid-template-columns:40px 1fr 190px 130px 100px;column-gap:16px}
+.table-head.view-compact{grid-template-columns:40px 260px 1fr 190px 100px;column-gap:16px}
+.table-head.view-habitos{grid-template-columns:40px 280px 1fr 130px 160px;column-gap:16px}
+.meta-row.view-habitos{grid-template-columns:40px 280px 1fr 130px 160px;column-gap:16px;padding:10px 22px}
 #habitosTable .metas-table{margin-bottom:0}
 .table-head.view-detail{grid-template-columns:40px 260px 1fr 100px;column-gap:16px}
 .table-head.view-semana{grid-template-columns:40px 220px 48px 48px 48px 48px 48px 48px;column-gap:8px}
@@ -868,7 +869,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="metas-table" id="habitosTable">
         <div class="table-head view-habitos" id="habitosTableHead">
           <div class="th"></div><div class="th">Hábito</div>
-          <div class="th">Esta semana</div><div class="th">Racha · Cumpl.</div><div class="th">Estado</div>
+          <div class="th">Esta semana</div><div class="th">Racha · Cumpl.</div><div class="th">Frec. · Estado</div>
         </div>
         <div id="habitosList"></div>
       </div>
@@ -1638,11 +1639,23 @@ function renderHabitoRow(m){
   else if(risk)checkHtml=`<div class="check-c warn" onclick="event.stopPropagation();toggleToday('${m.id}',event)"><i class="ti ti-alert-triangle"></i></div>`;
   else checkHtml=`<div class="check-c" onclick="event.stopPropagation();toggleToday('${m.id}',event)"></div>`;
   const dots=getWeekDots(m);
-  const weekDots=`<div class="dots">${dots.map(d=>`<div class="d ${d.cls}" onclick="event.stopPropagation();toggleHabitoDay('${m.id}','${d.dStr}',this)" title="${d.dStr}">${d.label}</div>`).join('')}</div>`;
-  const rachaHtml=`<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11.5px;font-weight:500;color:var(--accent)"><i class="ti ti-flame" style="font-size:10px"></i> ${streak}d</span><span style="font-size:10.5px;color:var(--blue)">${prog.pct}% sem.</span></div>`;
-  const statusHtml=risk?'<div class="status-risk"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Atención</div>':'<div class="status-ok">Al día</div>';
-  const freqLabel=m.freqType==='mensual'?`${m.freqMensual||1}×/mes`:`${m.freq||4}d/sem`;
-  const nameCell=`<div style="min-width:0"><div class="m-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div><div class="m-type"><span class="type-badge c"><i class="ti ti-repeat" style="font-size:9px"></i>${freqLabel}</span></div></div>`;
+  const weekDots=`<div style="display:flex;gap:4px;align-items:center">${dots.map(d=>{
+    const isInactive=d.cls==='inactive';
+    const isDone=d.cls==='ok';
+    const isWarn=d.cls==='wnow';
+    const isNow=d.cls==='now';
+    const dotStyle=isDone?'background:#3B82F6;border-color:#3B82F6':isWarn?'border-color:#E8703A;border-style:dashed;background:transparent':isNow?'border-color:#3B82F6;background:transparent':isInactive?'background:transparent;border-color:rgba(0,0,0,0.08);opacity:0.3':'';
+    const labelColor=isDone?'color:#3B82F6':isWarn?'color:#E8703A':isNow?'color:#3B82F6;font-weight:600':isInactive?'opacity:0.3':'color:var(--t3)';
+    const checkIcon=isDone?`<i class="ti ti-check" style="font-size:9px;color:white"></i>`:'';
+    return`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer" onclick="event.stopPropagation();toggleHabitoDay('${m.id}','${d.dStr}',this)">
+      <span style="font-size:9px;font-weight:500;letter-spacing:0.04em;${labelColor}">${d.label}</span>
+      <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;${dotStyle}">${checkIcon}</div>
+    </div>`;
+  }).join('')}</div>`;
+  const rachaHtml=`<div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:12px;font-weight:500;color:var(--accent)"><i class="ti ti-flame" style="font-size:10px"></i> ${streak}d</span><span style="font-size:11px;color:var(--blue)">${prog.pct}% sem.</span></div>`;
+  const freqLabel=m.freqType==='mensual'?`${m.freqMensual||1}×/mes`:`${m.freq||4}×/sem`;
+  const statusHtml=risk?`<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--t3)">${freqLabel}</span><div style="width:1px;height:11px;background:rgba(0,0,0,0.1)"></div><span style="font-size:11px;font-weight:500;color:var(--accent);display:flex;align-items:center;gap:3px"><i class="ti ti-alert-triangle" style="font-size:10px"></i> Atención</span></div>`:`<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--t3)">${freqLabel}</span><div style="width:1px;height:11px;background:rgba(0,0,0,0.1)"></div><span style="font-size:11px;font-weight:500;color:var(--green);display:flex;align-items:center;gap:3px"><i class="ti ti-check" style="font-size:10px"></i> Al día</span></div>`;
+  const nameCell=`<div style="min-width:0"><div class="m-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div></div>`;
   return`<div class="meta-row view-habitos ${risk?'risk':''}" onclick="openDetailModal('${m.id}')">${checkHtml}${nameCell}${weekDots}${rachaHtml}${statusHtml}</div>`;
 }
 
