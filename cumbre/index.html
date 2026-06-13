@@ -826,12 +826,12 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
     <div class="sidebar-nav">
       <div class="nav-item active" onclick="showPage('home',this)"><i class="ti ti-home"></i> Inicio</div>
-      <div class="nav-item" onclick="showPage('noventa',this)"><i class="ti ti-layout-columns"></i> 90's</div>
+      <div class="nav-item" onclick="showPage('habitos',this)"><i class="ti ti-repeat"></i> Hábitos</div>
       <div class="nav-item" onclick="showPage('metas',this)"><i class="ti ti-target"></i> Mis metas</div>
-      <div class="nav-item" onclick="showPage('notas',this)"><i class="ti ti-notebook"></i> Notas</div>
+      <div class="nav-item" onclick="showPage('noventa',this)"><i class="ti ti-layout-columns"></i> 90's</div>
       <div class="nav-item" onclick="showPage('vision',this)"><i class="ti ti-eye"></i> Visión</div>
+      <div class="nav-item" onclick="showPage('notas',this)"><i class="ti ti-notebook"></i> Notas</div>
       <div class="nav-item" onclick="showPage('stats',this)"><i class="ti ti-chart-bar"></i> Estadísticas</div>
-      <div class="nav-item" onclick="showPage('logros',this)"><i class="ti ti-trophy"></i> Logros</div>
       <div class="nav-item" onclick="showPage('ajustes',this)"><i class="ti ti-settings"></i> Ajustes</div>
     </div>
     <div class="sidebar-user">
@@ -860,45 +860,6 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
     <!-- HOME -->
     <div id="page-home" class="page active">
-      <div class="stat-cards">
-        <div class="scard-hero">
-          <div class="scard-label">Progreso de hoy</div>
-          <div class="hero-score-row">
-            <div class="ring-wrap">
-              <svg width="58" height="58" viewBox="0 0 76 76" style="transform:rotate(-90deg)">
-                <circle cx="38" cy="38" r="31" fill="none" stroke="#EDF0F5" stroke-width="5"/>
-                <circle cx="38" cy="38" r="31" fill="none" stroke="url(#rg)" stroke-width="5" stroke-dasharray="0 195" stroke-linecap="round" id="scoreArc"/>
-                <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#60A5FA"/></linearGradient></defs>
-              </svg>
-              <div class="ring-val"><div class="ring-pct" id="scorePct">0%</div><div class="ring-sub">hoy</div></div>
-            </div>
-            <div class="hero-numbers">
-              <div class="hero-big" id="scoreText">0<span class="unit">/0</span></div>
-              <div class="hero-label">hábitos diarios</div>
-            </div>
-          </div>
-          <div class="hero-week" id="heroWeek">
-            <div class="hw"></div><div class="hw"></div><div class="hw"></div>
-            <div class="hw"></div><div class="hw today"></div><div class="hw"></div><div class="hw"></div>
-          </div>
-        </div>
-        <div class="scard s-orange">
-          <div class="scard-label">Racha actual</div>
-          <div class="scard-val orange" id="streakCard">0<span class="unit"> d</span></div>
-          <div class="scard-sub" id="streakMax">Máx. histórico: 0 días</div>
-          <div class="trend-badge up" id="streakBadge"><i class="ti ti-flame" style="font-size:11px"></i> En racha</div>
-        </div>
-        <div class="scard s-blue">
-          <div class="scard-label">Esta semana</div>
-          <div class="scard-val blue" id="weekPct">—</div>
-          <div class="scard-sub" id="weekSub">Registrá hábitos</div>
-        </div>
-        <div class="scard s-green">
-          <div class="scard-label">En curso</div>
-          <div class="scard-val" id="totalMetas">0</div>
-          <div class="scard-sub" id="totalMetaSub">Sin registros todavía</div>
-        </div>
-      </div>
 
       <!-- HÁBITOS -->
       <div class="section-head">
@@ -942,38 +903,55 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
     </div>
 
-    <!-- STATS -->
-    <div id="page-stats" class="page">
-      <div class="stats-grid">
-        <div class="stats-card">
-          <div class="stats-card-title">Actividad — últimos 30 días</div>
-          <div class="heatmap" id="heatmapContainer"></div>
+    <!-- HÁBITOS PAGE -->
+    <div id="page-habitos" class="page">
+      <div class="section-head">
+        <div class="section-title"><i class="ti ti-repeat" style="font-size:11px;margin-right:4px"></i>Todos los hábitos</div>
+      </div>
+      <div class="metas-table">
+        <div class="table-head view-habitos">
+          <div class="th"></div><div class="th">Hábito</div>
+          <div class="th">Esta semana</div><div class="th">Racha · Cumpl.</div><div class="th">Estado</div>
         </div>
-        <div class="stats-card">
-          <div class="stats-card-title">Cumplimiento por tipo</div>
-          <div class="donut-wrap">
-            <svg id="donutSvg" width="90" height="90" viewBox="0 0 90 90">
-              <circle cx="45" cy="45" r="35" fill="none" stroke="#EDF0F5" stroke-width="12"/>
-            </svg>
-            <div class="donut-legend" id="donutLegend">
-              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#3B82F6"></div>Consistencia</div>
-              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#E8703A"></div>Hito</div>
-              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#22C55E"></div>Resultado</div>
-            </div>
-          </div>
-        </div>
-        <div class="stats-card full">
-          <div class="stats-card-title">Metas logradas por mes</div>
-          <div class="bar-chart" id="barChart"></div>
-        </div>
+        <div id="allHabitosList"></div>
       </div>
     </div>
 
-    <!-- LOGROS -->
-    <div id="page-logros" class="page">
-      <div class="section-title" style="margin-bottom:12px">Metas archivadas</div>
-      <div class="logros-list" id="logrosList">
-        <div class="empty-state"><i class="ti ti-trophy"></i><p>Todavía no hay logros archivados</p></div>
+    <!-- STATS + LOGROS (unificado) -->
+    <div id="page-stats" class="page">
+      <div style="display:flex;gap:6px;background:rgba(0,0,0,0.05);border-radius:10px;padding:3px;width:fit-content;margin-bottom:4px">
+        <button class="topt on" id="statsTab" onclick="switchStatsTab('stats')">Estadísticas</button>
+        <button class="topt" id="logrosTab" onclick="switchStatsTab('logros')">Logros</button>
+      </div>
+      <div id="statsPanel">
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-title">Actividad — últimos 30 días</div>
+            <div class="heatmap" id="heatmapContainer"></div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-title">Cumplimiento por tipo</div>
+            <div class="donut-wrap">
+              <svg id="donutSvg" width="90" height="90" viewBox="0 0 90 90">
+                <circle cx="45" cy="45" r="35" fill="none" stroke="#EDF0F5" stroke-width="12"/>
+              </svg>
+              <div class="donut-legend" id="donutLegend">
+                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#3B82F6"></div>Consistencia</div>
+                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#E8703A"></div>Hito</div>
+                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#22C55E"></div>Resultado</div>
+              </div>
+            </div>
+          </div>
+          <div class="stats-card full">
+            <div class="stats-card-title">Metas logradas por mes</div>
+            <div class="bar-chart" id="barChart"></div>
+          </div>
+        </div>
+      </div>
+      <div id="logrosPanel" style="display:none">
+        <div class="logros-list" id="logrosList">
+          <div class="empty-state"><i class="ti ti-trophy"></i><p>Todavía no hay logros archivados</p></div>
+        </div>
       </div>
     </div>
 
@@ -1449,7 +1427,7 @@ function loadMetas(){
   });
 }
 
-function renderAll(){renderStats();renderHabitosList();renderMetasList();renderAllMetas();renderLogros();renderHeatmap();renderBarChart();renderDonut()}
+function renderAll(){renderStats();renderHabitosList();renderAllHabitosList();renderMetasList();renderAllMetas();renderLogros();renderHeatmap();renderBarChart();renderDonut()}
 
 function isCompletedToday(m){
   const t=today();
@@ -1569,21 +1547,20 @@ function getProgress(m){
 
 function getWeekDots(m){
   const now=new Date(),dow=now.getDay();
-  const ws=new Date(now);ws.setDate(now.getDate()-(dow===0?6:dow-1));
+  const ws=new Date(now);ws.setDate(now.getDate()-(dow===0?6:dow-1));ws.setHours(12,0,0,0);
   const labels=['L','M','X','J','V','S','D'],days=m.completedDays||[],todayStr=today();
-  const metaDays=m.days||[]; // days the meta is configured for
+  const metaDays=m.days||[];
   return labels.map((label,i)=>{
-    const d=new Date(ws);d.setDate(ws.getDate()+i);
+    const d=new Date(ws);d.setDate(ws.getDate()+i);d.setHours(12,0,0,0);
     const dStr=d.toISOString().split('T')[0];
     const isToday=dStr===todayStr,isDone=days.includes(dStr);
-    // If meta has configured days and this day is not one of them, mark as inactive
     const isActiveDay=!metaDays.length||metaDays.includes(label);
-    if(!isActiveDay)return{label,cls:'inactive'};
+    if(!isActiveDay)return{label,cls:'inactive',dStr};
     let cls='no';
     if(isDone)cls='ok';
     else if(isToday&&isAtRisk(m))cls='wnow';
     else if(isToday)cls='now';
-    return{label,cls};
+    return{label,cls,dStr};
   });
 }
 
@@ -1621,43 +1598,7 @@ function calcWeekPct(){
 }
 
 function renderStats(){
-  const active=metas.filter(m=>!m.archived);
-  const habitos=active.filter(m=>m.type==='consistencia');
-  const nonHabitos=active.filter(m=>m.type!=='consistencia');
-  const todayLabel=['D','L','M','X','J','V','S'][new Date().getDay()];
-  const dailyHabitos=habitos.filter(m=>{
-    if(m.freqType==='mensual')return false;
-    const days=m.days||[];
-    return !days.length||days.includes(todayLabel);
-  });
-  const total=dailyHabitos.length,done=dailyHabitos.filter(m=>isCompletedToday(m)).length;
-  const pct=total?Math.round(done/total*100):0;
-  const risk=active.filter(m=>isAtRisk(m)).length;
-  const circum=2*Math.PI*31,dash=pct/100*circum;
-  document.getElementById('scoreArc').setAttribute('stroke-dasharray',`${dash} ${circum}`);
-  document.getElementById('scorePct').textContent=pct+'%';
-  document.getElementById('scoreText').innerHTML=`${done}<span class="unit">/${total}</span>`;
-  document.getElementById('totalMetas').textContent=active.length;
-  document.getElementById('totalMetaSub').textContent=active.length?`${habitos.length} hábitos · ${nonHabitos.length} metas`:'Sin registros todavía';
-  const streak=calcStreak();
-  document.getElementById('streakCard').innerHTML=`${streak.current}<span class="unit"> d</span>`;
-  document.getElementById('streakMax').textContent=`Máx. histórico: ${streak.max} días`;
-  const sb=document.getElementById('streakBadge');
-  if(sb){sb.style.display=streak.current>0?'':'none';}
-  const wp=calcWeekPct();
-  document.getElementById('weekPct').innerHTML=wp!==null?`${wp}<span class="unit">%</span>`:'—';
-  document.getElementById('weekSub').textContent=wp!==null?'cumplimiento':'Registrá hábitos';
-  // Hero week dots
-  const now=new Date(),dow=now.getDay();
-  const ws=new Date(now);ws.setDate(now.getDate()-(dow===0?6:dow-1));
-  const allDays=new Set();habitos.forEach(m=>(m.completedDays||[]).forEach(d=>allDays.add(d)));
-  const todayStr=today(),dots=document.getElementById('heroWeek').querySelectorAll('.hw');
-  for(let i=0;i<7;i++){
-    const d=new Date(ws);d.setDate(ws.getDate()+i);
-    const dStr=d.toISOString().split('T')[0];
-    const isToday=dStr===todayStr,isDone=allDays.has(dStr);
-    dots[i].className='hw '+(isDone?'done':isToday?'today':'');
-  }
+  // stat cards removed from home - nothing to render here
 }
 
 function catSeparator(thisCat,i){
@@ -1666,7 +1607,7 @@ function catSeparator(thisCat,i){
   const fallback={'trading':'Trading','musica':'Música','academia':'Academia','personal':'Personal','':'Sin categoría'};
   const label=catObj?`${catObj.emoji||''} ${catObj.name}`:(fallback[thisCat]||thisCat);
   const borderTop=i>0?'border-top:0.5px solid var(--border2);':'';
-  return`<div style="height:22px;${borderTop}background:var(--bg);display:flex;align-items:center;padding:0 22px"><span style="font-size:9.5px;font-weight:500;color:var(--t3);letter-spacing:0.05em">${label}</span></div>`;
+  return`<div style="padding:7px 22px 5px;${borderTop}background:var(--bg);display:flex;align-items:center"><span style="font-size:9.5px;font-weight:500;color:var(--t3);letter-spacing:0.05em">${label}</span></div>`;
 }
 
 function renderHabitosList(){
@@ -1693,10 +1634,11 @@ function renderHabitoRow(m){
   const prog=getProgress(m);
   const streak=calcHabitoStreak(m);
   let checkHtml='';
-  if(todayDone)checkHtml=`<div class="check-c done" onclick="toggleToday('${m.id}',event)"><i class="ti ti-check"></i></div>`;
-  else if(risk)checkHtml=`<div class="check-c warn" onclick="toggleToday('${m.id}',event)"><i class="ti ti-alert-triangle"></i></div>`;
-  else checkHtml=`<div class="check-c" onclick="toggleToday('${m.id}',event)"></div>`;
-  const weekDots=`<div class="dots">${getWeekDots(m).map(d=>`<div class="d ${d.cls}">${d.label}</div>`).join('')}</div>`;
+  if(todayDone)checkHtml=`<div class="check-c done" onclick="event.stopPropagation();toggleToday('${m.id}',event)"><i class="ti ti-check"></i></div>`;
+  else if(risk)checkHtml=`<div class="check-c warn" onclick="event.stopPropagation();toggleToday('${m.id}',event)"><i class="ti ti-alert-triangle"></i></div>`;
+  else checkHtml=`<div class="check-c" onclick="event.stopPropagation();toggleToday('${m.id}',event)"></div>`;
+  const dots=getWeekDots(m);
+  const weekDots=`<div class="dots">${dots.map(d=>`<div class="d ${d.cls}" onclick="event.stopPropagation();toggleHabitoDay('${m.id}','${d.dStr}',this)" title="${d.dStr}">${d.label}</div>`).join('')}</div>`;
   const rachaHtml=`<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:11.5px;font-weight:500;color:var(--accent)"><i class="ti ti-flame" style="font-size:10px"></i> ${streak}d</span><span style="font-size:10.5px;color:var(--blue)">${prog.pct}% sem.</span></div>`;
   const statusHtml=risk?'<div class="status-risk"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Atención</div>':'<div class="status-ok">Al día</div>';
   const freqLabel=m.freqType==='mensual'?`${m.freqMensual||1}×/mes`:`${m.freq||4}d/sem`;
@@ -1707,13 +1649,46 @@ function renderHabitoRow(m){
 function calcHabitoStreak(m){
   const days=m.completedDays||[];
   if(!days.length)return 0;
-  const sorted=[...days].sort();
   const t=today();
   const startFrom=days.includes(t)?t:(()=>{const y=new Date();y.setDate(y.getDate()-1);return y.toISOString().split('T')[0]})();
   let current=0;const cursor=new Date(startFrom+'T12:00:00');
   while(true){const s=cursor.toISOString().split('T')[0];if(days.includes(s)){current++;cursor.setDate(cursor.getDate()-1);}else break;}
   return current;
 }
+
+window.switchStatsTab=(tab)=>{
+  document.getElementById('statsPanel').style.display=tab==='stats'?'':'none';
+  document.getElementById('logrosPanel').style.display=tab==='logros'?'':'none';
+  document.getElementById('statsTab').classList.toggle('on',tab==='stats');
+  document.getElementById('logrosTab').classList.toggle('on',tab==='logros');
+  if(tab==='stats'){renderHeatmap();renderBarChart();renderDonut();}
+  if(tab==='logros')renderLogros();
+};
+
+function renderAllHabitosList(){
+  const list=document.getElementById('allHabitosList');
+  if(!list)return;
+  const habitos=metas.filter(m=>!m.archived&&m.type==='consistencia');
+  if(!habitos.length){list.innerHTML='<div class="empty-state"><i class="ti ti-repeat"></i><p>Sin hábitos todavía.</p></div>';return}
+  const sorted=[...habitos].sort((a,b)=>{
+    const co={trading:0,musica:1,academia:2,personal:3,'':4};
+    return(co[a.category||'']??4)-(co[b.category||'']??4);
+  });
+  list.innerHTML=sorted.map((m,i)=>{
+    const prevCat=i>0?sorted[i-1].category||'':'__never__';
+    const thisCat=m.category||'';
+    const sep=prevCat!==thisCat?catSeparator(thisCat,i):'';
+    return sep+renderHabitoRow(m);
+  }).join('');
+}
+
+window.toggleHabitoDay=async(id,dateStr,el)=>{
+  const m=metas.find(x=>x.id===id);if(!m)return;
+  const days=m.completedDays||[];
+  const newDays=days.includes(dateStr)?days.filter(d=>d!==dateStr):[...days,dateStr];
+  await updateDoc(doc(db,'users',currentUser.uid,'metas',id),{completedDays:newDays});
+  showToast(newDays.includes(dateStr)?'¡Marcado! 💪':'Desmarcado');
+};
 
 function renderMetasList(){
   const list=document.getElementById('metasList');
@@ -2743,6 +2718,8 @@ window.showPage=(page,el)=>{
   _origShowPage(page,el);
   if(page==='notas'&&currentUser&&!unsubNotas)loadNotas();
   if(page==='ajustes')renderCatManageList();
+  if(page==='habitos')renderAllHabitosList();
+  if(page==='stats'){renderHeatmap();renderBarChart();renderDonut();renderLogros();}
   if(page==='noventa'){
     document.getElementById('topbarTitle').textContent='90s';
     document.getElementById('topbarSub').textContent='Disciplinas de 90 días';
